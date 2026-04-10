@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="Mes Finances"/>
+  <meta name="theme-color" content="#C47B5A"/>
+  <title>Mes Finances</title>
+  <link rel="manifest" href="./manifest.json"/>
+  <link rel="apple-touch-icon" href="./icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#FAF7F2}
+    #root{min-height:100vh}
+    #splash{position:fixed;inset:0;background:#FAF7F2;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s ease}
+    #splash.hide{opacity:0;pointer-events:none}
+    #splash-icon{font-size:64px;margin-bottom:16px}
+    #splash-title{font-size:28px;font-weight:800;color:#2B2520;letter-spacing:-1px;font-family:Georgia,serif}
+    #splash-sub{font-size:13px;color:#9B9189;margin-top:6px}
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div id="splash-icon">&#x1F4B0;</div>
+    <div id="splash-title">Mes Finances</div>
+    <div id="splash-sub">Chargement...</div>
+  </div>
+  <div id="root"></div>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script>
+const {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef
+} = React;
+
+
+const STORE = "mf_tx_v2";
+const LIMITS_STORE = "mf_limits_v1";
+const MONTHS = ["Janvier", "F\u00E9vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Ao\u00FBt", "Septembre", "Octobre", "Novembre", "D\u00E9cembre"];
+const CATEGORIES = ["Abonnement", "Assurances & Banques", "Caf\u00E9", "Cadeaux", "Compl\u00E9ments alimentaires", "Courses", "\u00C9pargne", "FDJ", "Imp\u00F4t", "Indemnit\u00E9 Assurance", "Indemnit\u00E9s CPAM", "Investissement", "Jeu", "Logement", "Loisirs", "Remboursement", "Remboursement pr\u00EAt", "Restauration", "Revenus", "Salaire", "Sant\u00E9", "Shopping", "Transport", "Voyages", "Autre"];
+const CAT_COLORS = {
+  Courses: "#E07A5F",
+  Transport: "#3D85C6",
+  Logement: "#F4A261",
+  Restauration: "#E76F51",
+  Revenus: "#2A9D8F",
+  Loisirs: "#7B68EE",
+  Sant\u00E9: "#E9967A",
+  Shopping: "#C084FC",
+  \u00C9pargne: "#6BCB77",
+  Jeu: "#FF6B6B",
+  FDJ: "#FFD93D",
+  Abonnement: "#6C63FF",
+  "Assurances & Banques": "#4ECDC4",
+  Cadeaux: "#FF85A1",
+  Voyages: "#00B4D8",
+  Investissement: "#06D6A0",
+  "Imp\u00F4t": "#8D99AE",
+  "Remboursement pr\u00EAt": "#957FEF",
+  Autre: "#ADB5BD",
+  Caf\u00E9: "#A0522D",
+  Salaire: "#2E86AB",
+  "Indemnit\u00E9s CPAM": "#F18F01",
+  "Indemnit\u00E9 Assurance": "#5E8B7E",
+  "Compl\u00E9ments alimentaires": "#6A994E",
+  Remboursement: "#E9C46A"
+};
+const CAT_ICONS = {
+  Courses: "\uD83D\uDED2",
+  Transport: "\uD83D\uDE97",
+  Logement: "\uD83C\uDFE0",
+  Restauration: "\uD83C\uDF7D\uFE0F",
+  Revenus: "\uD83D\uDCB0",
+  Loisirs: "\uD83C\uDFB3",
+  Sant\u00E9: "\uD83D\uDC8A",
+  Shopping: "\uD83D\uDECD\uFE0F",
+  \u00C9pargne: "\uD83C\uDFE6",
+  Jeu: "\uD83C\uDFAE",
+  FDJ: "\uD83C\uDF40",
+  Abonnement: "\uD83D\uDD04",
+  "Assurances & Banques": "\uD83C\uDFDB\uFE0F",
+  Cadeaux: "\uD83C\uDF81",
+  Voyages: "\u2708\uFE0F",
+  Investissement: "\uD83D\uDCC8",
+  "Imp\u00F4t": "\uD83C\uDFE2",
+  "Remboursement pr\u00EAt": "\uD83D\uDCB3",
+  Autre: "\uD83D\uDCE6",
+  Caf\u00E9: "\u2615",
+  Salaire: "\uD83D\uDCBC",
+  "Indemnit\u00E9s CPAM": "\uD83C\uDFE5",
+  "Indemnit\u00E9 Assurance": "\uD83D\uDEE1\uFE0F",
+  "Compl\u00E9ments alimentaires": "\uD83C\uDF3F",
+  Remboursement: "\uD83E\uDD1D"
+};
+const AUTO_RULES = [{
+  kw: ["carrefour", "auchan", "leclerc", "lidl", "intermarche", "monoprix", "picard", "franprix"],
+  c: "Courses"
+}, {
+  kw: ["uber", "bolt", "sncf", "ratp", "taxi", "blablacar", "train", "navigo", "essence", "total", "shell"],
+  c: "Transport"
+}, {
+  kw: ["loyer", "edf", "engie", "eau", "electricite", "internet", "free", "sfr", "orange", "bouygues"],
+  c: "Logement"
+}, {
+  kw: ["restaurant", "mcdo", "burger", "pizza", "deliveroo", "ubereats", "cafe", "bar"],
+  c: "Restauration"
+}, {
+  kw: ["salaire", "virement", "prime", "bonus", "freelance", "remboursement sante", "caf"],
+  c: "Revenus"
+}, {
+  kw: ["cinema", "concert", "gaming", "steam", "playstation", "xbox", "parc"],
+  c: "Loisirs"
+}, {
+  kw: ["pharmacie", "medecin", "docteur", "hopital", "dentiste"],
+  c: "Sant\u00E9"
+}, {
+  kw: ["zara", "hm", "amazon", "fnac", "darty", "cdiscount", "vinted", "shein"],
+  c: "Shopping"
+}, {
+  kw: ["casino", "pmu", "betclic", "winamax", "parions", "unibet", "pokerstars", "stake", "cresus"],
+  c: "Jeu"
+}, {
+  kw: ["fdj", "loto", "euromillion", "illiko", "keno", "amigo"],
+  c: "FDJ"
+}, {
+  kw: ["netflix", "spotify", "disney", "canal+", "deezer", "apple music", "amazon prime", "hbo", "crunchyroll", "abonnement", "abo "],
+  c: "Abonnement"
+}, {
+  kw: ["assurance", "mutuelle", "banque", "frais bancaire", "axa", "maif", "macif", "matmut", "allianz", "groupama", "credit agricole", "bnp", "societe generale", "lcl", "boursorama"],
+  c: "Assurances & Banques"
+}, {
+  kw: ["cadeau", "gift", "anniversaire", "noel", "fete"],
+  c: "Cadeaux"
+}, {
+  kw: ["booking", "airbnb", "hotel", "vol ", "avion", "voyage", "agence", "voyageurs du monde", "sejour", "croisiere"],
+  c: "Voyages"
+}, {
+  kw: ["trade republic", "degiro", "boursorama invest", "etf", "action", "crypto", "binance", "coinbase", "investissement", "pea"],
+  c: "Investissement"
+}, {
+  kw: ["impot", "tresor public", "dgfip", "taxe", "csg", "prelevement source"],
+  c: "Imp\u00F4t"
+}, {
+  kw: ["pret", "emprunt", "credit immo", "mensualite", "echeance", "remboursement pret"],
+  c: "Remboursement pr\u00EAt"
+}];
+
+// Category mapping for imports \u2014 colonne Cat\u00E9gorie du fichier Excel = source de v\u00E9rit\u00E9
+// Les valeurs du fichier doivent correspondre exactement aux noms des cat\u00E9gories de l'app.
+// Ce mapping ne sert que de filet de s\u00E9curit\u00E9 pour les variantes courantes.
+const IMPORT_CAT_MAP = {
+  // Variantes orthographiques / legacy
+  "jeux": "Jeu",
+  "jeu": "Jeu",
+  "cadeau": "Cadeaux",
+  "maison": "Logement",
+  "restaurant": "Restauration",
+  "caf\u00E9": "Caf\u00E9",
+  "cafe": "Caf\u00E9",
+  "voiture": "Transport",
+  "indemisation": "Indemnit\u00E9 Assurance",
+  "indemnisation": "Indemnit\u00E9 Assurance",
+  "indemnit\u00E9s cpam": "Indemnit\u00E9s CPAM",
+  "indemnit\u00E9 assurance": "Indemnit\u00E9 Assurance",
+  "complement": "Compl\u00E9ments alimentaires",
+  "compl\u00E9ment": "Compl\u00E9ments alimentaires",
+  "compl\u00E9ments alimentaires": "Compl\u00E9ments alimentaires",
+  "nidek": "Salaire",
+  "salaire": "Salaire",
+  "amazon": "Shopping",
+  "sortit": "Loisirs",
+  "sortie": "Loisirs",
+  "loisir": "Loisirs",
+  "remboursement": "Remboursement",
+  "abonnement": "Abonnement",
+  "fdj": "FDJ",
+  "sant\u00E9": "Sant\u00E9",
+  "sante": "Sant\u00E9",
+  // Bank CSV \u2014 Categorie
+  "alimentation": "Courses",
+  "logement - maison": "Logement",
+  "loisirs et vacances": "Loisirs",
+  "revenus et rentrees d'argent": "Revenus",
+  "shopping et services": "Shopping",
+  "transports": "Transport",
+  "transaction exclue": "Autre",
+  "a categoriser - sortie d'argent": "Autre",
+  "a categoriser - rentree d'argent": "Revenus",
+  // Bank CSV \u2014 Sous categorie
+  "carburant": "Transport",
+  "consultation medicale": "Sant\u00E9",
+  "remboursements de soins": "Revenus",
+  "hyper/supermarche": "Courses",
+  "sport, gym et equipement": "Loisirs",
+  "expo, musee, cinema": "Loisirs",
+  "video, musique et jeux": "Abonnement",
+  "travaux - entretien": "Logement",
+  "high-tech/electromenager": "Shopping",
+  "dons et cadeaux recus": "Cadeaux",
+  "alimentation - autre": "Courses",
+  "loisirs et vacances - autre": "Loisirs",
+  "shopping et services - autre": "Shopping",
+  "virement interne": "Autre",
+  "virement emis - a categoriser": "Autre",
+  "virement recu - a categoriser": "Revenus"
+};
+const mapCat = (raw, sub) => {
+  if (!raw && !sub) return "Autre";
+  // Try sub-category first (more precise)
+  if (sub) {
+    const sl = sub.trim().toLowerCase();
+    if (IMPORT_CAT_MAP[sl]) return IMPORT_CAT_MAP[sl];
+  }
+  const t = (raw || "").trim(),
+    l = t.toLowerCase();
+  // Exact match avec les cat\u00E9gories de l'app (source de v\u00E9rit\u00E9)
+  if (CATEGORIES.includes(t)) return t;
+  // Fallback sur le mapping legacy
+  if (IMPORT_CAT_MAP[l]) return IMPORT_CAT_MAP[l];
+  return "Autre";
+};
+
+// Detect column mapping from headers \u2014 supports bank format with Debit/Credit split
+const detectCols = headers => {
+  const h = headers.map(c => (c || "").toString().toLowerCase().trim());
+  const find = (...kws) => h.findIndex(c => kws.some(k => c.includes(k)));
+  return {
+    date: Math.max(find("date de comptabilisation", "date operation", "date"), 0),
+    title: Math.max(find("libelle simplifie", "description", "libelle", "libell\u00E9", "label"), 1),
+    amount: find("montant", "amount", "somme", "valeur"),
+    debit: find("debit", "d\u00E9bit"),
+    credit: find("credit", "cr\u00E9dit"),
+    category: find("categorie", "cat\u00E9gorie", "category"),
+    subCategory: find("sous categorie", "sous-categorie", "sous cat\u00E9gorie"),
+    comment: find("commentaire", "comment", "note", "informations")
+  };
+};
+
+// \u2500\u2500 Helpers \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const eur = n => new Intl.NumberFormat("fr-FR", {
+  style: "currency",
+  currency: "EUR"
+}).format(n);
+const shortDate = d => new Date(d).toLocaleDateString("fr-FR", {
+  day: "numeric",
+  month: "short"
+});
+const autoCat = label => {
+  const l = (label || "").toLowerCase();
+  for (const r of AUTO_RULES) {
+    if (r.kw.some(k => l.includes(k))) return r.c;
+  }
+  return "Autre";
+};
+
+// Robust localStorage with error handling
+const load = key => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return null;
+    const parsed = JSON.parse(raw);
+    return parsed;
+  } catch (e) {
+    console.warn(`[MesFinances] Erreur lecture localStorage "${key}":`, e);
+    return null;
+  }
+};
+const save = (key, v) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(v));
+  } catch (e) {
+    console.error(`[MesFinances] Erreur \u00E9criture localStorage "${key}":`, e);
+  }
+};
+
+// Flexible CSV parser \u2014 auto-detect separator, handle quoted fields
+const parseCSVLine = line => {
+  const semicolons = (line.match(/;/g) || []).length;
+  const commas = (line.match(/,/g) || []).length;
+  const sep = semicolons > commas ? ";" : ",";
+  const parts = [];
+  let cur = "",
+    q = false;
+  for (const ch of line) {
+    if (ch === '"') {
+      q = !q;
+      continue;
+    }
+    if (ch === sep && !q) {
+      parts.push(cur.trim());
+      cur = "";
+      continue;
+    }
+    cur += ch;
+  }
+  parts.push(cur.trim());
+  return parts;
+};
+
+// Flexible date parser: DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, DD.MM.YYYY
+const parseDate = raw => {
+  const s = (raw || "").trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  let m;
+  if (m = s.match(/^(\d{2})[\/\-.](\d{2})[\/\-.](\d{4})$/)) return `${m[3]}-${m[2]}-${m[1]}`;
+  return null;
+};
+
+// \u2500\u2500 Donut Chart \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function DonutChart({
+  exp,
+  inc,
+  size = 200
+}) {
+  const [hovered, setHovered] = useState(null);
+  const allItems = [...exp.map(d => ({
+    ...d,
+    isInc: false
+  })), ...inc.map(d => ({
+    ...d,
+    isInc: true
+  }))];
+  const total = allItems.reduce((s, d) => s + d.value, 0);
+  if (!total) return null;
+  const cx = size / 2,
+    cy = size / 2,
+    r = size * 0.36,
+    sw = size * 0.09;
+  const gap = 0.006;
+  let cum = -0.25;
+  const segs = allItems.map((d, i) => {
+    const pct = d.value / total;
+    const start = cum;
+    cum += pct;
+    return {
+      ...d,
+      pct,
+      start,
+      end: cum,
+      idx: i
+    };
+  });
+  const arc = (s, e, rr) => {
+    const sa = s * Math.PI * 2,
+      ea = e * Math.PI * 2;
+    const x1 = cx + rr * Math.cos(sa),
+      y1 = cy + rr * Math.sin(sa);
+    const x2 = cx + rr * Math.cos(ea),
+      y2 = cy + rr * Math.sin(ea);
+    return `M${x1} ${y1} A${rr} ${rr} 0 ${e - s > 0.5 ? 1 : 0} 1 ${x2} ${y2}`;
+  };
+  const totalExp = exp.reduce((s, d) => s + d.value, 0);
+  const totalInc = inc.reduce((s, d) => s + d.value, 0);
+  const compact = v => v >= 10000 ? `${(v / 1000).toFixed(1).replace(".", ",")}k \u20AC` : v >= 1000 ? `${Math.round(v).toLocaleString("fr-FR")} \u20AC` : `${Math.round(v)} \u20AC`;
+  const h = hovered !== null ? segs[hovered] : null;
+  const centerLabel = h ? h.label : null;
+  const centerVal = h ? compact(h.value) : null;
+  const centerColor = h ? h.color : null;
+  const centerPct = h ? Math.round(h.value / (h.isInc ? totalInc : totalExp) * 100) + "%" : null;
+  return React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: `0 0 ${size} ${size}`,
+    style: {
+      display: "block",
+      margin: "0 auto"
+    }
+  }, React.createElement("circle", {
+    cx: cx,
+    cy: cy,
+    r: r,
+    fill: "none",
+    stroke: "var(--sand)",
+    strokeWidth: sw
+  }), segs.map((s, i) => {
+    const e = Math.min(s.end, s.start + s.pct - gap);
+    if (s.pct < 0.004) return null;
+    const isHov = hovered === i;
+    const rr = isHov ? r + 3 : r;
+    const sww = isHov ? sw + 4 : sw;
+    return React.createElement("path", {
+      key: i,
+      d: arc(s.start, e, rr),
+      fill: "none",
+      stroke: s.color,
+      strokeWidth: sww,
+      strokeLinecap: "butt",
+      opacity: hovered !== null && !isHov ? 0.25 : s.isInc ? 0.5 : 1,
+      style: {
+        transition: "all 0.15s ease",
+        cursor: "pointer"
+      },
+      onMouseEnter: () => setHovered(i),
+      onMouseLeave: () => setHovered(null)
+    });
+  }), h ? React.createElement(React.Fragment, null, React.createElement("text", {
+    x: cx,
+    y: cy - 18,
+    textAnchor: "middle",
+    fill: centerColor,
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "9",
+    fontWeight: "700",
+    letterSpacing: "0.3"
+  }, h.isInc ? "REVENU" : "D\u00C9PENSE"), React.createElement("text", {
+    x: cx,
+    y: cy - 5,
+    textAnchor: "middle",
+    fill: "#2B2520",
+    fontFamily: "Fraunces,serif",
+    fontSize: "12",
+    fontWeight: "800"
+  }, centerLabel), React.createElement("text", {
+    x: cx,
+    y: cy + 9,
+    textAnchor: "middle",
+    fill: centerColor,
+    fontFamily: "Fraunces,serif",
+    fontSize: "13",
+    fontWeight: "800"
+  }, centerVal), React.createElement("text", {
+    x: cx,
+    y: cy + 23,
+    textAnchor: "middle",
+    fill: "var(--ink3)",
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "10"
+  }, centerPct)) : React.createElement(React.Fragment, null, React.createElement("text", {
+    x: cx,
+    y: cy - 16,
+    textAnchor: "middle",
+    fill: "var(--red)",
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "9",
+    fontWeight: "600",
+    letterSpacing: "0.5"
+  }, "D\xC9PENSES"), React.createElement("text", {
+    x: cx,
+    y: cy - 3,
+    textAnchor: "middle",
+    fill: "#2B2520",
+    fontFamily: "Fraunces,serif",
+    fontSize: compact(totalExp).length > 7 ? 13 : 15,
+    fontWeight: "800"
+  }, compact(totalExp)), React.createElement("line", {
+    x1: cx - 16,
+    y1: cy + 4,
+    x2: cx + 16,
+    y2: cy + 4,
+    stroke: "var(--sand)",
+    strokeWidth: "1"
+  }), React.createElement("text", {
+    x: cx,
+    y: cy + 14,
+    textAnchor: "middle",
+    fill: "var(--green)",
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "9",
+    fontWeight: "600",
+    letterSpacing: "0.5"
+  }, "REVENUS"), React.createElement("text", {
+    x: cx,
+    y: cy + 27,
+    textAnchor: "middle",
+    fill: "#2B2520",
+    fontFamily: "Fraunces,serif",
+    fontSize: compact(totalInc).length > 7 ? 12 : 14,
+    fontWeight: "700"
+  }, compact(totalInc))));
+}
+
+// \u2500\u2500 Trend Sparkline (6 derniers mois) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function TrendChart({
+  transactions,
+  initialBalance
+}) {
+  const data = useMemo(() => {
+    const map = {};
+    transactions.forEach(t => {
+      const d = new Date(t.date + "T12:00:00");
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      if (!map[key]) map[key] = {
+        inc: 0,
+        exp: 0,
+        monthIdx: d.getMonth(),
+        year: d.getFullYear()
+      };
+      t.amount >= 0 ? map[key].inc += t.amount : map[key].exp += Math.abs(t.amount);
+    });
+    // Tri chronologique strict YYYY-MM
+    const allSorted = Object.entries(map).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+    const last6 = allSorted.slice(-6);
+    // Calcul solde cumulatif au debut de chaque mois
+    let cumul = initialBalance;
+    const keyToCumul = {};
+    allSorted.forEach(([key, v]) => {
+      keyToCumul[key] = cumul;
+      cumul += v.inc - v.exp;
+    });
+    // Afficher annee si plusieurs annees presentes
+    const years = new Set(last6.map(([, v]) => v.year));
+    const showYear = years.size > 1;
+    return last6.map(([key, v]) => ({
+      bal: keyToCumul[key],
+      label: showYear ? MONTHS[v.monthIdx].slice(0, 3) + " " + String(v.year).slice(2) : MONTHS[v.monthIdx].slice(0, 4)
+    }));
+  }, [transactions, initialBalance]);
+  if (data.length < 2) return null;
+  const vals = data.map(d => d.bal);
+  const min = Math.min(...vals),
+    max = Math.max(...vals);
+  const range = max - min || 1;
+  const w = 360,
+    h = 110,
+    px = 30,
+    py = 28;
+  const iw = w - px * 2,
+    ih = h - py - 22;
+  const pts = data.map((d, i) => ({
+    x: px + i / (data.length - 1) * iw,
+    y: py + ih - (d.bal - min) / range * ih
+  }));
+  const line = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x} ${p.y}`).join(" ");
+  const area = line + ` L${pts[pts.length - 1].x} ${h - 18} L${pts[0].x} ${h - 18} Z`;
+  const compactVal = v => {
+    const abs = Math.abs(v);
+    const s = abs >= 1000 ? `${(v / 1000).toFixed(1).replace(".", ",")}k` : `${Math.round(v)}`;
+    return s + "\u20AC";
+  };
+  return React.createElement("div", {
+    className: "trend-card"
+  }, React.createElement("div", {
+    className: "trend-title"
+  }, "Solde du compte \u2014 \xE9volution mensuelle"), React.createElement("svg", {
+    width: "100%",
+    viewBox: `0 0 ${w} ${h}`,
+    style: {
+      display: "block"
+    }
+  }, React.createElement("defs", null, React.createElement("linearGradient", {
+    id: "tg",
+    x1: "0",
+    y1: "0",
+    x2: "0",
+    y2: "1"
+  }, React.createElement("stop", {
+    offset: "0%",
+    stopColor: "var(--accent)",
+    stopOpacity: "0.18"
+  }), React.createElement("stop", {
+    offset: "100%",
+    stopColor: "var(--accent)",
+    stopOpacity: "0"
+  }))), React.createElement("path", {
+    d: area,
+    fill: "url(#tg)"
+  }), React.createElement("path", {
+    d: line,
+    fill: "none",
+    stroke: "var(--accent)",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }), pts.map((p, i) => {
+    const val = data[i].bal;
+    const isPos = val >= 0;
+    const labelY = p.y > py + 18 ? p.y - 8 : p.y + 16;
+    return React.createElement("g", {
+      key: i
+    }, React.createElement("circle", {
+      cx: p.x,
+      cy: p.y,
+      r: "3.5",
+      fill: "var(--card)",
+      stroke: "var(--accent)",
+      strokeWidth: "2"
+    }), React.createElement("text", {
+      x: p.x,
+      y: labelY,
+      textAnchor: "middle",
+      fill: isPos ? "var(--green)" : "var(--red)",
+      fontSize: "8.5",
+      fontFamily: "Source Sans 3,sans-serif",
+      fontWeight: "600"
+    }, compactVal(val)), React.createElement("text", {
+      x: p.x,
+      y: h - 5,
+      textAnchor: "middle",
+      fill: "var(--ink3)",
+      fontSize: "9",
+      fontFamily: "Source Sans 3,sans-serif"
+    }, data[i].label));
+  })));
+}
+const INIT_BAL_STORE = "mf_initbal_v1";
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function App() {
+  const [transactions, setTransactions] = useState(() => load(STORE) || []);
+  const [limits, setLimits] = useState(() => load(LIMITS_STORE) || {});
+  const [initialBalance, setInitialBalance] = useState(() => load(INIT_BAL_STORE) || 0);
+  const [modal, setModal] = useState(null);
+  const [editTx, setEditTx] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [filterCat, setFilterCat] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(null); // "YYYY-MM" ou null
+  const [search, setSearch] = useState("");
+  const [showCount, setShowCount] = useState(15);
+  useEffect(() => {
+    save(STORE, transactions);
+  }, [transactions]);
+  useEffect(() => {
+    save(LIMITS_STORE, limits);
+  }, [limits]);
+  useEffect(() => {
+    save(INIT_BAL_STORE, initialBalance);
+  }, [initialBalance]);
+  const notify = useCallback((msg, ok = true) => {
+    setToast({
+      msg,
+      ok,
+      k: Date.now()
+    });
+    setTimeout(() => setToast(null), 2400);
+  }, []);
+  const now = new Date();
+
+  // \u2500\u2500 Filtered transactions \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  // Mois disponibles dans les transactions (pour le dropdown)
+  const availableMonths = useMemo(() => {
+    const keys = new Set();
+    transactions.forEach(t => {
+      const d = new Date(t.date + "T12:00:00");
+      keys.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    });
+    return Array.from(keys).sort((a, b) => b.localeCompare(a)); // plus r\u00E9cent en premier
+  }, [transactions]);
+
+  // periodTx : filtre sur le mois s\u00E9lectionn\u00E9 uniquement
+  const periodTx = useMemo(() => {
+    if (!selectedMonth) return [...transactions];
+    return transactions.filter(tx => tx.date.slice(0, 7) === selectedMonth);
+  }, [transactions, selectedMonth]);
+
+  // filtered : mois + cat\u00E9gorie + recherche \u2192 liste de transactions
+  const filtered = useMemo(() => {
+    let t = [...periodTx];
+    if (filterCat !== "all") t = t.filter(tx => tx.category === filterCat);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      t = t.filter(tx => tx.title.toLowerCase().includes(q) || (tx.category || "").toLowerCase().includes(q));
+    }
+    return t.sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  }, [periodTx, filterCat, search]);
+
+  // totalBalance : solde global sur TOUTES les transactions, ne change jamais avec les filtres
+  const totalBalance = useMemo(() => {
+    let inc = 0,
+      exp = 0;
+    transactions.forEach(t => t.amount >= 0 ? inc += t.amount : exp += Math.abs(t.amount));
+    return initialBalance + inc - exp;
+  }, [transactions, initialBalance]);
+
+  // stats : revenus/d\u00E9penses bas\u00E9s sur la p\u00E9riode choisie uniquement
+  const stats = useMemo(() => {
+    let inc = 0,
+      exp = 0;
+    periodTx.forEach(t => t.amount >= 0 ? inc += t.amount : exp += Math.abs(t.amount));
+    return {
+      balance: totalBalance,
+      income: inc,
+      expense: exp
+    };
+  }, [periodTx, totalBalance]);
+
+  // catData : d\u00E9penses + revenus, donut suit filtered
+  const catData = useMemo(() => {
+    const exp = {},
+      inc = {};
+    filtered.forEach(t => {
+      const c = t.category || "Autre";
+      if (t.amount < 0) exp[c] = (exp[c] || 0) + Math.abs(t.amount);else inc[c] = (inc[c] || 0) + t.amount;
+    });
+    const expEntries = Object.entries(exp).sort(([, a], [, b]) => b - a).map(([label, value]) => ({
+      label,
+      value,
+      color: CAT_COLORS[label] || "#ADB5BD",
+      type: "exp"
+    }));
+    const incEntries = Object.entries(inc).sort(([, a], [, b]) => b - a).map(([label, value]) => ({
+      label,
+      value,
+      color: CAT_COLORS[label] || "#ADB5BD",
+      type: "inc"
+    }));
+    return {
+      exp: expEntries,
+      inc: incEntries
+    };
+  }, [filtered]);
+
+  // \u2500\u2500 Financial Score with projection \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  const score = useMemo(() => {
+    if (periodTx.length === 0) return null;
+    let pts = 50;
+    const details = [];
+    const expByCat = {};
+    periodTx.filter(t => t.amount < 0).forEach(t => {
+      const c = t.category || "Autre";
+      expByCat[c] = (expByCat[c] || 0) + Math.abs(t.amount);
+    });
+
+    // 1. Savings rate
+    if (stats.income > 0) {
+      const sr = (stats.income - stats.expense) / stats.income;
+      pts += Math.max(-15, Math.min(20, Math.round(sr * 40)));
+      if (sr >= 0.2) details.push({
+        icon: "\u2705",
+        text: `Taux d'\u00E9pargne ${Math.round(sr * 100)}%`,
+        good: true
+      });else if (sr >= 0) details.push({
+        icon: "\u26A0\uFE0F",
+        text: `Taux d'\u00E9pargne faible (${Math.round(sr * 100)}%)`,
+        good: false
+      });else details.push({
+        icon: "\uD83D\uDD34",
+        text: "D\u00E9penses > revenus",
+        good: false
+      });
+    }
+
+    // 2. End-of-month projection
+    const dayOfMonth = now.getDate();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const pctMonth = dayOfMonth / daysInMonth;
+    if (pctMonth >= 0.3 && stats.income > 0) {
+      const projectedExp = stats.expense / pctMonth;
+      const projBurn = projectedExp / stats.income;
+      if (projBurn > 1.1) {
+        const penalty = Math.min(15, Math.round((projBurn - 1) * 20));
+        pts -= penalty;
+        details.push({
+          icon: "\uD83D\uDCC9",
+          text: `Projection fin de mois : ${Math.round(projBurn * 100)}% du budget`,
+          good: false
+        });
+      } else if (projBurn <= 0.8) {
+        pts += 5;
+        details.push({
+          icon: "\uD83D\uDCC8",
+          text: `Projection : ${Math.round(projBurn * 100)}% du budget \u2014 bonne trajectoire`,
+          good: true
+        });
+      }
+      // Per-category projection vs limits
+      const limCats = Object.keys(limits);
+      let limOver = 0;
+      limCats.forEach(c => {
+        const spent = expByCat[c] || 0;
+        const projected = spent / pctMonth;
+        if (projected > limits[c] * 1.1) limOver++;
+      });
+      if (limOver > 0) {
+        pts -= limOver * 3;
+        details.push({
+          icon: "\uD83D\uDEA8",
+          text: `${limOver} cat\u00E9gorie${limOver > 1 ? "s" : ""} en d\u00E9passement projet\u00E9`,
+          good: false
+        });
+      }
+    }
+
+    // 3. Budget limits actual
+    const limCats = Object.keys(limits);
+    if (limCats.length > 0) {
+      let over = 0,
+        ok = 0;
+      limCats.forEach(c => {
+        if ((expByCat[c] || 0) > limits[c]) over++;else ok++;
+      });
+      pts += ok * 2 - over * 5;
+      if (over > 0) details.push({
+        icon: "\uD83D\uDEA8",
+        text: `${over} plafond${over > 1 ? "s" : ""} d\u00E9pass\u00E9${over > 1 ? "s" : ""}`,
+        good: false
+      });else if (ok > 0) details.push({
+        icon: "\u2705",
+        text: "Tous les plafonds respect\u00E9s",
+        good: true
+      });
+    }
+
+    // 4. Diversification
+    if (catData.exp.length > 0 && stats.expense > 0) {
+      const topPct = catData.exp[0].value / stats.expense;
+      if (topPct > 0.6) {
+        pts -= 5;
+        details.push({
+          icon: "\u26A0\uFE0F",
+          text: `${catData.exp[0].label} = ${Math.round(topPct * 100)}% des d\u00E9penses`,
+          good: false
+        });
+      } else if (catData.exp.length >= 3) {
+        pts += 3;
+        details.push({
+          icon: "\u2705",
+          text: "D\u00E9penses bien r\u00E9parties",
+          good: true
+        });
+      }
+    }
+
+    // 5. Jeu/FDJ
+    if (stats.income > 0) {
+      const gambling = (expByCat["Jeu"] || 0) + (expByCat["FDJ"] || 0);
+      const gp = gambling / stats.income;
+      if (gp > 0.1) {
+        pts -= 10;
+        details.push({
+          icon: "\uD83D\uDD34",
+          text: `Jeu/FDJ = ${Math.round(gp * 100)}% des revenus`,
+          good: false
+        });
+      } else if (gp > 0.05) {
+        pts -= 4;
+        details.push({
+          icon: "\u26A0\uFE0F",
+          text: `Jeu/FDJ = ${Math.round(gp * 100)}% des revenus`,
+          good: false
+        });
+      }
+    }
+
+    // 6. \u00C9pargne / Investissement bonus
+    const saving = (expByCat["\u00C9pargne"] || 0) + (expByCat["Investissement"] || 0);
+    if (saving > 0 && stats.income > 0) {
+      const sp = saving / stats.income;
+      if (sp >= 0.1) {
+        pts += 8;
+        details.push({
+          icon: "\uD83C\uDF1F",
+          text: `${Math.round(sp * 100)}% en \u00E9pargne/investissement`,
+          good: true
+        });
+      } else {
+        pts += 3;
+        details.push({
+          icon: "\u2705",
+          text: "Effort d'\u00E9pargne d\u00E9tect\u00E9",
+          good: true
+        });
+      }
+    }
+
+    // 7. Regularity
+    const days = new Set(periodTx.map(t => t.date)).size;
+    if (days >= 15) pts += 3;else if (days <= 3 && filtered.length > 10) {
+      pts -= 3;
+      details.push({
+        icon: "\u26A0\uFE0F",
+        text: "Peu de suivi r\u00E9gulier",
+        good: false
+      });
+    }
+    const final = Math.max(0, Math.min(100, pts));
+    const grade = final >= 80 ? "A" : final >= 65 ? "B" : final >= 50 ? "C" : final >= 35 ? "D" : "E";
+    const color = final >= 80 ? "var(--green)" : final >= 65 ? "#2A9D8F" : final >= 50 ? "var(--accent)" : final >= 35 ? "#E76F51" : "var(--red)";
+    const label = final >= 80 ? "Excellent" : final >= 65 ? "Bon" : final >= 50 ? "Correct" : final >= 35 ? "\u00C0 surveiller" : "Critique";
+    return {
+      score: final,
+      grade,
+      color,
+      label,
+      details
+    };
+  }, [periodTx, stats, catData, limits]);
+
+  // \u2500\u2500 Actions \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  const addTx = useCallback(tx => {
+    setTransactions(prev => [tx, ...prev]);
+    notify("Transaction ajout\u00E9e");
+  }, [notify]);
+  const updateTx = useCallback(tx => {
+    setTransactions(prev => prev.map(t => t.id === tx.id ? tx : t));
+    notify("Transaction modifi\u00E9e");
+  }, [notify]);
+  const delTx = useCallback(id => {
+    setTransactions(prev => prev.filter(t => t.id !== id));
+    notify("Supprim\u00E9e", false);
+  }, [notify]);
+  const importTxs = useCallback(txs => {
+    setTransactions(prev => [...txs, ...prev]);
+    notify(`${txs.length} import\u00E9es`);
+  }, [notify]);
+
+  // Export JSON \u2014 compatible iOS PWA (data URI + navigator.share fallback)
+  const exportData = useCallback(() => {
+    const json = JSON.stringify({
+      transactions,
+      limits,
+      initialBalance,
+      exportDate: new Date().toISOString()
+    }, null, 2);
+    const filename = `mes-finances-backup-${new Date().toISOString().split("T")[0]}.json`;
+    // Blob + URL.createObjectURL : fonctionne partout sauf iOS PWA standalone
+    try {
+      const blob = new Blob([json], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      notify("Backup export\u00E9");
+    } catch (e) {
+      // Fallback iOS PWA : ouvrir le JSON dans un nouvel onglet
+      const w = window.open("", "_blank");
+      if (w) {
+        w.document.write("<pre style='font-size:12px;word-break:break-all'>" + json.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>");
+        w.document.close();
+        notify("JSON ouvert dans un nouvel onglet \u2014 enregistrez-le");
+      } else {
+        notify("Export impossible sur cet appareil", false);
+      }
+    }
+  }, [transactions, limits, initialBalance, notify]);
+
+  // Import JSON
+  const importJSON = useCallback(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.transactions && Array.isArray(data.transactions)) {
+          setTransactions(data.transactions);
+          if (data.limits && typeof data.limits === "object") setLimits(data.limits);
+          if (typeof data.initialBalance === "number") setInitialBalance(data.initialBalance);
+          notify(`Restauration r\u00E9ussie (${data.transactions.length} transactions)`);
+        } else {
+          notify("Fichier JSON invalide", false);
+        }
+      } catch {
+        notify("Erreur de lecture JSON", false);
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  }, [notify]);
+
+  // Reset app
+  const resetApp = useCallback(() => {
+    setTransactions([]);
+    setLimits({});
+    setInitialBalance(0);
+    setFilterCat("all");
+    setSelectedMonth(null);
+    setSearch("");
+    setShowCount(15);
+    try {
+      localStorage.removeItem(STORE);
+      localStorage.removeItem(LIMITS_STORE);
+      localStorage.removeItem(INIT_BAL_STORE);
+    } catch {}
+    notify("Application r\u00E9initialis\u00E9e");
+  }, [notify]);
+
+  // activeCats bas\u00E9 sur periodTx pour avoir les cat\u00E9gories de la p\u00E9riode (revenus inclus)
+  const activeCats = useMemo(() => {
+    const s = new Set(periodTx.map(t => t.category));
+    return CATEGORIES.filter(c => s.has(c));
+  }, [periodTx]);
+  const monthLabel = selectedMonth ? (() => {
+    const [y, m] = selectedMonth.split("-");
+    return `${MONTHS[parseInt(m) - 1]} ${y}`;
+  })() : "Toutes les p\u00E9riodes";
+  return React.createElement(React.Fragment, null, React.createElement("style", null, STYLES), React.createElement("div", {
+    className: "app"
+  }, React.createElement("div", {
+    className: "hdr"
+  }, React.createElement("h1", null, "Mes Finances"), React.createElement("div", {
+    className: "hdr-actions"
+  }, React.createElement("button", {
+    className: "hdr-btn",
+    onClick: () => setModal("score"),
+    title: "Score financier"
+  }, "\uD83D\uDCCA"), React.createElement("button", {
+    className: "hdr-btn",
+    onClick: () => setModal("settings"),
+    title: "R\xE9glages"
+  }, "\u2699\uFE0F"), React.createElement("button", {
+    className: "hdr-btn",
+    onClick: () => setModal("import"),
+    title: "Importer"
+  }, "\uD83D\uDCE5"))), React.createElement("div", {
+    className: "bal"
+  }, React.createElement("div", {
+    className: "bal-label"
+  }, "Solde total"), React.createElement("div", {
+    className: "bal-amount",
+    style: {
+      color: stats.balance >= 0 ? "var(--green)" : "var(--red)"
+    }
+  }, eur(stats.balance)), React.createElement("div", {
+    className: "bal-row"
+  }, React.createElement("div", {
+    className: "bal-box inc"
+  }, React.createElement("div", {
+    className: "bal-dot inc"
+  }), React.createElement("div", null, React.createElement("div", {
+    className: "bal-sm-label"
+  }, "Revenus"), React.createElement("div", {
+    className: "bal-sm-val inc"
+  }, eur(stats.income)))), React.createElement("div", {
+    className: "bal-box exp"
+  }, React.createElement("div", {
+    className: "bal-dot exp"
+  }), React.createElement("div", null, React.createElement("div", {
+    className: "bal-sm-label"
+  }, "D\xE9penses"), React.createElement("div", {
+    className: "bal-sm-val exp"
+  }, eur(stats.expense)))))), React.createElement(TrendChart, {
+    transactions: transactions,
+    initialBalance: initialBalance
+  }), React.createElement("div", {
+    className: "month-nav"
+  }, React.createElement("select", {
+    className: "month-select",
+    value: selectedMonth || "",
+    onChange: e => setSelectedMonth(e.target.value || null)
+  }, React.createElement("option", {
+    value: ""
+  }, "Toutes les p\xE9riodes"), availableMonths.map(key => {
+    const [y, m] = key.split("-");
+    return React.createElement("option", {
+      key: key,
+      value: key
+    }, MONTHS[parseInt(m) - 1], " ", y);
+  })), selectedMonth && React.createElement("button", {
+    className: "m-reset",
+    onClick: () => setSelectedMonth(null),
+    title: "Tout afficher"
+  }, "\u2715")), React.createElement("div", {
+    className: "cat-filter"
+  }, React.createElement("select", {
+    className: "cat-select",
+    value: filterCat,
+    onChange: e => setFilterCat(e.target.value)
+  }, React.createElement("option", {
+    value: "all"
+  }, "Toutes les cat\xE9gories"), activeCats.map(c => React.createElement("option", {
+    key: c,
+    value: c
+  }, CAT_ICONS[c], " ", c)))), (catData.exp.length > 0 || catData.inc.length > 0) && React.createElement("div", {
+    className: "donut-section"
+  }, React.createElement("div", {
+    className: "section-title"
+  }, "R\xE9partition"), React.createElement(DonutChart, {
+    exp: catData.exp,
+    inc: catData.inc
+  }), catData.exp.length > 0 && React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "legend-group-title exp"
+  }, "D\xE9penses"), React.createElement("div", {
+    className: "donut-legend"
+  }, catData.exp.map(d => {
+    const lim = limits[d.label];
+    const over = lim && d.value > lim;
+    const total = catData.exp.reduce((s, x) => s + x.value, 0);
+    const pct = total > 0 ? Math.round(d.value / total * 100) : 0;
+    const maxVal = catData.exp[0]?.value || 1;
+    return React.createElement("div", {
+      key: d.label,
+      className: `legend-row${lim ? " has-limit" : ""}`
+    }, React.createElement("div", {
+      className: "legend-dot",
+      style: {
+        background: d.color
+      }
+    }), React.createElement("div", {
+      className: "legend-icon"
+    }, CAT_ICONS[d.label] || "\uD83D\uDCE6"), React.createElement("div", {
+      className: "legend-name"
+    }, d.label), React.createElement("div", {
+      className: "legend-pct"
+    }, pct, "%"), React.createElement("div", {
+      className: "legend-bar-bg"
+    }, React.createElement("div", {
+      className: "legend-bar-fill",
+      style: {
+        width: `${d.value / maxVal * 100}%`,
+        background: over ? "var(--red)" : d.color
+      }
+    })), React.createElement("div", {
+      className: `legend-val${over ? " legend-over" : ""}`
+    }, eur(d.value)), lim ? React.createElement("div", {
+      className: `legend-limit${over ? " legend-over" : ""}`
+    }, "/", eur(lim)) : null);
+  }))), catData.inc.length > 0 && React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "legend-group-title inc"
+  }, "Revenus"), React.createElement("div", {
+    className: "donut-legend"
+  }, catData.inc.map(d => {
+    const total = catData.inc.reduce((s, x) => s + x.value, 0);
+    const pct = total > 0 ? Math.round(d.value / total * 100) : 0;
+    const maxVal = catData.inc[0]?.value || 1;
+    return React.createElement("div", {
+      key: d.label,
+      className: "legend-row"
+    }, React.createElement("div", {
+      className: "legend-dot",
+      style: {
+        background: d.color
+      }
+    }), React.createElement("div", {
+      className: "legend-icon"
+    }, CAT_ICONS[d.label] || "\uD83D\uDCE6"), React.createElement("div", {
+      className: "legend-name"
+    }, d.label), React.createElement("div", {
+      className: "legend-pct"
+    }, pct, "%"), React.createElement("div", {
+      className: "legend-bar-bg"
+    }, React.createElement("div", {
+      className: "legend-bar-fill",
+      style: {
+        width: `${d.value / maxVal * 100}%`,
+        background: d.color
+      }
+    })), React.createElement("div", {
+      className: "legend-val",
+      style: {
+        color: "var(--green)",
+        textAlign: "right"
+      }
+    }, eur(d.value)));
+  })))), React.createElement("div", {
+    className: "tx-sec"
+  }, React.createElement("div", {
+    className: "tx-head"
+  }, React.createElement("div", {
+    className: "section-title"
+  }, "Transactions"), React.createElement("div", {
+    className: "tx-count"
+  }, filtered.length)), React.createElement("div", {
+    className: "tx-filters"
+  }, React.createElement("div", {
+    className: "search-wrap"
+  }, React.createElement("span", {
+    className: "search-ico"
+  }, "\uD83D\uDD0D"), React.createElement("input", {
+    className: "search-input",
+    value: search,
+    onChange: e => {
+      setSearch(e.target.value);
+      setShowCount(15);
+    },
+    placeholder: "Rechercher..."
+  }), search && React.createElement("button", {
+    className: "search-clear",
+    onClick: () => setSearch("")
+  }, "\xD7")), React.createElement("select", {
+    className: "tx-cat-filter",
+    value: filterCat,
+    onChange: e => {
+      setFilterCat(e.target.value);
+      setShowCount(15);
+    }
+  }, React.createElement("option", {
+    value: "all"
+  }, "Toutes"), activeCats.map(c => React.createElement("option", {
+    key: c,
+    value: c
+  }, CAT_ICONS[c], " ", c)))), filtered.length === 0 ? React.createElement("div", {
+    className: "empty"
+  }, React.createElement("div", {
+    className: "empty-ico"
+  }, "\uD83D\uDCCA"), React.createElement("div", {
+    className: "empty-txt"
+  }, search ? "Aucun r\u00E9sultat" : "Aucune transaction", React.createElement("br", null), !search && "Ajoutez-en ou importez un fichier")) : React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "tx-list"
+  }, filtered.slice(0, showCount).map(tx => {
+    const inc = tx.amount >= 0;
+    return React.createElement("div", {
+      key: tx.id,
+      className: "tx tx-anim"
+    }, React.createElement("div", {
+      className: `tx-ico ${inc ? "inc" : "exp"}`
+    }, CAT_ICONS[tx.category] || (inc ? "\uD83D\uDCB0" : "\uD83D\uDCE6")), React.createElement("div", {
+      className: "tx-body"
+    }, React.createElement("div", {
+      className: "tx-name"
+    }, tx.title), React.createElement("div", {
+      className: "tx-sub"
+    }, shortDate(tx.date), " \xB7 ", tx.category || "Autre")), React.createElement("div", {
+      className: `tx-amt ${inc ? "inc" : "exp"}`
+    }, inc ? "+" : "", eur(tx.amount)), React.createElement("div", {
+      className: "tx-actions"
+    }, React.createElement("button", {
+      className: "tx-edit",
+      onClick: () => setEditTx(tx),
+      title: "Modifier"
+    }, "\u270F\uFE0F"), React.createElement("button", {
+      className: "tx-del",
+      onClick: () => delTx(tx.id),
+      title: "Supprimer"
+    }, "\xD7")));
+  })), filtered.length > showCount && React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      marginTop: 12
+    },
+    onClick: () => setShowCount(p => p + 20)
+  }, "Voir plus (", filtered.length - showCount, " restantes)"))), React.createElement("button", {
+    className: "fab",
+    onClick: () => setModal("add")
+  }, "+"), modal === "add" && React.createElement(AddSheet, {
+    onClose: () => setModal(null),
+    onAdd: addTx
+  }), editTx && React.createElement(EditSheet, {
+    tx: editTx,
+    onClose: () => setEditTx(null),
+    onSave: tx => {
+      updateTx(tx);
+      setEditTx(null);
+    },
+    onDelete: id => {
+      delTx(id);
+      setEditTx(null);
+    }
+  }), modal === "import" && React.createElement(ImportSheet, {
+    onClose: () => setModal(null),
+    onImport: importTxs
+  }), modal === "settings" && React.createElement(SettingsSheet, {
+    onClose: () => setModal(null),
+    limits: limits,
+    setLimits: setLimits,
+    onExport: exportData,
+    onImportJSON: importJSON,
+    onReset: resetApp,
+    initialBalance: initialBalance,
+    setInitialBalance: setInitialBalance
+  }), modal === "score" && React.createElement(ScoreSheet, {
+    onClose: () => setModal(null),
+    score: score
+  }), toast && React.createElement("div", {
+    className: `toast ${toast.ok ? "ok" : "no"}`,
+    key: toast.k
+  }, toast.msg)));
+}
+
+// \u2500\u2500 Add Sheet \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function AddSheet({
+  onClose,
+  onAdd
+}) {
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [title, setTitle] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [isExp, setIsExp] = useState(true);
+  const ref = useRef();
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+  const submit = () => {
+    const n = parseFloat(amount.replace(",", "."));
+    if (!title.trim() || isNaN(n) || n === 0) return;
+    onAdd({
+      id: uid(),
+      date,
+      title: title.trim(),
+      amount: isExp ? -Math.abs(n) : Math.abs(n),
+      category: category || autoCat(title)
+    });
+    onClose();
+  };
+  const handleKey = e => {
+    if (e.key === "Enter") submit();
+  };
+  return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "Nouvelle transaction"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), React.createElement("div", {
+    className: "tabs"
+  }, React.createElement("button", {
+    className: `tab ${isExp ? "on" : ""}`,
+    onClick: () => setIsExp(true)
+  }, "D\xE9pense"), React.createElement("button", {
+    className: `tab ${!isExp ? "on" : ""}`,
+    onClick: () => setIsExp(false)
+  }, "Revenu")), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Libell\xE9"), React.createElement("input", {
+    ref: ref,
+    className: "fi",
+    value: title,
+    onChange: e => setTitle(e.target.value),
+    onKeyDown: handleKey,
+    placeholder: "Ex: Carrefour, Salaire..."
+  })), React.createElement("div", {
+    className: "fr"
+  }, React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Montant (\u20AC)"), React.createElement("input", {
+    className: "fi",
+    type: "number",
+    step: "0.01",
+    min: "0",
+    value: amount,
+    onChange: e => setAmount(e.target.value),
+    onKeyDown: handleKey,
+    placeholder: "0.00"
+  })), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Date"), React.createElement("input", {
+    className: "fi",
+    type: "date",
+    value: date,
+    onChange: e => setDate(e.target.value)
+  }))), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Cat\xE9gorie"), React.createElement("select", {
+    className: "fs",
+    value: category,
+    onChange: e => setCategory(e.target.value)
+  }, React.createElement("option", {
+    value: ""
+  }, "Auto-d\xE9tection"), CATEGORIES.map(c => React.createElement("option", {
+    key: c,
+    value: c
+  }, CAT_ICONS[c], " ", c)))), React.createElement("button", {
+    className: "btn btn-p",
+    onClick: submit
+  }, "Ajouter")));
+}
+
+// \u2500\u2500 Edit Sheet \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function EditSheet({
+  tx,
+  onClose,
+  onSave,
+  onDelete
+}) {
+  const [date, setDate] = useState(tx.date);
+  const [title, setTitle] = useState(tx.title);
+  const [amount, setAmount] = useState(String(Math.abs(tx.amount)));
+  const [category, setCategory] = useState(tx.category || "Autre");
+  const [isExp, setIsExp] = useState(tx.amount < 0);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const ref = useRef();
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+  const submit = () => {
+    const n = parseFloat(amount.replace(",", "."));
+    if (!title.trim() || isNaN(n) || n === 0) return;
+    onSave({
+      ...tx,
+      date,
+      title: title.trim(),
+      amount: isExp ? -Math.abs(n) : Math.abs(n),
+      category
+    });
+  };
+  const handleKey = e => {
+    if (e.key === "Enter") submit();
+  };
+  return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "Modifier"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), React.createElement("div", {
+    className: "tabs"
+  }, React.createElement("button", {
+    className: `tab ${isExp ? "on" : ""}`,
+    onClick: () => setIsExp(true)
+  }, "D\xE9pense"), React.createElement("button", {
+    className: `tab ${!isExp ? "on" : ""}`,
+    onClick: () => setIsExp(false)
+  }, "Revenu")), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Libell\xE9"), React.createElement("input", {
+    ref: ref,
+    className: "fi",
+    value: title,
+    onChange: e => setTitle(e.target.value),
+    onKeyDown: handleKey,
+    placeholder: "Libell\xE9"
+  })), React.createElement("div", {
+    className: "fr"
+  }, React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Montant (\u20AC)"), React.createElement("input", {
+    className: "fi",
+    type: "number",
+    step: "0.01",
+    min: "0",
+    value: amount,
+    onChange: e => setAmount(e.target.value),
+    onKeyDown: handleKey,
+    placeholder: "0.00"
+  })), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Date"), React.createElement("input", {
+    className: "fi",
+    type: "date",
+    value: date,
+    onChange: e => setDate(e.target.value)
+  }))), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Cat\xE9gorie"), React.createElement("select", {
+    className: "fs",
+    value: category,
+    onChange: e => setCategory(e.target.value)
+  }, CATEGORIES.map(c => React.createElement("option", {
+    key: c,
+    value: c
+  }, CAT_ICONS[c], " ", c)))), React.createElement("button", {
+    className: "btn btn-p",
+    onClick: submit
+  }, "Enregistrer"), React.createElement("div", {
+    style: {
+      marginTop: 12
+    }
+  }, !confirmDel ? React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      color: "var(--red)",
+      borderColor: "var(--red)"
+    },
+    onClick: () => setConfirmDel(true)
+  }, "\uD83D\uDDD1\uFE0F Supprimer cette transaction") : React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8
+    }
+  }, React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      flex: 1
+    },
+    onClick: () => setConfirmDel(false)
+  }, "Annuler"), React.createElement("button", {
+    className: "btn",
+    style: {
+      flex: 1,
+      background: "var(--red)",
+      color: "#fff",
+      marginTop: 6
+    },
+    onClick: () => onDelete(tx.id)
+  }, "Confirmer")))));
+}
+
+// \u2500\u2500 Import Sheet (CSV + XLSX) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function ImportSheet({
+  onClose,
+  onImport
+}) {
+  const [preview, setPreview] = useState(null);
+  const [drag, setDrag] = useState(false);
+  const [error, setError] = useState(null);
+  const inputRef = useRef();
+  const processCSV = text => {
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) return;
+    const headerLine = lines[0];
+    const h = headerLine.toLowerCase();
+    const hasH = h.includes("date") || h.includes("libelle") || h.includes("montant") || h.includes("label") || h.includes("description") || h.includes("debit") || h.includes("credit");
+    if (!hasH) {
+      // Simple CSV without headers: Date, Libell\u00E9, Montant, Cat\u00E9gorie
+      const data = lines;
+      const parsed = [],
+        skip = [];
+      data.forEach((line, i) => {
+        try {
+          const p = parseCSVLine(line);
+          if (p.length < 3) {
+            skip.push(i);
+            return;
+          }
+          const [rd, rt, ra, rc] = p;
+          const amt = parseFloat(ra.replace(",", ".").replace(/[^\d.-]/g, ""));
+          if (isNaN(amt)) {
+            skip.push(i);
+            return;
+          }
+          const date = parseDate(rd);
+          if (!date) {
+            skip.push(i);
+            return;
+          }
+          parsed.push({
+            id: uid(),
+            date,
+            title: rt?.trim() || "Sans libell\u00E9",
+            amount: amt,
+            category: mapCat(rc) || autoCat(rt)
+          });
+        } catch {
+          skip.push(i);
+        }
+      });
+      setPreview({
+        parsed,
+        skipped: skip.length,
+        total: data.length
+      });
+      return;
+    }
+
+    // Smart parsing with column detection
+    const headers = parseCSVLine(headerLine);
+    const cols = detectCols(headers);
+    const data = lines.slice(1);
+    const parsed = [],
+      skip = [];
+    data.forEach((line, i) => {
+      try {
+        const p = parseCSVLine(line);
+        if (p.length < 3) {
+          skip.push(i);
+          return;
+        }
+
+        // Date
+        const rawDate = p[cols.date];
+        const date = parseDate(rawDate);
+        if (!date) {
+          skip.push(i);
+          return;
+        }
+
+        // Title
+        const title = (p[cols.title] || "").trim() || "Sans libell\u00E9";
+
+        // Amount \u2014 either single column or Debit/Credit split
+        let amt;
+        if (cols.amount >= 0) {
+          amt = parseFloat((p[cols.amount] || "0").replace(",", ".").replace(/[^\d.-]/g, ""));
+        } else if (cols.debit >= 0 || cols.credit >= 0) {
+          const rawDebit = cols.debit >= 0 ? (p[cols.debit] || "").replace(",", ".").replace(/[^\d.-]/g, "").trim() : "";
+          const rawCredit = cols.credit >= 0 ? (p[cols.credit] || "").replace(",", ".").replace(/[^\d.+\-]/g, "").replace("+", "").trim() : "";
+          const debit = rawDebit ? parseFloat(rawDebit) : 0;
+          const credit = rawCredit ? parseFloat(rawCredit) : 0;
+          amt = credit > 0 ? credit : debit; // debit is already negative in bank format
+          if (debit !== 0 && credit === 0) amt = debit;else if (credit !== 0 && debit === 0) amt = credit;else if (debit !== 0 && credit !== 0) amt = debit + credit;
+        } else {
+          skip.push(i);
+          return;
+        }
+        if (isNaN(amt) || amt === 0) {
+          skip.push(i);
+          return;
+        }
+
+        // Category \u2014 try sub-category first, then category, then auto-detect from title
+        const rawCat = cols.category >= 0 ? (p[cols.category] || "").trim() : "";
+        const rawSub = cols.subCategory >= 0 ? (p[cols.subCategory] || "").trim() : "";
+        let category = mapCat(rawCat, rawSub);
+        // If still "Autre", try auto-detect from title + known keywords
+        if (category === "Autre") {
+          // Check for FDJ in title
+          if (title.toLowerCase().includes("fdj")) category = "FDJ";else category = autoCat(title);
+        }
+        parsed.push({
+          id: uid(),
+          date,
+          title,
+          amount: amt,
+          category
+        });
+      } catch {
+        skip.push(i);
+      }
+    });
+    setPreview({
+      parsed,
+      skipped: skip.length,
+      total: data.length
+    });
+  };
+  const loadXLSXLib = () => new Promise((resolve, reject) => {
+    if (window.XLSX) {
+      resolve(window.XLSX);
+      return;
+    }
+    const urls = ["https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js", "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"];
+    const tryLoad = i => {
+      if (i >= urls.length) {
+        reject(new Error("Lib Excel non disponible"));
+        return;
+      }
+      const s = document.createElement("script");
+      s.src = urls[i];
+      s.onload = () => window.XLSX ? resolve(window.XLSX) : tryLoad(i + 1);
+      s.onerror = () => tryLoad(i + 1);
+      document.head.appendChild(s);
+    };
+    tryLoad(0);
+  });
+  const processXLSX = async file => {
+    try {
+      const XLSX = await loadXLSXLib();
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {
+        type: "array",
+        cellDates: true
+      });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {
+        header: 1,
+        raw: true
+      });
+      if (rows.length < 2) {
+        setError("Fichier vide");
+        return;
+      }
+      const cols = detectCols(rows[0]);
+      const parsed = [],
+        skip = [];
+      rows.slice(1).forEach((row, i) => {
+        try {
+          if (!row || row.length < 3) {
+            skip.push(i);
+            return;
+          }
+          const rawDate = row[cols.date];
+          const rawTitle = row[cols.title];
+          const rawCat = cols.category >= 0 ? row[cols.category] : null;
+          const rawSub = cols.subCategory >= 0 ? row[cols.subCategory] : null;
+          const rawComment = cols.comment >= 0 ? row[cols.comment] : null;
+          if (!rawDate || !rawTitle) {
+            skip.push(i);
+            return;
+          }
+          let date = null;
+          const toLocalDate = d => {
+            // \u00C9vite le d\u00E9calage UTC : on prend les composantes locales
+            const y = d.getFullYear(),
+              m = String(d.getMonth() + 1).padStart(2, "0"),
+              day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+          };
+          if (rawDate instanceof Date && !isNaN(rawDate.getTime())) {
+            date = toLocalDate(rawDate);
+          } else if (typeof rawDate === "number") {
+            // Serial Excel : utilise date locale pour \u00E9viter le d\u00E9calage UTC
+            const d = new Date(Math.round((rawDate - 25569) * 86400000));
+            if (!isNaN(d.getTime())) date = toLocalDate(d);
+          } else {
+            const ds = String(rawDate).trim();
+            if (/^\d{4}-\d{2}-\d{2}/.test(ds)) date = ds.slice(0, 10);else date = parseDate(ds);
+            if (!date) {
+              const d = new Date(rawDate);
+              if (!isNaN(d.getTime())) date = toLocalDate(d);
+            }
+          }
+          if (!date) {
+            skip.push(i);
+            return;
+          }
+          let amt;
+          if (cols.amount >= 0) {
+            const raw = row[cols.amount];
+            amt = typeof raw === "number" ? raw : parseFloat(String(raw).replace(",", ".").replace(/[^\d.\-]/g, ""));
+          } else if (cols.debit >= 0 || cols.credit >= 0) {
+            const rawD = cols.debit >= 0 ? row[cols.debit] : null;
+            const rawC = cols.credit >= 0 ? row[cols.credit] : null;
+            const dv = typeof rawD === "number" ? rawD : rawD ? parseFloat(String(rawD).replace(",", ".").replace(/[^\d.-]/g, "")) : 0;
+            const cv = typeof rawC === "number" ? rawC : rawC ? parseFloat(String(rawC).replace(",", ".").replace(/[^\d.]/g, "")) : 0;
+            amt = cv > 0 ? cv : dv !== 0 ? dv : 0;
+          } else {
+            skip.push(i);
+            return;
+          }
+          if (isNaN(amt) || amt === 0) {
+            skip.push(i);
+            return;
+          }
+          const title = String(rawTitle).trim();
+          const comment = rawComment ? String(rawComment).trim() : "";
+          const displayTitle = comment ? `${title} \u2014 ${comment}` : title;
+          let category = mapCat(rawCat, rawSub);
+          if (category === "Autre") category = autoCat(title);
+          parsed.push({
+            id: uid(),
+            date,
+            title: displayTitle,
+            amount: amt,
+            category
+          });
+        } catch {
+          skip.push(i);
+        }
+      });
+      setPreview({
+        parsed,
+        skipped: skip.length,
+        total: rows.length - 1
+      });
+    } catch (e) {
+      console.error("XLSX parse error:", e);
+      setError(`Erreur : ${e.message || "lecture du fichier Excel impossible"}`);
+    }
+  };
+  const handleFile = file => {
+    setError(null);
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (ext === "xlsx" || ext === "xls" || ext === "xlsm") {
+      processXLSX(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = e => processCSV(e.target.result);
+      reader.readAsText(file, "UTF-8");
+    }
+  };
+  return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "Importer un fichier"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), !preview ? React.createElement(React.Fragment, null, React.createElement("div", {
+    className: `drop ${drag ? "drag" : ""}`,
+    onDragOver: e => {
+      e.preventDefault();
+      setDrag(true);
+    },
+    onDragLeave: () => setDrag(false),
+    onDrop: e => {
+      e.preventDefault();
+      setDrag(false);
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    },
+    onClick: () => inputRef.current?.click()
+  }, React.createElement("div", {
+    className: "drop-ico"
+  }, "\uD83D\uDCC2"), React.createElement("div", {
+    className: "drop-txt"
+  }, "Glissez votre fichier ou ", React.createElement("strong", null, "parcourir")), React.createElement("div", {
+    className: "drop-txt",
+    style: {
+      marginTop: 6,
+      fontSize: 11
+    }
+  }, "CSV, XLSX, XLS \xB7 D\xE9tection automatique des colonnes")), React.createElement("input", {
+    ref: inputRef,
+    type: "file",
+    accept: ".csv,.txt,.xlsx,.xls,.xlsm",
+    style: {
+      display: "none"
+    },
+    onChange: e => {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    }
+  }), error && React.createElement("div", {
+    style: {
+      color: "var(--red)",
+      fontSize: 13,
+      textAlign: "center",
+      marginTop: 8
+    }
+  }, error)) : React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "csv-stats"
+  }, React.createElement("div", {
+    className: "csv-stat"
+  }, React.createElement("strong", null, preview.parsed.length), " valides"), preview.skipped > 0 && React.createElement("div", {
+    className: "csv-stat"
+  }, React.createElement("strong", null, preview.skipped), " ignor\xE9es"), React.createElement("div", {
+    className: "csv-stat"
+  }, React.createElement("strong", null, preview.total), " total")), preview.parsed.length > 0 && React.createElement("div", {
+    className: "csv-pv"
+  }, React.createElement("table", {
+    className: "csv-tbl"
+  }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "Date"), React.createElement("th", null, "Libell\xE9"), React.createElement("th", null, "Montant"), React.createElement("th", null, "Cat."))), React.createElement("tbody", null, preview.parsed.slice(0, 50).map((tx, i) => React.createElement("tr", {
+    key: i
+  }, React.createElement("td", null, shortDate(tx.date)), React.createElement("td", {
+    style: {
+      maxWidth: 120,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
+    }
+  }, tx.title), React.createElement("td", {
+    style: {
+      color: tx.amount >= 0 ? "var(--green)" : "var(--red)"
+    }
+  }, eur(tx.amount)), React.createElement("td", null, CAT_ICONS[tx.category] || "\uD83D\uDCE6")))))), React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginTop: 8
+    }
+  }, React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      flex: 1
+    },
+    onClick: () => setPreview(null)
+  }, "Retour"), React.createElement("button", {
+    className: "btn btn-p",
+    style: {
+      flex: 2
+    },
+    onClick: () => {
+      onImport(preview.parsed);
+      onClose();
+    }
+  }, "Importer ", preview.parsed.length)))));
+}
+
+// \u2500\u2500 Settings Sheet (Limits + Export/Import) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function SettingsSheet({
+  onClose,
+  limits,
+  setLimits,
+  onExport,
+  onImportJSON,
+  onReset,
+  initialBalance,
+  setInitialBalance
+}) {
+  const [local, setLocal] = useState({
+    ...limits
+  });
+  const [localBal, setLocalBal] = useState(initialBalance || 0);
+  const [tab, setTab] = useState("general"); // "general" | "limits" | "backup"
+  const [confirmReset, setConfirmReset] = useState(false);
+  const jsonRef = useRef();
+  const update = (cat, val) => {
+    const n = parseFloat(val);
+    setLocal(prev => {
+      const next = {
+        ...prev
+      };
+      if (isNaN(n) || n <= 0) delete next[cat];else next[cat] = n;
+      return next;
+    });
+  };
+  return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "R\xE9glages"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), React.createElement("div", {
+    className: "tabs",
+    style: {
+      marginBottom: 20
+    }
+  }, React.createElement("button", {
+    className: `tab ${tab === "general" ? "on" : ""}`,
+    onClick: () => setTab("general")
+  }, "G\xE9n\xE9ral"), React.createElement("button", {
+    className: `tab ${tab === "limits" ? "on" : ""}`,
+    onClick: () => setTab("limits")
+  }, "Plafonds"), React.createElement("button", {
+    className: `tab ${tab === "backup" ? "on" : ""}`,
+    onClick: () => setTab("backup")
+  }, "Donn\xE9es")), tab === "general" && React.createElement(React.Fragment, null, React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: "var(--ink3)",
+      marginBottom: 16,
+      lineHeight: 1.5
+    }
+  }, "Le solde initial correspond au solde de votre compte avant la premi\xE8re transaction import\xE9e."), React.createElement("div", {
+    className: "fg"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "Solde initial du compte (\u20AC)"), React.createElement("input", {
+    className: "fi",
+    type: "number",
+    step: "0.01",
+    value: localBal || "",
+    placeholder: "0.00",
+    onChange: e => setLocalBal(parseFloat(e.target.value) || 0)
+  })), React.createElement("button", {
+    className: "btn btn-p",
+    onClick: () => {
+      setInitialBalance(localBal);
+      onClose();
+    }
+  }, "Enregistrer")), tab === "limits" && React.createElement(React.Fragment, null, React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: "var(--ink3)",
+      marginBottom: 16,
+      lineHeight: 1.5
+    }
+  }, "Plafond mensuel par cat\xE9gorie. Les d\xE9passements apparaissent en rouge."), React.createElement("div", {
+    style: {
+      maxHeight: 320,
+      overflowY: "auto"
+    }
+  }, CATEGORIES.filter(c => c !== "Revenus").map(c => React.createElement("div", {
+    key: c,
+    className: "lim-row"
+  }, React.createElement("div", {
+    className: "lim-icon"
+  }, CAT_ICONS[c]), React.createElement("div", {
+    className: "lim-name"
+  }, c), React.createElement("input", {
+    className: "lim-input",
+    type: "number",
+    step: "10",
+    min: "0",
+    placeholder: "\u2014",
+    value: local[c] || "",
+    onChange: e => update(c, e.target.value)
+  }), React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: "var(--ink3)"
+    }
+  }, "\u20AC")))), React.createElement("button", {
+    className: "btn btn-p",
+    onClick: () => {
+      setLimits(local);
+      onClose();
+    },
+    style: {
+      marginTop: 14
+    }
+  }, "Enregistrer")), tab === "backup" && React.createElement(React.Fragment, null, React.createElement("p", {
+    style: {
+      fontSize: 13,
+      color: "var(--ink3)",
+      marginBottom: 20,
+      lineHeight: 1.5
+    }
+  }, "Exportez toutes vos donn\xE9es (transactions + limites) en fichier JSON, ou restaurez depuis un backup."), React.createElement("button", {
+    className: "btn btn-p",
+    onClick: () => {
+      onExport();
+    },
+    style: {
+      marginBottom: 10
+    }
+  }, "\uD83D\uDCE6 Exporter en JSON"), React.createElement("button", {
+    className: "btn btn-s",
+    onClick: () => jsonRef.current?.click()
+  }, "\uD83D\uDCC2 Restaurer depuis un backup"), React.createElement("input", {
+    ref: jsonRef,
+    type: "file",
+    accept: ".json",
+    style: {
+      display: "none"
+    },
+    onChange: e => {
+      if (e.target.files[0]) {
+        onImportJSON(e.target.files[0]);
+        onClose();
+      }
+    }
+  }), React.createElement("div", {
+    style: {
+      borderTop: "1.5px solid var(--sand)",
+      marginTop: 20,
+      paddingTop: 16
+    }
+  }, React.createElement("p", {
+    style: {
+      fontSize: 12,
+      color: "var(--red)",
+      marginBottom: 10,
+      fontWeight: 600
+    }
+  }, "\u26A0\uFE0F Zone dangereuse"), !confirmReset ? React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      borderColor: "var(--red)",
+      color: "var(--red)"
+    },
+    onClick: () => setConfirmReset(true)
+  }, "\uD83D\uDDD1\uFE0F R\xE9initialiser l'application") : React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8
+    }
+  }, React.createElement("button", {
+    className: "btn btn-s",
+    style: {
+      flex: 1
+    },
+    onClick: () => setConfirmReset(false)
+  }, "Annuler"), React.createElement("button", {
+    className: "btn",
+    style: {
+      flex: 1,
+      background: "var(--red)",
+      color: "#fff",
+      marginTop: 6
+    },
+    onClick: () => {
+      onReset();
+      onClose();
+    }
+  }, "Confirmer le reset"))))));
+}
+
+// \u2500\u2500 Score Sheet (dedicated tab) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function ScoreSheet({
+  onClose,
+  score
+}) {
+  if (!score) return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "Score financier"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), React.createElement("div", {
+    className: "empty"
+  }, React.createElement("div", {
+    className: "empty-ico"
+  }, "\uD83D\uDCCA"), React.createElement("div", {
+    className: "empty-txt"
+  }, "Ajoutez des transactions pour", React.createElement("br", null), "voir votre score financier"))));
+  const pct = score.score / 100;
+  const tips = [];
+  if (score.score < 50) tips.push("R\u00E9duisez vos d\u00E9penses non-essentielles pour am\u00E9liorer votre score.");
+  if (score.details.some(d => d.text.includes("Jeu/FDJ"))) tips.push("Le jeu impacte fortement votre score. Essayez de vous fixer un budget max.");
+  if (score.details.some(d => d.text.includes("plafond"))) tips.push("Ajustez vos plafonds ou r\u00E9duisez les cat\u00E9gories en d\u00E9passement.");
+  if (!score.details.some(d => d.text.includes("\u00E9pargne"))) tips.push("Mettez en place un virement automatique d'\u00E9pargne pour booster votre score.");
+  if (score.score >= 70) tips.push("Continuez comme \u00E7a ! Pensez \u00E0 investir votre surplus.");
+  return React.createElement("div", {
+    className: "overlay",
+    onClick: e => e.target === e.currentTarget && onClose()
+  }, React.createElement("div", {
+    className: "sheet"
+  }, React.createElement("div", {
+    className: "sheet-hdr"
+  }, React.createElement("div", {
+    className: "sheet-title"
+  }, "Score financier"), React.createElement("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")), React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "center",
+      margin: "8px 0 24px"
+    }
+  }, React.createElement("svg", {
+    width: "140",
+    height: "140",
+    viewBox: "0 0 140 140"
+  }, React.createElement("circle", {
+    cx: "70",
+    cy: "70",
+    r: "58",
+    fill: "none",
+    stroke: "var(--sand)",
+    strokeWidth: "10"
+  }), React.createElement("circle", {
+    cx: "70",
+    cy: "70",
+    r: "58",
+    fill: "none",
+    stroke: score.color,
+    strokeWidth: "10",
+    strokeDasharray: `${pct * 364.4} 364.4`,
+    strokeLinecap: "round",
+    transform: "rotate(-90 70 70)",
+    style: {
+      transition: "stroke-dasharray 1s ease"
+    }
+  }), React.createElement("text", {
+    x: "70",
+    y: "60",
+    textAnchor: "middle",
+    fill: score.color,
+    fontFamily: "Fraunces,serif",
+    fontSize: "38",
+    fontWeight: "800"
+  }, score.grade), React.createElement("text", {
+    x: "70",
+    y: "80",
+    textAnchor: "middle",
+    fill: "var(--ink3)",
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "14"
+  }, score.score, " / 100"), React.createElement("text", {
+    x: "70",
+    y: "100",
+    textAnchor: "middle",
+    fill: score.color,
+    fontFamily: "Source Sans 3,sans-serif",
+    fontSize: "13",
+    fontWeight: "600"
+  }, score.label))), React.createElement("div", {
+    className: "score-gauge"
+  }, React.createElement("div", {
+    className: "score-gauge-bg"
+  }, React.createElement("div", {
+    className: "score-gauge-fill",
+    style: {
+      width: `${score.score}%`,
+      background: score.color
+    }
+  }), React.createElement("div", {
+    className: "score-gauge-marker",
+    style: {
+      left: `${score.score}%`
+    }
+  })), React.createElement("div", {
+    className: "score-gauge-labels"
+  }, React.createElement("span", null, "E"), React.createElement("span", null, "D"), React.createElement("span", null, "C"), React.createElement("span", null, "B"), React.createElement("span", null, "A"))), React.createElement("div", {
+    className: "score-section-title"
+  }, "Analyse d\xE9taill\xE9e"), React.createElement("div", {
+    className: "score-details-full"
+  }, score.details.map((d, i) => React.createElement("div", {
+    key: i,
+    className: `score-detail-card ${d.good ? "good" : "bad"}`
+  }, React.createElement("span", {
+    className: "score-detail-icon"
+  }, d.icon), React.createElement("span", null, d.text)))), tips.length > 0 && React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "score-section-title",
+    style: {
+      marginTop: 20
+    }
+  }, "Conseils"), React.createElement("div", {
+    className: "score-tips"
+  }, tips.slice(0, 3).map((t, i) => React.createElement("div", {
+    key: i,
+    className: "score-tip"
+  }, "\uD83D\uDCA1 ", t))))));
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+const STYLES = `
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,800;1,9..144,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+:root{--ivory:#FAF7F2;--sand:#F0EBE3;--warm:#E8E0D4;--card:#FFFFFF;--ink:#2B2520;--ink2:#5C534A;--ink3:#9B9189;--accent:#C47B5A;--accent2:#A85D3F;--green:#3A8F71;--green-soft:#EDF7F2;--red:#C45C5C;--red-soft:#FDF0EF;--radius:18px;--radius-sm:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body,#root{background:var(--ivory);font-family:'Source Sans 3',sans-serif;color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.app{max-width:460px;margin:0 auto;min-height:100vh;padding:0 0 110px;position:relative}
+
+
+.hdr{padding:28px 20px 0;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-family:'Fraunces',serif;font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-1px}
+.hdr-actions{display:flex;gap:6px}
+.hdr-btn{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--warm);background:var(--card);color:var(--ink2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+
+.bal{margin:20px 20px 0;padding:26px 22px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--sand);box-shadow:0 2px 12px rgba(43,37,32,.04)}
+.bal-label{font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:1.2px;text-transform:uppercase}
+.bal-amount{font-family:'Fraunces',serif;font-size:40px;font-weight:800;margin:6px 0 18px;letter-spacing:-1.5px}
+.bal-row{display:flex;gap:12px}
+.bal-box{flex:1;padding:12px 14px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:10px}
+.bal-box.inc{background:var(--green-soft)}.bal-box.exp{background:var(--red-soft)}
+.bal-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.bal-dot.inc{background:var(--green)}.bal-dot.exp{background:var(--red)}
+.bal-sm-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.bal-sm-val{font-size:16px;font-weight:700;margin-top:1px}
+.bal-sm-val.inc{color:var(--green)}.bal-sm-val.exp{color:var(--red)}
+
+
+.trend-card{margin:16px 20px 0;padding:16px 18px 10px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--sand);box-shadow:0 2px 12px rgba(43,37,32,.04)}
+.trend-title{font-size:12px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+
+
+.month-nav{display:flex;align-items:center;gap:8px;margin:20px 20px 0}
+.month-select{flex:1;padding:10px 32px 10px 14px;background:var(--card);border:1.5px solid var(--sand);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;font-weight:600;color:var(--ink);outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239B9189' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.month-select:focus{border-color:var(--accent)}
+.m-reset{flex-shrink:0;width:34px;height:38px;border-radius:var(--radius-sm);border:1.5px solid var(--sand);background:var(--card);color:var(--ink3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.m-reset:hover{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+
+
+.cat-filter{margin:16px 20px 0}
+.cat-select{width:100%;padding:10px 14px;background:var(--card);border:1.5px solid var(--sand);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;color:var(--ink);outline:none;cursor:pointer;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239B9189' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.cat-select:focus{border-color:var(--accent)}
+.cat-select option{background:var(--card);font-size:14px}
+
+
+.donut-section{margin:20px 20px 0;padding:22px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--sand);box-shadow:0 2px 12px rgba(43,37,32,.04)}
+.section-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:16px;color:var(--ink)}
+.donut-legend{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.legend-row{display:grid;grid-template-columns:10px 22px 1fr 30px 80px 72px;align-items:center;gap:6px;min-height:28px}
+.legend-row.has-limit{grid-template-columns:10px 22px 1fr 30px 80px 56px 52px}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend-group-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 6px}
+.legend-group-title.exp{color:var(--red)}
+.legend-group-title.inc{color:var(--green)}
+.legend-icon{font-size:15px;text-align:center}
+.legend-name{font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend-pct{font-size:11px;font-weight:700;color:var(--ink3);text-align:right}
+.legend-bar-bg{height:5px;background:var(--sand);border-radius:3px;overflow:hidden}
+.legend-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.legend-val{font-size:13px;font-weight:600;color:var(--ink);text-align:right}
+.legend-limit{font-size:11px;color:var(--ink3);text-align:right}
+.legend-over{color:var(--red)!important;font-weight:700!important}
+
+
+.score-gauge{margin:0 0 24px}
+.score-gauge-bg{height:8px;background:var(--sand);border-radius:4px;position:relative;overflow:visible}
+.score-gauge-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.score-gauge-marker{position:absolute;top:-4px;width:4px;height:16px;background:var(--ink);border-radius:2px;transform:translateX(-2px);transition:left .8s ease}
+.score-gauge-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--ink3);font-weight:600}
+.score-section-title{font-family:'Fraunces',serif;font-size:15px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+.score-details-full{display:flex;flex-direction:column;gap:6px}
+.score-detail-card{font-size:13px;padding:10px 14px;border-radius:10px;display:flex;align-items:center;gap:10px;animation:_sd .3s ease both}
+.score-detail-card.good{background:var(--green-soft);color:var(--green)}
+.score-detail-card.bad{background:var(--red-soft);color:var(--red)}
+.score-detail-icon{font-size:16px;flex-shrink:0}
+@keyframes _sd{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.score-tips{display:flex;flex-direction:column;gap:6px}
+.score-tip{font-size:13px;padding:10px 14px;border-radius:10px;background:rgba(196,123,90,.06);color:var(--ink2);line-height:1.5}
+
+
+.tx-filters{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.tx-filters .search-wrap{flex:1}
+.tx-cat-filter{flex-shrink:0;width:120px;padding:10px 28px 10px 10px;background:var(--card);border:1.5px solid var(--sand);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--ink);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%239B9189' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .2s}
+.tx-cat-filter:focus{border-color:var(--accent)}
+
+
+.search-wrap{position:relative}
+.search-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;opacity:.5}
+.search-input{width:100%;padding:10px 36px 10px 38px;background:var(--card);border:1.5px solid var(--sand);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--ink3);font-size:13px}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:none;background:var(--sand);border-radius:50%;color:var(--ink3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.search-clear:hover{background:var(--red-soft);color:var(--red)}
+
+
+.tx-sec{margin:20px 20px 0}
+.tx-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tx-count{font-size:11px;font-weight:600;color:var(--ink3);background:var(--sand);padding:3px 10px;border-radius:20px}
+.tx-list{display:flex;flex-direction:column;gap:6px}
+.tx{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border-radius:var(--radius-sm);border:1.5px solid var(--sand);transition:all .2s ease;position:relative}
+.tx:hover{border-color:var(--warm);box-shadow:0 2px 8px rgba(43,37,32,.06)}
+.tx-anim{animation:_ta .3s ease both}
+@keyframes _ta{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tx-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;transition:transform .15s}
+.tx:hover .tx-ico{transform:scale(1.05)}
+.tx-ico.inc{background:var(--green-soft)}.tx-ico.exp{background:var(--red-soft)}
+.tx-body{flex:1;min-width:0}
+.tx-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.tx-amt{font-size:15px;font-weight:700;flex-shrink:0}
+.tx-amt.inc{color:var(--green)}.tx-amt.exp{color:var(--red)}
+.tx-actions{display:flex;flex-direction:column;gap:3px;opacity:0;transition:opacity .2s;flex-shrink:0}
+.tx:hover .tx-actions{opacity:1}
+.tx-edit{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--sand);background:var(--ivory);color:var(--ink3);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.tx-edit:hover{border-color:var(--accent);background:rgba(196,123,90,.08)}
+.tx-del{width:24px;height:24px;border-radius:6px;border:none;background:var(--red-soft);color:var(--red);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.tx-del:hover{background:var(--red);color:#fff;transform:scale(1.1)}
+.empty{text-align:center;padding:48px 20px;color:var(--ink3)}
+.empty-ico{font-size:44px;margin-bottom:10px;opacity:.4}
+.empty-txt{font-size:14px;line-height:1.6}
+
+
+.fab{position:fixed;bottom:24px;right:calc(50% - 210px);width:54px;height:54px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 18px rgba(196,123,90,.35);transition:all .25s;z-index:90;display:flex;align-items:center;justify-content:center}
+.fab:hover{transform:scale(1.08) translateY(-2px);background:var(--accent2)}
+@media(max-width:500px){.fab{right:20px}}
+
+
+.overlay{position:fixed;inset:0;background:rgba(43,37,32,.35);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:_fi .25s ease}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:460px;max-height:88vh;overflow-y:auto;padding:24px 20px 34px;animation:_su .35s cubic-bezier(.16,1,.3,1);border:1.5px solid var(--sand);border-bottom:none}
+@keyframes _fi{from{opacity:0}to{opacity:1}}
+@keyframes _su{from{transform:translateY(100%) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.sheet-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.sheet-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700}
+.sheet-close{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--sand);background:var(--ivory);color:var(--ink3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.sheet-close:hover{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+
+
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:11px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.fi,.fs{width:100%;padding:11px 13px;background:var(--ivory);border:1.5px solid var(--sand);border-radius:var(--radius-sm);color:var(--ink);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.fi:focus,.fs:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(196,123,90,.1)}
+.fs option{background:var(--card)}
+.fr{display:flex;gap:10px}.fr>.fg{flex:1}
+.tabs{display:flex;gap:6px;margin-bottom:16px}
+.tab{flex:1;padding:10px;border:1.5px solid var(--sand);border-radius:var(--radius-sm);background:var(--ivory);color:var(--ink3);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn{width:100%;padding:13px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;margin-top:6px}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-s{background:var(--ivory);color:var(--ink);border:1.5px solid var(--sand)}.btn-s:hover{border-color:var(--accent)}
+
+
+.drop{border:2px dashed var(--warm);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px}
+.drop:hover,.drop.drag{border-color:var(--accent);background:rgba(196,123,90,.04)}
+.drop-ico{font-size:34px;margin-bottom:6px}
+.drop-txt{font-size:13px;color:var(--ink3)}.drop-txt strong{color:var(--accent)}
+.csv-stats{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap}
+.csv-stat{padding:6px 12px;background:var(--ivory);border-radius:8px;font-size:12px;color:var(--ink3)}.csv-stat strong{color:var(--ink)}
+.csv-pv{max-height:220px;overflow-y:auto;border-radius:var(--radius-sm);border:1.5px solid var(--sand);margin:10px 0}
+.csv-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.csv-tbl th{background:var(--sand);padding:7px 8px;text-align:left;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0}
+.csv-tbl td{padding:7px 8px;border-top:1px solid var(--sand)}
+
+
+.lim-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lim-icon{font-size:18px;width:26px;text-align:center}
+.lim-name{font-size:13px;font-weight:600;flex:1}
+.lim-input{width:90px;padding:7px 10px;background:var(--ivory);border:1.5px solid var(--sand);border-radius:8px;font-size:13px;font-family:inherit;color:var(--ink);text-align:right;outline:none;transition:border-color .2s}
+.lim-input:focus{border-color:var(--accent)}
+
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:11px 20px;border-radius:14px;font-size:14px;font-weight:600;z-index:200;animation:_ti .3s cubic-bezier(.16,1,.3,1);font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+@keyframes _ti{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.toast.ok{background:var(--green);color:#fff}.toast.no{background:var(--red);color:#fff}
+`;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+setTimeout(() => {
+  const s = document.getElementById('splash');
+  if (s) {
+    s.classList.add('hide');
+    setTimeout(() => s.remove(), 400);
+  }
+}, 600);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+  </script>
+</body>
+</html>
