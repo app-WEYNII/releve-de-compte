@@ -276,8 +276,12 @@ const shortDate = d => new Date(d).toLocaleDateString("fr-FR", {
   day: "numeric",
   month: "short"
 });
+// Normalisation accents/casse/espaces (recherche + d\u00E9tection de doublons)
+const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
+// Empreinte d'une transaction : date + montant + libell\u00E9 normalis\u00E9
+const txFp = t => `${t.date}|${Number(t.amount).toFixed(2)}|${norm(t.title)}`;
 const autoCat = label => {
-  const l = (label || "").toLowerCase();
+  const l = norm(label);
   for (const r of AUTO_RULES) {
     if (r.kw.some(k => l.includes(k))) return r.c;
   }
@@ -382,7 +386,13 @@ function DonutChart({
   };
   const totalExp = exp.reduce((s, d) => s + d.value, 0);
   const totalInc = inc.reduce((s, d) => s + d.value, 0);
-  const compact = v => v >= 10000 ? `${(v / 1000).toFixed(1).replace(".", ",")}k \u20AC` : v >= 1000 ? `${Math.round(v).toLocaleString("fr-FR")} \u20AC` : `${Math.round(v)} \u20AC`;
+  // Sous 1000 \u20AC : centimes affich\u00E9s s'il y en a (0,99 \u20AC ne devient plus 1 \u20AC)
+  const compact = v => {
+    if (v >= 10000) return `${(v / 1000).toFixed(1).replace(".", ",")}k \u20AC`;
+    if (v >= 1000) return `${Math.round(v).toLocaleString("fr-FR")} \u20AC`;
+    const r = Math.round(v * 100) / 100;
+    return r % 1 === 0 ? `${r} \u20AC` : `${r.toFixed(2).replace(".", ",")} \u20AC`;
+  };
   const h = hovered !== null ? segs[hovered] : null;
   const centerLabel = h ? h.label : null;
   const centerVal = h ? compact(h.value) : null;
@@ -555,8 +565,9 @@ function TrendChart({
   const area = line + ` L${pts[pts.length - 1].x} ${h - 18} L${pts[0].x} ${h - 18} Z`;
   const compactVal = v => {
     const abs = Math.abs(v);
-    const s = abs >= 1000 ? `${(v / 1000).toFixed(1).replace(".", ",")}k` : `${Math.round(v)}`;
-    return s + "\u20AC";
+    if (abs >= 1000) return `${(v / 1000).toFixed(1).replace(".", ",")}k\u20AC`;
+    const r = Math.round(v * 100) / 100;
+    return (r % 1 === 0 ? `${r}` : r.toFixed(2).replace(".", ",")) + "\u20AC";
   };
   return React.createElement("div", {
     className: "trend-card"
@@ -626,6 +637,11 @@ function TrendChart({
 const INIT_BAL_STORE = "mf_initbal_v1";
 
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+const LAST_EXPORT_STORE = "mf_lastexport_v1";
+const FAV_STORE = "mf_fav_v1";
+// Cl\u00E9 d'un favori : libell\u00E9 normalis\u00E9 + cat\u00E9gorie (le montant peut varier)
+const favKey = t => norm(t.title) + "|" + (t.category || "Autre");
+const monthKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 function App() {
   const [transactions, setTransactions] = useState(() => load(STORE) || []);
   const [limits, setLimits] = useState(() => load(LIMITS_STORE) || {});
@@ -634,7 +650,16 @@ function App() {
   const [editTx, setEditTx] = useState(null);
   const [toast, setToast] = useState(null);
   const [filterCat, setFilterCat] = useState("all");
-  const [selectedMonth, setSelectedMonth] = useState(null); // "YYYY-MM" ou null
+  // Ouvre sur le mois courant s'il contient des transactions (plafonds mensuels + projection coh\u00E9rents)
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const txs = load(STORE) || [];
+    const k = monthKey(new Date());
+    return txs.some(t => (t.date || "").slice(0, 7) === k) ? k : null;
+  }); // "YYYY-MM" ou null
+  const [lastExport, setLastExport] = useState(() => load(LAST_EXPORT_STORE) || null);
+  const [favorites, setFavorites] = useState(() => load(FAV_STORE) || []);
+  const [confirmDelId, setConfirmDelId] = useState(null);
+  const confirmTimer = useRef(null);
   const [search, setSearch] = useState("");
   const [showCount, setShowCount] = useState(15);
   useEffect(() => {
@@ -646,15 +671,23 @@ function App() {
   useEffect(() => {
     save(INIT_BAL_STORE, initialBalance);
   }, [initialBalance]);
-  const notify = useCallback((msg, ok = true) => {
+  useEffect(() => {
+    save(FAV_STORE, favorites);
+  }, [favorites]);
+  const toastTimer = useRef(null);
+  const notify = useCallback((msg, ok = true, undoTx = null) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast({
       msg,
       ok,
+      undoTx,
       k: Date.now()
     });
-    setTimeout(() => setToast(null), 2400);
+    toastTimer.current = setTimeout(() => setToast(null), undoTx ? 5000 : 2400);
   }, []);
   const now = new Date();
+  const nowKey = monthKey(now);
+  const isCurrentMonth = selectedMonth === nowKey;
 
   // \u2500\u2500 Filtered transactions \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   // Mois disponibles dans les transactions (pour le dropdown)
@@ -678,8 +711,8 @@ function App() {
     let t = [...periodTx];
     if (filterCat !== "all") t = t.filter(tx => tx.category === filterCat);
     if (search.trim()) {
-      const q = search.toLowerCase();
-      t = t.filter(tx => tx.title.toLowerCase().includes(q) || (tx.category || "").toLowerCase().includes(q));
+      const q = norm(search);
+      t = t.filter(tx => norm(tx.title).includes(q) || norm(tx.category || "").includes(q));
     }
     return t.sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
   }, [periodTx, filterCat, search]);
@@ -764,7 +797,7 @@ function App() {
     const dayOfMonth = now.getDate();
     const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     const pctMonth = dayOfMonth / daysInMonth;
-    if (pctMonth >= 0.3 && stats.income > 0) {
+    if (isCurrentMonth && pctMonth >= 0.3 && stats.income > 0) {
       const projectedExp = stats.expense / pctMonth;
       const projBurn = projectedExp / stats.income;
       if (projBurn > 1.1) {
@@ -801,9 +834,9 @@ function App() {
       }
     }
 
-    // 3. Budget limits actual
+    // 3. Budget limits actual \u2014 plafonds mensuels : \u00E9valu\u00E9s uniquement sur une vue mois
     const limCats = Object.keys(limits);
-    if (limCats.length > 0) {
+    if (limCats.length > 0 && selectedMonth) {
       let over = 0,
         ok = 0;
       limCats.forEach(c => {
@@ -904,7 +937,7 @@ function App() {
       label,
       details
     };
-  }, [periodTx, stats, catData, limits]);
+  }, [periodTx, stats, catData, limits, selectedMonth, isCurrentMonth]);
 
   // \u2500\u2500 Actions \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
   const addTx = useCallback(tx => {
@@ -916,13 +949,40 @@ function App() {
     notify("Transaction modifi\u00E9e");
   }, [notify]);
   const delTx = useCallback(id => {
+    const deleted = transactions.find(t => t.id === id) || null;
     setTransactions(prev => prev.filter(t => t.id !== id));
-    notify("Supprim\u00E9e", false);
+    notify("Supprim\u00E9e", false, deleted);
+  }, [transactions, notify]);
+  const favSet = useMemo(() => new Set(favorites.map(favKey)), [favorites]);
+  const toggleFav = useCallback(tx => {
+    const key = favKey(tx);
+    if (favorites.some(f => favKey(f) === key)) {
+      setFavorites(prev => prev.filter(f => favKey(f) !== key));
+      notify("Retir\u00E9 des favoris", false);
+    } else {
+      setFavorites(prev => [...prev, {
+        id: uid(),
+        title: tx.title,
+        amount: tx.amount,
+        category: tx.category || "Autre"
+      }]);
+      notify("\u2B50 Ajout\u00E9 aux favoris");
+    }
+  }, [favorites, notify]);
+  const removeFav = useCallback(id => {
+    setFavorites(prev => prev.filter(f => f.id !== id));
+    notify("Favori supprim\u00E9", false);
   }, [notify]);
   const importTxs = useCallback(txs => {
     setTransactions(prev => [...txs, ...prev]);
     notify(`${txs.length} import\u00E9es`);
   }, [notify]);
+
+  const markExport = useCallback(() => {
+    const ts = Date.now();
+    setLastExport(ts);
+    save(LAST_EXPORT_STORE, ts);
+  }, []);
 
   // Export JSON \u2014 compatible iOS PWA (data URI + navigator.share fallback)
   const exportData = useCallback(() => {
@@ -930,6 +990,7 @@ function App() {
       transactions,
       limits,
       initialBalance,
+      favorites,
       exportDate: new Date().toISOString()
     }, null, 2);
     const filename = `mes-finances-backup-${new Date().toISOString().split("T")[0]}.json`;
@@ -946,6 +1007,7 @@ function App() {
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
+      markExport();
       notify("Backup export\u00E9");
     } catch (e) {
       // Fallback iOS PWA : ouvrir le JSON dans un nouvel onglet
@@ -953,12 +1015,40 @@ function App() {
       if (w) {
         w.document.write("<pre style='font-size:12px;word-break:break-all'>" + json.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>");
         w.document.close();
+        markExport();
         notify("JSON ouvert dans un nouvel onglet \u2014 enregistrez-le");
       } else {
         notify("Export impossible sur cet appareil", false);
       }
     }
-  }, [transactions, limits, initialBalance, notify]);
+  }, [transactions, limits, initialBalance, favorites, notify, markExport]);
+
+  // Export CSV (Excel FR : s\u00E9parateur ; + BOM + d\u00E9cimale virgule)
+  const exportCSV = useCallback(() => {
+    const esc = v => {
+      const s = String(v ?? "");
+      return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const rows = [["Date", "Libell\u00E9", "Montant", "Cat\u00E9gorie"]].concat([...transactions].sort((a, b) => a.date.localeCompare(b.date)).map(t => [t.date, t.title, String(t.amount).replace(".", ","), t.category || "Autre"]));
+    const csv = "\uFEFF" + rows.map(r => r.map(esc).join(";")).join("\r\n");
+    const filename = `mes-finances-${new Date().toISOString().split("T")[0]}.csv`;
+    try {
+      const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      notify("CSV export\u00E9");
+    } catch (e) {
+      notify("Export impossible sur cet appareil", false);
+    }
+  }, [transactions, notify]);
 
   // Import JSON
   const importJSON = useCallback(file => {
@@ -970,6 +1060,7 @@ function App() {
           setTransactions(data.transactions);
           if (data.limits && typeof data.limits === "object") setLimits(data.limits);
           if (typeof data.initialBalance === "number") setInitialBalance(data.initialBalance);
+          if (data.favorites && Array.isArray(data.favorites)) setFavorites(data.favorites);
           notify(`Restauration r\u00E9ussie (${data.transactions.length} transactions)`);
         } else {
           notify("Fichier JSON invalide", false);
@@ -986,6 +1077,7 @@ function App() {
     setTransactions([]);
     setLimits({});
     setInitialBalance(0);
+    setFavorites([]);
     setFilterCat("all");
     setSelectedMonth(null);
     setSearch("");
@@ -993,10 +1085,44 @@ function App() {
     try {
       localStorage.removeItem(STORE);
       localStorage.removeItem(LIMITS_STORE);
+      localStorage.removeItem(FAV_STORE);
       localStorage.removeItem(INIT_BAL_STORE);
     } catch {}
     notify("Application r\u00E9initialis\u00E9e");
   }, [notify]);
+
+  const backupOverdue = transactions.length > 0 && (!lastExport || Date.now() - lastExport > 30 * 86400000);
+
+  // \u2500\u2500 Ventilation mensuelle de la cat\u00E9gorie filtr\u00E9e (tous mois confondus) \u2500\u2500
+  const catMonthly = useMemo(() => {
+    if (filterCat === "all") return null;
+    const map = {};
+    transactions.filter(t => t.category === filterCat).forEach(t => {
+      const k = t.date.slice(0, 7);
+      if (!map[k]) map[k] = {
+        exp: 0,
+        inc: 0
+      };
+      t.amount < 0 ? map[k].exp += Math.abs(t.amount) : map[k].inc += t.amount;
+    });
+    const rows = Object.entries(map).sort(([a], [b]) => b.localeCompare(a)).map(([key, v]) => ({
+      key,
+      exp: v.exp,
+      inc: v.inc
+    }));
+    if (rows.length === 0) return null;
+    const totExp = rows.reduce((s, r) => s + r.exp, 0);
+    const totInc = rows.reduce((s, r) => s + r.inc, 0);
+    const maxVal = Math.max(...rows.map(r => Math.max(r.exp, r.inc)), 1);
+    return {
+      rows,
+      totExp,
+      totInc,
+      maxVal,
+      avgExp: totExp / rows.length
+    };
+  }, [transactions, filterCat]);
+
 
   // activeCats bas\u00E9 sur periodTx pour avoir les cat\u00E9gories de la p\u00E9riode (revenus inclus)
   const activeCats = useMemo(() => {
@@ -1015,13 +1141,19 @@ function App() {
     className: "hdr-actions"
   }, React.createElement("button", {
     className: "hdr-btn",
+    onClick: () => setModal("analytics"),
+    title: "Analytics"
+  }, "\uD83D\uDCC8"), React.createElement("button", {
+    className: "hdr-btn",
     onClick: () => setModal("score"),
     title: "Score financier"
   }, "\uD83D\uDCCA"), React.createElement("button", {
     className: "hdr-btn",
     onClick: () => setModal("settings"),
     title: "R\xE9glages"
-  }, "\u2699\uFE0F"), React.createElement("button", {
+  }, "\u2699\uFE0F", backupOverdue && React.createElement("span", {
+    className: "hdr-badge"
+  })), React.createElement("button", {
     className: "hdr-btn",
     onClick: () => setModal("import"),
     title: "Importer"
@@ -1084,7 +1216,37 @@ function App() {
   }, "Toutes les cat\xE9gories"), activeCats.map(c => React.createElement("option", {
     key: c,
     value: c
-  }, CAT_ICONS[c], " ", c)))), (catData.exp.length > 0 || catData.inc.length > 0) && React.createElement("div", {
+  }, CAT_ICONS[c], " ", c)))), catMonthly && React.createElement("div", {
+    className: "cat-monthly"
+  }, React.createElement("div", {
+    className: "cat-monthly-title"
+  }, CAT_ICONS[filterCat] || "\uD83D\uDCE6", " ", filterCat, " \u2014 mois par mois"), catMonthly.rows.map(r => {
+    const [y, m] = r.key.split("-");
+    const isExp = r.exp > 0;
+    const val = isExp ? r.exp : r.inc;
+    return React.createElement("div", {
+      key: r.key,
+      className: `cm-row${selectedMonth === r.key ? " on" : ""}`,
+      onClick: () => setSelectedMonth(selectedMonth === r.key ? null : r.key)
+    }, React.createElement("div", {
+      className: "cm-month"
+    }, MONTHS[parseInt(m) - 1].slice(0, 4), ". ", y), React.createElement("div", {
+      className: "cm-bar-bg"
+    }, React.createElement("div", {
+      className: "cm-bar-fill",
+      style: {
+        width: `${Math.max(val / catMonthly.maxVal * 100, 2)}%`,
+        background: isExp ? CAT_COLORS[filterCat] || "var(--accent)" : "var(--green)"
+      }
+    })), React.createElement("div", {
+      className: "cm-val",
+      style: {
+        color: isExp ? "var(--ink)" : "var(--green)"
+      }
+    }, isExp ? "" : "+", eur(val)));
+  }), React.createElement("div", {
+    className: "cm-total"
+  }, catMonthly.totExp > 0 ? `Total : ${eur(catMonthly.totExp)} \u00B7 Moyenne : ${eur(catMonthly.avgExp)}/mois` : `Total re\u00E7u : ${eur(catMonthly.totInc)}`)), (catData.exp.length > 0 || catData.inc.length > 0) && React.createElement("div", {
     className: "donut-section"
   }, React.createElement("div", {
     className: "section-title"
@@ -1096,7 +1258,7 @@ function App() {
   }, "D\xE9penses"), React.createElement("div", {
     className: "donut-legend"
   }, catData.exp.map(d => {
-    const lim = limits[d.label];
+    const lim = selectedMonth ? limits[d.label] : null;
     const over = lim && d.value > lim;
     const total = catData.exp.reduce((s, x) => s + x.value, 0);
     const pct = total > 0 ? Math.round(d.value / total * 100) : 0;
@@ -1228,12 +1390,28 @@ function App() {
     }, inc ? "+" : "", eur(tx.amount)), React.createElement("div", {
       className: "tx-actions"
     }, React.createElement("button", {
+      className: `tx-fav${favSet.has(favKey(tx)) ? " on" : ""}`,
+      onClick: () => toggleFav(tx),
+      title: favSet.has(favKey(tx)) ? "Retirer des favoris" : "Enregistrer en favori"
+    }, favSet.has(favKey(tx)) ? "\u2B50" : "\u2606"), React.createElement("button", {
       className: "tx-edit",
       onClick: () => setEditTx(tx),
       title: "Modifier"
-    }, "\u270F\uFE0F"), React.createElement("button", {
+    }, "\u270F\uFE0F"), confirmDelId === tx.id ? React.createElement("button", {
+      className: "tx-del confirm",
+      onClick: () => {
+        if (confirmTimer.current) clearTimeout(confirmTimer.current);
+        setConfirmDelId(null);
+        delTx(tx.id);
+      },
+      title: "Confirmer la suppression"
+    }, "Suppr ?") : React.createElement("button", {
       className: "tx-del",
-      onClick: () => delTx(tx.id),
+      onClick: () => {
+        if (confirmTimer.current) clearTimeout(confirmTimer.current);
+        setConfirmDelId(tx.id);
+        confirmTimer.current = setTimeout(() => setConfirmDelId(null), 3000);
+      },
       title: "Supprimer"
     }, "\xD7")));
   })), filtered.length > showCount && React.createElement("button", {
@@ -1247,7 +1425,8 @@ function App() {
     onClick: () => setModal("add")
   }, "+"), modal === "add" && React.createElement(AddSheet, {
     onClose: () => setModal(null),
-    onAdd: addTx
+    onAdd: addTx,
+    favorites: favorites
   }), editTx && React.createElement(EditSheet, {
     tx: editTx,
     onClose: () => setEditTx(null),
@@ -1261,29 +1440,45 @@ function App() {
     }
   }), modal === "import" && React.createElement(ImportSheet, {
     onClose: () => setModal(null),
-    onImport: importTxs
+    onImport: importTxs,
+    existing: transactions
   }), modal === "settings" && React.createElement(SettingsSheet, {
     onClose: () => setModal(null),
     limits: limits,
     setLimits: setLimits,
     onExport: exportData,
+    onExportCSV: exportCSV,
     onImportJSON: importJSON,
     onReset: resetApp,
     initialBalance: initialBalance,
-    setInitialBalance: setInitialBalance
+    setInitialBalance: setInitialBalance,
+    lastExport: lastExport,
+    favorites: favorites,
+    onRemoveFav: removeFav
   }), modal === "score" && React.createElement(ScoreSheet, {
     onClose: () => setModal(null),
     score: score
+  }), modal === "analytics" && React.createElement(AnalyticsSheet, {
+    onClose: () => setModal(null),
+    transactions: transactions
   }), toast && React.createElement("div", {
     className: `toast ${toast.ok ? "ok" : "no"}`,
     key: toast.k
-  }, toast.msg)));
+  }, toast.msg, toast.undoTx && React.createElement("button", {
+    className: "toast-undo",
+    onClick: () => {
+      setTransactions(prev => [toast.undoTx, ...prev]);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      setToast(null);
+    }
+  }, "Annuler"))));
 }
 
 // \u2500\u2500 Add Sheet \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function AddSheet({
   onClose,
-  onAdd
+  onAdd,
+  favorites
 }) {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [title, setTitle] = useState("");
@@ -1291,11 +1486,24 @@ function AddSheet({
   const [category, setCategory] = useState("");
   const [isExp, setIsExp] = useState(true);
   const ref = useRef();
+  const amountRef = useRef();
   const overlayRef = useRef();
   useKeyboardInset(overlayRef);
   useEffect(() => {
     ref.current?.focus();
   }, []);
+  // Un tap sur un favori pr\u00E9-remplit tout ; le focus saute sur le montant,
+  // pr\u00E9-s\u00E9lectionn\u00E9 pour pouvoir le corriger directement si besoin
+  const applyFav = f => {
+    setTitle(f.title);
+    setCategory(f.category || "Autre");
+    setAmount(String(Math.abs(f.amount)));
+    setIsExp(f.amount < 0);
+    setTimeout(() => {
+      amountRef.current?.focus();
+      amountRef.current?.select();
+    }, 50);
+  };
   const submit = () => {
     const n = parseFloat(amount.replace(",", "."));
     if (!title.trim() || isNaN(n) || n === 0) return;
@@ -1324,7 +1532,17 @@ function AddSheet({
   }, "Nouvelle transaction"), React.createElement("button", {
     className: "sheet-close",
     onClick: onClose
-  }, "\xD7")), React.createElement("div", {
+  }, "\xD7")), favorites && favorites.length > 0 && React.createElement("div", {
+    className: "fav-block"
+  }, React.createElement("label", {
+    className: "fl"
+  }, "\u2B50 Favoris \u2014 1 tap pour pr\u00E9-remplir"), React.createElement("div", {
+    className: "fav-chips"
+  }, favorites.map(f => React.createElement("button", {
+    key: f.id,
+    className: "fav-chip",
+    onClick: () => applyFav(f)
+  }, CAT_ICONS[f.category] || "\uD83D\uDCE6", " ", f.title)))), React.createElement("div", {
     className: "tabs"
   }, React.createElement("button", {
     className: `tab ${isExp ? "on" : ""}`,
@@ -1350,6 +1568,7 @@ function AddSheet({
   }, React.createElement("label", {
     className: "fl"
   }, "Montant (\u20AC)"), React.createElement("input", {
+    ref: amountRef,
     className: "fi",
     type: "number",
     step: "0.01",
@@ -1526,12 +1745,27 @@ function EditSheet({
 // \u2500\u2500 Import Sheet (CSV + XLSX) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function ImportSheet({
   onClose,
-  onImport
+  onImport,
+  existing
 }) {
   const [preview, setPreview] = useState(null);
   const [drag, setDrag] = useState(false);
   const [error, setError] = useState(null);
+  const [skipDup, setSkipDup] = useState(true);
   const inputRef = useRef();
+  // Empreintes des transactions d\u00E9j\u00E0 en base \u2192 d\u00E9tection de doublons \u00E0 l'import
+  const existingFp = useMemo(() => new Set((existing || []).map(txFp)), [existing]);
+  const finalize = (parsed, skipped, total) => {
+    parsed.forEach(p => {
+      p.dup = existingFp.has(txFp(p));
+    });
+    setPreview({
+      parsed,
+      skipped,
+      total,
+      dupes: parsed.filter(p => p.dup).length
+    });
+  };
   const processCSV = text => {
     const lines = text.split(/\r?\n/).filter(l => l.trim());
     if (lines.length < 2) return;
@@ -1572,11 +1806,7 @@ function ImportSheet({
           skip.push(i);
         }
       });
-      setPreview({
-        parsed,
-        skipped: skip.length,
-        total: data.length
-      });
+      finalize(parsed, skip.length, data.length);
       return;
     }
 
@@ -1645,11 +1875,7 @@ function ImportSheet({
         skip.push(i);
       }
     });
-    setPreview({
-      parsed,
-      skipped: skip.length,
-      total: data.length
-    });
+    finalize(parsed, skip.length, data.length);
   };
   const loadXLSXLib = () => new Promise((resolve, reject) => {
     if (window.XLSX) {
@@ -1765,11 +1991,7 @@ function ImportSheet({
           skip.push(i);
         }
       });
-      setPreview({
-        parsed,
-        skipped: skip.length,
-        total: rows.length - 1
-      });
+      finalize(parsed, skip.length, rows.length - 1);
     } catch (e) {
       console.error("XLSX parse error:", e);
       setError(`Erreur : ${e.message || "lecture du fichier Excel impossible"}`);
@@ -1844,14 +2066,27 @@ function ImportSheet({
     className: "csv-stat"
   }, React.createElement("strong", null, preview.parsed.length), " valides"), preview.skipped > 0 && React.createElement("div", {
     className: "csv-stat"
-  }, React.createElement("strong", null, preview.skipped), " ignor\xE9es"), React.createElement("div", {
+  }, React.createElement("strong", null, preview.skipped), " ignor\xE9es"), preview.dupes > 0 && React.createElement("div", {
+    className: "csv-stat csv-dup"
+  }, React.createElement("strong", null, preview.dupes), " doublon", preview.dupes > 1 ? "s" : ""), React.createElement("div", {
     className: "csv-stat"
-  }, React.createElement("strong", null, preview.total), " total")), preview.parsed.length > 0 && React.createElement("div", {
+  }, React.createElement("strong", null, preview.total), " total")), preview.dupes > 0 && React.createElement("label", {
+    className: "recur-check",
+    style: {
+      marginTop: 10,
+      marginBottom: 4
+    }
+  }, React.createElement("input", {
+    type: "checkbox",
+    checked: skipDup,
+    onChange: e => setSkipDup(e.target.checked)
+  }), `Ignorer les ${preview.dupes} doublon${preview.dupes > 1 ? "s" : ""} d\u00E9j\u00E0 pr\u00E9sent${preview.dupes > 1 ? "s" : ""}`), preview.parsed.length > 0 && React.createElement("div", {
     className: "csv-pv"
   }, React.createElement("table", {
     className: "csv-tbl"
   }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "Date"), React.createElement("th", null, "Libell\xE9"), React.createElement("th", null, "Montant"), React.createElement("th", null, "Cat."))), React.createElement("tbody", null, preview.parsed.slice(0, 50).map((tx, i) => React.createElement("tr", {
-    key: i
+    key: i,
+    className: tx.dup && skipDup ? "row-dup" : ""
   }, React.createElement("td", null, shortDate(tx.date)), React.createElement("td", {
     style: {
       maxWidth: 120,
@@ -1881,10 +2116,18 @@ function ImportSheet({
       flex: 2
     },
     onClick: () => {
-      onImport(preview.parsed);
+      const toImport = (skipDup ? preview.parsed.filter(p => !p.dup) : preview.parsed).map(({
+        dup,
+        ...t
+      }) => t);
+      if (toImport.length === 0) {
+        onClose();
+        return;
+      }
+      onImport(toImport);
       onClose();
     }
-  }, "Importer ", preview.parsed.length)))));
+  }, "Importer ", skipDup ? preview.parsed.length - preview.dupes : preview.parsed.length)))));
 }
 
 // \u2500\u2500 Settings Sheet (Limits + Export/Import) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
@@ -1893,11 +2136,17 @@ function SettingsSheet({
   limits,
   setLimits,
   onExport,
+  onExportCSV,
   onImportJSON,
   onReset,
   initialBalance,
-  setInitialBalance
+  setInitialBalance,
+  lastExport,
+  favorites,
+  onRemoveFav
 }) {
+  const backupDays = lastExport ? Math.floor((Date.now() - lastExport) / 86400000) : null;
+  const backupOverdue = !lastExport || backupDays > 30;
   const [local, setLocal] = useState({
     ...limits
   });
@@ -1965,7 +2214,37 @@ function SettingsSheet({
       setInitialBalance(localBal);
       onClose();
     }
-  }, "Enregistrer")), tab === "limits" && React.createElement(React.Fragment, null, React.createElement("p", {
+  }, "Enregistrer"), favorites && favorites.length > 0 && React.createElement(React.Fragment, null, React.createElement("label", {
+    className: "fl",
+    style: {
+      display: "block",
+      marginTop: 24,
+      marginBottom: 10
+    }
+  }, "\u2B50 Favoris enregistr\u00E9s"), React.createElement("div", {
+    style: {
+      maxHeight: 240,
+      overflowY: "auto"
+    }
+  }, favorites.map(f => React.createElement("div", {
+    key: f.id,
+    className: "lim-row"
+  }, React.createElement("div", {
+    className: "lim-icon"
+  }, CAT_ICONS[f.category] || "\uD83D\uDCE6"), React.createElement("div", {
+    className: "lim-name"
+  }, f.title, React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: "var(--ink3)",
+      fontWeight: 500,
+      marginTop: 1
+    }
+  }, `${f.category} \u00B7 ${eur(f.amount)}`)), React.createElement("button", {
+    className: "fav-del",
+    onClick: () => onRemoveFav(f.id),
+    title: "Supprimer ce favori"
+  }, "\xD7")))))), tab === "limits" && React.createElement(React.Fragment, null, React.createElement("p", {
     style: {
       fontSize: 13,
       color: "var(--ink3)",
@@ -2013,7 +2292,9 @@ function SettingsSheet({
       marginBottom: 20,
       lineHeight: 1.5
     }
-  }, "Exportez toutes vos donn\xE9es (transactions + limites) en fichier JSON, ou restaurez depuis un backup."), React.createElement("button", {
+  }, "Exportez toutes vos donn\xE9es (transactions + limites) en fichier JSON, ou restaurez depuis un backup."), React.createElement("div", {
+    className: `backup-info${backupOverdue ? " overdue" : ""}`
+  }, backupOverdue ? "\u26A0\uFE0F " : "\u2705 ", lastExport ? `Dernier backup : il y a ${backupDays} jour${backupDays > 1 ? "s" : ""}` : "Aucun backup effectu\u00E9 \u2014 vos donn\u00E9es ne vivent que sur cet appareil"), React.createElement("button", {
     className: "btn btn-p",
     onClick: () => {
       onExport();
@@ -2022,6 +2303,14 @@ function SettingsSheet({
       marginBottom: 10
     }
   }, "\uD83D\uDCE6 Exporter en JSON"), React.createElement("button", {
+    className: "btn btn-s",
+    onClick: () => {
+      onExportCSV();
+    },
+    style: {
+      marginBottom: 10
+    }
+  }, "\uD83D\uDCC4 Exporter en CSV (Excel)"), React.createElement("button", {
     className: "btn btn-s",
     onClick: () => jsonRef.current?.click()
   }, "\uD83D\uDCC2 Restaurer depuis un backup"), React.createElement("input", {
@@ -2084,6 +2373,425 @@ function SettingsSheet({
 }
 
 // \u2500\u2500 Score Sheet (dedicated tab) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ══════════════════════════════════════════════════════════════════
+// ANALYTICS — 6 modules : cash-flow 12 mois, mois vs mois, top
+// libellés, heatmap calendrier, taux d'épargne, jours de semaine
+// ══════════════════════════════════════════════════════════════════
+function AnalyticsSheet({
+  onClose,
+  transactions
+}) {
+  const e = React.createElement;
+  const [barSel, setBarSel] = useState(null); // mois sélectionné dans le cash-flow
+  const [heatMonth, setHeatMonth] = useState(monthKey(new Date()));
+  const [selDay, setSelDay] = useState(null);
+
+  // ── Agrégats sur 12 mois glissants ─────────────────────────────
+  const A = useMemo(() => {
+    const now = new Date();
+    const months = [];
+    for (let i = 11; i >= 0; i--) months.push(monthKey(new Date(now.getFullYear(), now.getMonth() - i, 1)));
+    const byMonth = {};
+    months.forEach(k => byMonth[k] = {
+      inc: 0,
+      exp: 0
+    });
+    const last3 = months.slice(-3);
+    const titleTot = {};
+    const wd = [0, 0, 0, 0, 0, 0, 0]; // Lun..Dim
+    transactions.forEach(t => {
+      const k = (t.date || "").slice(0, 7);
+      if (!byMonth[k]) return;
+      if (t.amount < 0) {
+        byMonth[k].exp += -t.amount;
+        const dow = (new Date(t.date + "T12:00:00").getDay() + 6) % 7;
+        wd[dow] += -t.amount;
+        if (last3.includes(k)) {
+          const key = norm(t.title);
+          if (!titleTot[key]) titleTot[key] = {
+            label: t.title,
+            total: 0,
+            n: 0
+          };
+          titleTot[key].total += -t.amount;
+          titleTot[key].n++;
+        }
+      } else byMonth[k].inc += t.amount;
+    });
+    const flow = months.map(k => ({
+      k,
+      inc: byMonth[k].inc,
+      exp: byMonth[k].exp,
+      net: byMonth[k].inc - byMonth[k].exp
+    }));
+    const active = flow.filter(m => m.inc > 0 || m.exp > 0);
+    const totalNet = active.reduce((s, m) => s + m.net, 0);
+    const sr = flow.map(m => ({
+      k: m.k,
+      rate: m.inc > 0 ? (m.inc - m.exp) / m.inc : null
+    }));
+    const top = Object.values(titleTot).sort((a, b) => b.total - a.total).slice(0, 10);
+    return {
+      months,
+      flow,
+      totalNet,
+      avgNet: active.length ? totalNet / active.length : 0,
+      sr,
+      top,
+      wd
+    };
+  }, [transactions]);
+
+  // ── Mois courant vs mois précédent (dépenses par catégorie) ────
+  const cmp = useMemo(() => {
+    const now = new Date();
+    const curK = monthKey(now);
+    const prevK = monthKey(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+    const cur = {},
+      prev = {};
+    transactions.forEach(t => {
+      if (t.amount >= 0) return;
+      const k = t.date.slice(0, 7);
+      const c = t.category || "Autre";
+      if (k === curK) cur[c] = (cur[c] || 0) + -t.amount;else if (k === prevK) prev[c] = (prev[c] || 0) + -t.amount;
+    });
+    const rows = [...new Set([...Object.keys(cur), ...Object.keys(prev)])].map(c => {
+      const a = cur[c] || 0,
+        b = prev[c] || 0;
+      return {
+        c,
+        cur: a,
+        prev: b,
+        d: a - b,
+        pct: b > 0 ? (a - b) / b : null
+      };
+    }).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 8);
+    return {
+      rows,
+      curLabel: MONTHS[now.getMonth()],
+      prevLabel: MONTHS[(now.getMonth() + 11) % 12]
+    };
+  }, [transactions]);
+
+  // ── Heatmap du mois affiché ────────────────────────────────────
+  const heat = useMemo(() => {
+    const [y, m] = heatMonth.split("-").map(Number);
+    const days = new Date(y, m, 0).getDate();
+    const firstDow = (new Date(y, m - 1, 1).getDay() + 6) % 7;
+    const perDay = {};
+    transactions.forEach(t => {
+      if (t.amount < 0 && t.date.slice(0, 7) === heatMonth) perDay[t.date] = (perDay[t.date] || 0) + -t.amount;
+    });
+    const vals = Object.values(perDay);
+    return {
+      days,
+      firstDow,
+      perDay,
+      max: vals.length ? Math.max(...vals) : 1,
+      total: vals.reduce((s, v) => s + v, 0),
+      y,
+      m
+    };
+  }, [transactions, heatMonth]);
+  const shiftHeat = dir => {
+    const [y, m] = heatMonth.split("-").map(Number);
+    setHeatMonth(monthKey(new Date(y, m - 1 + dir, 1)));
+    setSelDay(null);
+  };
+  const dayTxs = selDay ? transactions.filter(t => t.date === selDay && t.amount < 0).sort((a, b) => a.amount - b.amount) : [];
+
+  // ── Module 1 : cash-flow SVG ───────────────────────────────────
+  const CW = 340,
+    CH = 150,
+    padL = 4,
+    padB = 16,
+    chartH = CH - padB - 8;
+  const maxFlow = Math.max(...A.flow.map(m => Math.max(m.inc, m.exp)), 1);
+  const groupW = (CW - padL * 2) / 12;
+  const selFlow = barSel !== null ? A.flow[barSel] : null;
+
+  // ── Module 5 : taux d'épargne SVG ──────────────────────────────
+  const srValid = A.sr.map((s, i) => ({ ...s,
+    i
+  })).filter(s => s.rate !== null);
+  const srMin = Math.min(0, ...srValid.map(s => s.rate));
+  const srMax = Math.max(0.1, ...srValid.map(s => s.rate));
+  const srY = r => 8 + (srMax - r) / (srMax - srMin || 1) * 84;
+  const srX = i => padL + groupW * i + groupW / 2;
+  const srLine = srValid.map((s, j) => `${j === 0 ? "M" : "L"}${srX(s.i).toFixed(1)} ${srY(s.rate).toFixed(1)}`).join(" ");
+  const lastSr = srValid[srValid.length - 1];
+
+  // ── Module 6 : jours de semaine ────────────────────────────────
+  const wdMax = Math.max(...A.wd, 1);
+  const wdTop = A.wd.indexOf(Math.max(...A.wd));
+  const DOW = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+  const mLbl = k => {
+    const m = parseInt(k.slice(5), 10) - 1;
+    return MONTHS[m].slice(0, 3);
+  };
+  const pctTxt = p => (p >= 0 ? "+" : "") + Math.round(p * 100) + "%";
+
+  return e("div", {
+    className: "overlay",
+    onClick: ev => ev.target === ev.currentTarget && onClose()
+  }, e("div", {
+    className: "sheet ana-sheet"
+  }, e("div", {
+    className: "sheet-hdr"
+  }, e("div", {
+    className: "sheet-title"
+  }, "\uD83D\uDCC8 Analytics"), e("button", {
+    className: "sheet-close",
+    onClick: onClose
+  }, "\xD7")),
+
+  // ════ 1. CASH-FLOW 12 MOIS ════
+  e("div", {
+    className: "ana-sec"
+  }, e("div", {
+    className: "ana-title"
+  }, "Cash-flow \u2014 12 derniers mois"), e("div", {
+    className: "ana-sub"
+  }, "Revenus (vert) vs d\u00E9penses (rouge) \u00B7 tapez un mois pour le d\u00E9tail"), e("div", {
+    className: "ana-detail"
+  }, selFlow ? `${MONTHS[parseInt(selFlow.k.slice(5), 10) - 1]} : +${eur(selFlow.inc)} / \u2212${eur(selFlow.exp)} \u2192 ` : `\u00C9pargne nette 12 mois : ${eur(A.totalNet)} \u00B7 moy. ${eur(A.avgNet)}/mois`, selFlow && e("span", {
+    style: {
+      color: selFlow.net >= 0 ? "var(--green)" : "var(--red)",
+      fontWeight: 800
+    }
+  }, (selFlow.net >= 0 ? "+" : "") + eur(selFlow.net))), e("svg", {
+    viewBox: `0 0 ${CW} ${CH}`,
+    width: "100%",
+    style: {
+      display: "block"
+    }
+  }, A.flow.map((m, i) => {
+    const x = padL + groupW * i;
+    const hInc = m.inc / maxFlow * chartH;
+    const hExp = m.exp / maxFlow * chartH;
+    const on = barSel === i;
+    return e("g", {
+      key: m.k,
+      onClick: () => setBarSel(on ? null : i),
+      style: {
+        cursor: "pointer"
+      }
+    }, e("rect", {
+      x: x,
+      y: 0,
+      width: groupW,
+      height: CH,
+      fill: on ? "var(--ivory)" : "transparent",
+      rx: 4
+    }), e("rect", {
+      x: x + groupW / 2 - 9,
+      y: 8 + chartH - hInc,
+      width: 8,
+      height: Math.max(hInc, m.inc > 0 ? 2 : 0),
+      rx: 2,
+      fill: "var(--green)",
+      opacity: on ? 1 : 0.75
+    }), e("rect", {
+      x: x + groupW / 2 + 1,
+      y: 8 + chartH - hExp,
+      width: 8,
+      height: Math.max(hExp, m.exp > 0 ? 2 : 0),
+      rx: 2,
+      fill: "var(--red)",
+      opacity: on ? 1 : 0.75
+    }), e("text", {
+      x: x + groupW / 2,
+      y: CH - 4,
+      textAnchor: "middle",
+      fontSize: 7.5,
+      fontWeight: on ? 800 : 600,
+      fill: on ? "var(--accent2)" : "var(--ink3)",
+      fontFamily: "Source Sans 3,sans-serif"
+    }, mLbl(m.k)));
+  }))),
+
+  // ════ 2. CE MOIS VS LE MOIS DERNIER ════
+  e("div", {
+    className: "ana-sec"
+  }, e("div", {
+    className: "ana-title"
+  }, `${cmp.curLabel} vs ${cmp.prevLabel}`), e("div", {
+    className: "ana-sub"
+  }, "Variation des d\u00E9penses par cat\u00E9gorie, tri\u00E9e par impact"), cmp.rows.length === 0 ? e("div", {
+    className: "ana-empty"
+  }, "Pas encore de d\u00E9penses \u00E0 comparer") : cmp.rows.map(r => e("div", {
+    key: r.c,
+    className: "cmp-row"
+  }, e("div", {
+    className: "cmp-icon"
+  }, CAT_ICONS[r.c] || "\uD83D\uDCE6"), e("div", {
+    className: "cmp-name"
+  }, r.c), e("div", {
+    className: "cmp-val"
+  }, eur(r.cur)), e("div", {
+    className: "cmp-delta",
+    style: {
+      color: r.d > 0 ? "var(--red)" : r.d < 0 ? "var(--green)" : "var(--ink3)"
+    }
+  }, r.d === 0 ? "=" : `${r.d > 0 ? "\u2197 +" : "\u2198 \u2212"}${eur(Math.abs(r.d))}`, r.pct !== null && r.d !== 0 ? ` (${pctTxt(r.pct)})` : r.pct === null && r.cur > 0 ? " (nouveau)" : "")))),
+
+  // ════ 3. TOP LIBELLÉS ════
+  e("div", {
+    className: "ana-sec"
+  }, e("div", {
+    className: "ana-title"
+  }, "Top libell\u00E9s \u2014 3 derniers mois"), e("div", {
+    className: "ana-sub"
+  }, "O\u00F9 part vraiment l'argent, marchand par marchand"), A.top.length === 0 ? e("div", {
+    className: "ana-empty"
+  }, "Pas encore de d\u00E9penses sur la p\u00E9riode") : A.top.map((t, i) => e("div", {
+    key: t.label,
+    className: "top-row"
+  }, e("div", {
+    className: "top-fill",
+    style: {
+      width: `${t.total / A.top[0].total * 100}%`
+    }
+  }), e("div", {
+    className: "top-rank"
+  }, i + 1), e("div", {
+    className: "top-name"
+  }, t.label), e("div", {
+    className: "top-n"
+  }, t.n, "\u00D7"), e("div", {
+    className: "top-val"
+  }, eur(t.total))))),
+
+  // ════ 4. HEATMAP CALENDRIER ════
+  e("div", {
+    className: "ana-sec"
+  }, e("div", {
+    className: "ana-title"
+  }, "Calendrier des d\u00E9penses"), e("div", {
+    className: "heat-nav"
+  }, e("button", {
+    onClick: () => shiftHeat(-1)
+  }, "\u2039"), e("div", {
+    className: "heat-month"
+  }, `${MONTHS[heat.m - 1]} ${heat.y} \u00B7 ${eur(heat.total)}`), e("button", {
+    onClick: () => shiftHeat(1)
+  }, "\u203A")), e("div", {
+    className: "heat-grid"
+  }, DOW.map(d => e("div", {
+    key: d,
+    className: "heat-dow"
+  }, d)), Array.from({
+    length: heat.firstDow
+  }, (_, i) => e("div", {
+    key: "e" + i,
+    className: "heat-cell empty"
+  })), Array.from({
+    length: heat.days
+  }, (_, i) => {
+    const day = i + 1;
+    const dk = `${heatMonth}-${String(day).padStart(2, "0")}`;
+    const v = heat.perDay[dk] || 0;
+    const alpha = v > 0 ? 0.12 + v / heat.max * 0.78 : 0;
+    return e("div", {
+      key: dk,
+      className: `heat-cell${selDay === dk ? " sel" : ""}`,
+      style: {
+        background: v > 0 ? `rgba(196,92,92,${alpha.toFixed(2)})` : "var(--ivory)",
+        color: alpha > 0.55 ? "#fff" : "var(--ink2)"
+      },
+      onClick: () => setSelDay(selDay === dk ? null : dk),
+      title: v > 0 ? eur(v) : ""
+    }, day);
+  })), selDay && e("div", {
+    className: "heat-day-list"
+  }, e("div", {
+    className: "ana-detail"
+  }, `${parseInt(selDay.slice(8), 10)} ${MONTHS[heat.m - 1]} \u2014 ${eur(heat.perDay[selDay] || 0)}`), dayTxs.length === 0 ? e("div", {
+    className: "ana-empty"
+  }, "Aucune d\u00E9pense ce jour") : dayTxs.map(t => e("div", {
+    key: t.id,
+    className: "hd-row"
+  }, e("span", null, CAT_ICONS[t.category] || "\uD83D\uDCE6", " ", t.title), e("strong", null, eur(t.amount)))))),
+
+  // ════ 5. TAUX D'ÉPARGNE ════
+  e("div", {
+    className: "ana-sec"
+  }, e("div", {
+    className: "ana-title"
+  }, "Taux d'\u00E9pargne \u2014 12 mois"), e("div", {
+    className: "ana-sub"
+  }, "(revenus \u2212 d\u00E9penses) / revenus \u00B7 le KPI long terme", lastSr ? ` \u00B7 actuel : ${pctTxt(lastSr.rate)}` : ""), srValid.length < 2 ? e("div", {
+    className: "ana-empty"
+  }, "Pas assez de mois avec revenus pour tracer la courbe") : e("svg", {
+    viewBox: `0 0 ${CW} 112`,
+    width: "100%",
+    style: {
+      display: "block"
+    }
+  }, srMin < 0 && e("line", {
+    x1: padL,
+    x2: CW - padL,
+    y1: srY(0),
+    y2: srY(0),
+    stroke: "var(--sand)",
+    strokeWidth: 1,
+    strokeDasharray: "3 3"
+  }), e("path", {
+    d: srLine,
+    fill: "none",
+    stroke: "var(--accent)",
+    strokeWidth: 2.5,
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }), srValid.map(s => e("circle", {
+    key: s.k,
+    cx: srX(s.i),
+    cy: srY(s.rate),
+    r: 3,
+    fill: s.rate >= 0 ? "var(--green)" : "var(--red)"
+  })), srValid.map(s => e("text", {
+    key: "t" + s.k,
+    x: srX(s.i),
+    y: srY(s.rate) - 7,
+    textAnchor: "middle",
+    fontSize: 7,
+    fontWeight: 700,
+    fill: "var(--ink3)",
+    fontFamily: "Source Sans 3,sans-serif"
+  }, Math.round(s.rate * 100) + "%")))),
+
+  // ════ 6. JOURS DE SEMAINE ════
+  e("div", {
+    className: "ana-sec",
+    style: {
+      marginBottom: 6
+    }
+  }, e("div", {
+    className: "ana-title"
+  }, "D\u00E9penses par jour de semaine"), e("div", {
+    className: "ana-sub"
+  }, `Cumul 12 mois \u00B7 jour le plus d\u00E9pensier : ${DOW[wdTop]}`), e("div", {
+    className: "wd-bars"
+  }, A.wd.map((v, i) => e("div", {
+    key: i,
+    className: "wd-col"
+  }, e("div", {
+    className: "wd-val"
+  }, v >= 1000 ? `${(v / 1000).toFixed(1).replace(".", ",")}k` : Math.round(v)), e("div", {
+    className: "wd-bar",
+    style: {
+      height: `${Math.max(v / wdMax * 100, 3)}%`,
+      background: i === wdTop ? "var(--accent)" : "var(--sand)"
+    }
+  }), e("div", {
+    className: "wd-lbl",
+    style: {
+      color: i === wdTop ? "var(--accent2)" : "var(--ink3)"
+    }
+  }, DOW[i])))))));
+}
+
 function ScoreSheet({
   onClose,
   score
@@ -2394,6 +3102,74 @@ html,body,#root{background:var(--ivory);font-family:'Source Sans 3',sans-serif;c
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:11px 20px;border-radius:14px;font-size:14px;font-weight:600;z-index:200;animation:_ti .3s cubic-bezier(.16,1,.3,1);font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,.1)}
 @keyframes _ti{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .toast.ok{background:var(--green);color:#fff}.toast.no{background:var(--red);color:#fff}
+.toast{display:flex;align-items:center}
+.toast-undo{margin-left:12px;background:rgba(255,255,255,.22);border:none;color:#fff;font-weight:700;font-size:13px;padding:5px 12px;border-radius:9px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.toast-undo:active{background:rgba(255,255,255,.38)}
+.hdr-btn{position:relative}
+.hdr-badge{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid var(--card)}
+.recur-check{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink2);margin:2px 0 16px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.recur-check input{width:17px;height:17px;accent-color:var(--accent);flex-shrink:0;margin:0}
+.csv-stat.csv-dup strong{color:var(--accent)}
+.row-dup td{opacity:.4;text-decoration:line-through}
+.backup-info{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--green);line-height:1.4}
+.backup-info.overdue{color:var(--red)}
+.tx-del.confirm{width:auto;padding:0 8px;background:var(--red);color:#fff;font-size:10.5px;font-weight:700;white-space:nowrap;animation:_ti .15s ease}
+.tx-fav{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--sand);background:var(--ivory);color:var(--ink3);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.tx-fav.on{border-color:#E8C46B;background:#FFF7E0;font-size:10px}
+.fav-block{margin-bottom:16px}
+.fav-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.fav-chip{border:1.5px solid var(--sand);background:var(--ivory);color:var(--ink);font-size:13px;font-weight:600;padding:8px 13px;border-radius:12px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;max-width:100%}
+.fav-chip:active{background:var(--sand)}
+.fav-del{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--sand);background:var(--ivory);color:var(--red);font-size:15px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ana-sheet{max-height:92vh}
+.ana-sec{margin-bottom:28px}
+.ana-title{font-size:14px;font-weight:800;color:var(--ink)}
+.ana-sub{font-size:11.5px;color:var(--ink3);margin:2px 0 10px;line-height:1.4}
+.ana-detail{font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:8px;min-height:17px}
+.ana-empty{font-size:12.5px;color:var(--ink3);text-align:center;padding:14px 0}
+.cmp-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--ivory)}
+.cmp-row:last-child{border-bottom:none}
+.cmp-icon{font-size:16px;width:24px;text-align:center;flex-shrink:0}
+.cmp-name{flex:1;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmp-val{font-size:12px;font-weight:700;color:var(--ink);width:70px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
+.cmp-delta{font-size:11px;font-weight:700;width:110px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
+.top-row{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:0 -4px 3px;border-radius:9px;position:relative;overflow:hidden}
+.top-fill{position:absolute;left:0;top:0;bottom:0;background:var(--ivory);border-radius:9px;z-index:0}
+.top-row>*:not(.top-fill){position:relative;z-index:1}
+.top-rank{font-size:10.5px;font-weight:800;color:var(--ink3);width:16px;flex-shrink:0}
+.top-name{flex:1;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-n{font-size:10.5px;color:var(--ink3);font-weight:700;flex-shrink:0}
+.top-val{font-size:12px;font-weight:700;width:76px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0}
+.heat-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.heat-nav button{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--sand);background:var(--ivory);cursor:pointer;font-size:15px;color:var(--ink2);display:flex;align-items:center;justify-content:center}
+.heat-month{font-size:12.5px;font-weight:700;color:var(--ink)}
+.heat-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.heat-dow{font-size:9px;font-weight:800;color:var(--ink3);text-align:center;padding-bottom:2px}
+.heat-cell{aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;cursor:pointer;border:1.5px solid transparent;transition:transform .1s}
+.heat-cell:active{transform:scale(.92)}
+.heat-cell.empty{background:transparent;cursor:default}
+.heat-cell.sel{border-color:var(--ink)}
+.heat-day-list{margin-top:12px}
+.hd-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-bottom:1px solid var(--ivory);gap:10px}
+.hd-row:last-child{border-bottom:none}
+.hd-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wd-bars{display:flex;align-items:flex-end;gap:8px;height:120px}
+.wd-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.wd-bar{width:100%;border-radius:6px 6px 3px 3px;transition:height .3s}
+.wd-lbl{font-size:10px;font-weight:800}
+.wd-val{font-size:9px;font-weight:700;color:var(--ink3);font-variant-numeric:tabular-nums}
+.tx-edit,.tx-del{width:22px;height:22px;font-size:11px}
+.tx-actions{gap:2px}
+.cat-monthly{margin:14px 20px 0;padding:16px 18px 12px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--sand);box-shadow:0 2px 12px rgba(43,37,32,.04)}
+.cat-monthly-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.cm-row{display:flex;align-items:center;gap:10px;padding:7px 8px;margin:0 -8px;border-radius:10px;cursor:pointer;transition:background .15s}
+.cm-row:active,.cm-row.on{background:var(--ivory)}
+.cm-row.on .cm-month{color:var(--accent2);font-weight:800}
+.cm-month{font-size:12.5px;font-weight:600;color:var(--ink2);width:80px;flex-shrink:0}
+.cm-bar-bg{flex:1;height:7px;background:var(--sand);border-radius:4px;overflow:hidden}
+.cm-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.cm-val{font-size:12.5px;font-weight:700;width:90px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.cm-total{margin-top:10px;padding-top:10px;border-top:1.5px solid var(--sand);font-size:12px;color:var(--ink3);font-weight:600}
 `;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(App));
