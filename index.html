@@ -443,6 +443,73 @@ h3{font-size:14.5px;font-weight:800;letter-spacing:-.1px}
 .grp-hdr{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;margin:10px 0 8px}
 .grp-hdr small{margin-left:auto;font-weight:600;color:var(--ink3)}
 .grp-in{min-width:130px;flex:1;outline:none;background:var(--card)}
+/* ── v3.4 comptes / import / budget commun ── */
+.acc-screen{max-width:560px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top)) 18px 40px;min-height:100vh}
+.acc-head{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:22px}
+.acc-head .sp-ico{width:56px;height:56px;font-size:30px;border-radius:17px;margin-bottom:12px}
+.acc-head h1{font:800 26px var(--serif);letter-spacing:-.5px}
+.acc-card{display:flex;align-items:center;gap:14px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:var(--shadow);text-align:left}
+.acc-card:active{background:var(--sunk)}
+.acc-ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.acc-ic.perso{background:var(--accent-soft);color:var(--accent2)}.acc-ic.joint{background:var(--green-soft);color:var(--green)}
+.acc-b{flex:1;min-width:0}
+.acc-b strong{display:block;font-size:16px}
+.acc-b small{display:block;color:var(--ink3);font-size:12.5px}
+.acc-bal{font:800 18px var(--serif);font-variant-numeric:tabular-nums;white-space:nowrap}
+.acc-edit{color:var(--ink3);padding:6px}
+.acc-sw{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--accent2);background:var(--accent-soft);padding:4px 10px;border-radius:999px;margin-bottom:5px}
+.ig{border:1.5px solid var(--line);border-radius:14px;padding:9px 10px;margin-bottom:7px}
+.ig.todo{border-color:var(--warn);background:var(--warn-soft)}
+.ig.ok{opacity:.8}
+.ig-top{display:flex;align-items:center;gap:10px}
+.ig-n{flex:1;min-width:0}
+.ig-n strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-n small{display:block;font-size:11.5px;color:var(--ink3)}
+.ig-cat{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:700;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.ig-src{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:4px}
+.ig-src.hist{background:var(--green-soft);color:var(--green)}.ig-src.kw,.ig-src.other{background:var(--accent-soft);color:var(--accent2)}.ig-src.bank{background:var(--sunk);color:var(--ink2)}.ig-src.none{background:var(--warn-soft);color:var(--warn)}
+.ig-ok{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--green);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ig-ok.on{background:var(--green);color:#fff}
+.ig-pick{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.ig-pick .chip{padding:5px 10px;font-size:12.5px}
+.ig-rows{margin-top:6px;font-size:12.5px}
+.ig-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--line)}
+.ig-row>span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.ig-row .ig-cat{padding:3px 8px;font-size:11.5px}
+.imp-bar{position:sticky;bottom:0;background:var(--card);padding-top:10px;margin-top:6px}
+.jb-big{font:800 38px/1.1 var(--serif);letter-spacing:-1px;color:var(--green);font-variant-numeric:tabular-nums}
+.jb-big small{font:600 14px var(--sans);color:var(--ink3);letter-spacing:0}
+.jb-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 4px}
+.jb-split>div{background:var(--sunk);border-radius:13px;padding:9px 12px}
+.jb-split small{display:block;font-size:12px;color:var(--ink3);font-weight:700}
+.jb-split strong{font:800 19px var(--serif);font-variant-numeric:tabular-nums}
+.jb-split em{display:block;font-style:normal;font-size:11.5px;color:var(--ink3)}
+.jb-line{display:flex;align-items:center;gap:10px;width:100%;padding:9px 0;border-top:1px solid var(--line);text-align:left;font-size:14px}
+.jb-line:first-child{border-top:none}
+.jb-line small{display:block;font-size:11.5px;color:var(--ink3);font-weight:500}
+.jb-line .alloc-v{white-space:nowrap}
+.jb-sub{padding:0 0 6px 36px}
+.jb-sub>div{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-top:1px dashed var(--line);font-variant-numeric:tabular-nums}
+.jb-sub>div>span:first-child{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jb-sub small{color:var(--ink3);font-size:11px}
+.jb-sub .off{opacity:.4;text-decoration:line-through}
+.jb-in{width:78px;padding:6px 8px;border-radius:9px;border:1.5px solid var(--line);background:var(--bg);text-align:right;outline:none}
+.jb-teaser{display:block;width:100%;text-align:left;background:linear-gradient(135deg,var(--green-soft),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.jb-teaser .row{display:flex;align-items:center;gap:12px}
+.jb-teaser strong.v{display:block;font:800 20px var(--serif);color:var(--green);letter-spacing:-.3px;margin:1px 0}
+.jb-who{display:flex;gap:14px;margin-top:10px;font-size:12.5px;color:var(--ink2);font-weight:600}
+.jb-who>div{flex:1}
+.jb-who .progress{margin-top:4px;height:5px}
+.share-row{display:flex;align-items:center;gap:10px}
+.share-row input[type=range]{flex:1;accent-color:var(--accent)}
+.payer{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+.payer>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.payer select{padding:6px 8px;border-radius:9px;border:1.5px solid var(--line);background:var(--card)}
+.extra-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.extra-row .fi{padding:9px 11px}
+.extra-row .fi:first-child{flex:1}
+.extra-row .fi.n{width:90px;text-align:right}
+.jb-teaser small{display:block;font-size:12px;color:var(--ink3);font-weight:600}
 
   </style>
 </head>
@@ -464,6 +531,12 @@ const EVENTS_STORE = "mf_events_v1";
 const GOALS_STORE = "mf_goals_v1";
 const CATS_STORE = "mf_cats_v1";
 const PLAN_STORE = "mf_plan_v1";
+const JOINT_STORE = "mf_joint_v1";
+const ACCOUNTS_STORE = "mf_accounts_v1";
+const MAIN_ACC = { id: "main", name: "Mon compte", kind: "perso" };
+const SHARED_KEYS = /* @__PURE__ */ new Set([CATS_STORE, ACCOUNTS_STORE]);
+const accKey = (accId, k) => !accId || accId === "main" || SHARED_KEYS.has(k) ? k : `${k}@${accId}`;
+const h = React.createElement;
 const MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 const MONTHS_SHORT = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -499,6 +572,7 @@ const BASE_CATS = {
   "Indemnités CPAM": { i: "cross", c: "#DB851C", k: "inc" },
   "Indemnité Assurance": { i: "shield", c: "#4C8775", k: "inc" },
   "Revenus": { i: "coins", c: "#28978A", k: "inc" },
+  "Versements": { i: "users", c: "#2F8566", k: "inc", d: "Ce que chacun verse sur le compte commun" },
   "Autre": { i: "box", c: "#959BA3", k: "both" }
 };
 const LEGACY_CATS = {
@@ -552,12 +626,13 @@ const AUTO_RULES = [
   { kw: ["essence", "carburant", "gazole", "diesel"], c: "Carburant" },
   { kw: ["peage", "parking", "sncf", "ratp", "taxi", "blablacar", "navigo", "train", "controle technique", "garage"], c: "Transport" },
   { kw: ["padel", "salle de sport", "decathlon", "fitness"], c: "Sport" },
-  { kw: ["bebe", "cododo", "poussette", "couche", "biberon", "naissance"], c: "Bébé" },
-  { kw: ["veto", "veterinaire", "croquette", "animalerie"], c: "Animaux" },
-  { kw: ["carrefour", "auchan", "leclerc", "lidl", "intermarche", "monoprix", "picard", "franprix", "super u", "simply"], c: "Courses" },
+  { kw: ["bebe", "cododo", "poussette", "couche", "biberon", "naissance", "vertbaudet", "twistshake", "aubert", "natalys", "babymoov", "orchestra", "lait infantile", "pampers"], c: "Bébé" },
+  { kw: ["veto", "veterinaire", "croquette", "animalerie", "tom & co", "maxi zoo", "zooplus"], c: "Animaux" },
+  { kw: ["carrefour", "auchan", "leclerc", "lidl", "intermarche", "monoprix", "picard", "franprix", "super u", "magasin u", "hyper u", "simply", "grand frais", "aldi", "boulang", "poissonn", "marie blachere"], c: "Courses" },
   { kw: ["verisure", "alarme"], c: "Sécurité" },
-  { kw: ["leroy merlin", "castorama", "culligan", "ikea", "tondeuse", "brico", "electro depot"], c: "Travaux & équipement" },
-  { kw: ["edf", "engie", "totalenergies", "veolia", "eau", "orange", "free", "sfr", "bouygues", "livebox"], c: "Énergie & internet" },
+  { kw: ["leroy merlin", "castorama", "culligan", "ikea", "tondeuse", "brico", "electro depot", "truffaut", "jardiland", "adeo"], c: "Travaux & équipement" },
+  { kw: ["edf", "engie", "totalenergies", "veolia", "suez", "eau", "orange", "free", "sfr", "bouygues", "livebox"], c: "Énergie & internet" },
+  { kw: ["cotis", "frais retrait", "frais paiement", "axa", "maif", "macif", "matmut", "groupama", "allianz"], c: "Assurances & Banques" },
   { kw: ["restaurant", "mcdo", "mc do", "burger", "pizza", "deliveroo", "uber eats", "ubereats", "sushi", "kebab"], c: "Restauration" },
   { kw: ["nespresso", "cafe"], c: "Café" },
   { kw: ["salaire", "prime", "interessement"], c: "Salaire" },
@@ -565,7 +640,7 @@ const AUTO_RULES = [
   { kw: ["pharmacie", "medecin", "docteur", "hopital", "dentiste", "kine", "labo", "cpam", "mutuelle"], c: "Santé" },
   { kw: ["steam", "playstation", "xbox", "instant gaming", "twitch", "clash", "blizzard", "nintendo"], c: "Jeux vidéo" },
   { kw: ["fdj", "loto", "euromillion", "illiko", "keno", "amigo"], c: "FDJ" },
-  { kw: ["netflix", "spotify", "disney", "canal+", "deezer", "crunchyroll", "abonnement", "claude", "icloud", "cloud"], c: "Abonnement" },
+  { kw: ["netflix", "spotify", "disney", "canal+", "deezer", "crunchyroll", "abonnement", "claude", "icloud", "cloud", "amazon prime", "prime video", "cinepass"], c: "Abonnement" },
   { kw: ["whey", "creatine", "prozis", "nutripure", "nutrition"], c: "Compléments alimentaires" },
   { kw: ["zara", "amazon", "fnac", "darty", "cdiscount", "vinted", "shein", "jules", "jd sport"], c: "Shopping" },
   { kw: ["assurance", "banque", "frais bancaire"], c: "Assurances & Banques" },
@@ -641,32 +716,74 @@ const IMPORT_CAT_MAP = {
   "shopping et services - autre": "Shopping",
   "virement interne": "Autre",
   "virement emis - a categoriser": "Autre",
-  "virement recu - a categoriser": "Revenus"
+  "virement recu - a categoriser": "Revenus",
+  "energie eau, gaz, electricite, fioul": "Énergie & internet",
+  "internet et telephonie": "Énergie & internet",
+  "impots et taxes - autre": "Impôt",
+  "impots et taxes": "Impôt",
+  "banque et assurance - autre": "Assurances & Banques",
+  "frais bancaires": "Assurances & Banques",
+  "hotel": "Voyages",
+  "ameublement et appareil": "Travaux & équipement",
+  "pharmacie": "Santé",
+  "animaux domestiques": "Animaux",
+  "vetements et chaussures": "Shopping",
+  "petit commercant": "Courses",
+  "restauration rapide": "Restauration",
+  "restaurant": "Restauration",
+  "transports en commun": "Transport",
+  "peage et stationnement": "Transport",
+  "coiffeurs et soins du corps": "Shopping",
+  "retrait d'especes - a categoriser": "Autre",
+  "juridique et administratif - autre": "Autre"
 };
+// Catégories trop vagues côté banque : on ne s'en sert qu'en dernier recours
+const BANK_VAGUE = /* @__PURE__ */ new Set(["shopping et services - autre", "banque et assurance - autre", "a categoriser - sortie d'argent", "retrait d'especes - a categoriser", "virement emis - a categoriser", "juridique et administratif - autre"]);
 const mapCat = (raw, sub) => {
   if (!raw && !sub) return "Autre";
   if (sub) {
-    const sl = String(sub).trim().toLowerCase();
+    const sl = norm(sub);
     if (IMPORT_CAT_MAP[sl]) return IMPORT_CAT_MAP[sl];
   }
-  const t = String(raw || "").trim(), l = t.toLowerCase();
+  const t = String(raw || "").trim(), l = norm(t);
   if (CAT_REG[t]) return t;
   return IMPORT_CAT_MAP[l] || "Autre";
 };
 const detectCols = (headers) => {
-  const h = headers.map((c) => (c || "").toString().toLowerCase().trim());
-  const find = (...kws) => h.findIndex((c) => kws.some((k) => c.includes(k)));
+  const h2 = headers.map((c) => norm((c || "").toString()));
+  const find = (...kws) => h2.findIndex((c) => kws.some((k) => c.includes(k)));
+  const findNoDate = (...kws) => h2.findIndex((c) => !c.includes("date") && kws.some((k) => c.includes(k)));
   return {
     date: Math.max(find("date de comptabilisation", "date operation", "date"), 0),
-    title: Math.max(find("libelle simplifie", "description", "libelle", "libellé", "label"), 1),
-    amount: find("montant", "amount", "somme", "valeur"),
-    debit: find("debit", "débit"),
-    credit: find("credit", "crédit"),
-    category: find("categorie", "catégorie", "category"),
-    subCategory: find("sous categorie", "sous-categorie", "sous catégorie"),
-    comment: find("commentaire", "comment", "note", "informations")
+    title: Math.max(find("libelle simplifie", "description", "libelle", "label"), 1),
+    op: h2.findIndex((c) => c.includes("libelle operation")),
+    type: h2.findIndex((c) => c.includes("type operation") || c === "type"),
+    amount: findNoDate("montant", "amount", "somme", "valeur"),
+    debit: find("debit"),
+    credit: find("credit"),
+    category: h2.findIndex((c) => (c.includes("categorie") || c.includes("category")) && !c.includes("sous")),
+    subCategory: find("sous categorie", "sous-categorie"),
+    comment: h2.some((c) => c.includes("libelle operation")) ? find("commentaire", "comment", "note") : find("commentaire", "comment", "note", "informations")
   };
 };
+// "GRAND FRAIS FR SERVON" → "GRAND FRAIS", "PATHE SENART 77LIEUSAINT" → "PATHE SENART"
+function cleanBankLabel(s, isCard) {
+  let t = String(s || "").replace(/\s+/g, " ").trim();
+  if (!isCard) return t;
+  const c = t.replace(/\s*\d{2}[A-Z][A-Z' \-]{2,}$/, "").replace(/(?:\s?FR|\s(?:IE|SE|NL|BE|LU|GB|CH|PT|ES))\s+[A-Za-z][\w' .\-]*$/, "").trim();
+  return c.length >= 3 ? c : t;
+}
+const opKind = (type) => /prel|frais/.test(norm(type)) ? "prlv" : /carte/.test(norm(type)) ? "card" : /vir/.test(norm(type)) ? "vir" : "";
+async function readFileText(file) {
+  const buf = await file.arrayBuffer();
+  let txt;
+  try {
+    txt = new TextDecoder("utf-8", { fatal: true }).decode(buf);
+  } catch (e) {
+    txt = new TextDecoder("windows-1252").decode(buf);
+  }
+  return txt.replace(/^﻿/, "");
+}
 const parseCSVLine = (line) => {
   const sep = (line.match(/;/g) || []).length > (line.match(/,/g) || []).length ? ";" : ",";
   const parts = [];
@@ -1350,9 +1467,20 @@ function parseCSVText(text) {
       skipped++;
       return;
     }
-    rows.push({ date, raw: (p[cols.title] || "").trim() || "Sans libellé", amount: amt, cat: mapCat(cols.category >= 0 ? p[cols.category] : "", cols.subCategory >= 0 ? p[cols.subCategory] : "") });
+    rows.push(bankRow(date, amt, p, cols));
   });
   return { rows, skipped, total: lines.length - 1 };
+}
+// Ligne de relevé enrichie : libellé nettoyé, libellé complet (pour deviner), type, catégorie banque
+function bankRow(date, amt, p, cols) {
+  const get = (i) => i >= 0 && p[i] != null ? String(p[i]).trim() : "";
+  const type = get(cols.type), kind = opKind(type), op = get(cols.op);
+  let title = get(cols.title) || op || "Sans libellé";
+  if (op && /^(cotisations? bancaires?|frais bancaires?|commissions?)$/i.test(title)) title = op;
+  title = cleanBankLabel(title, kind === "card");
+  const bankSub = norm(get(cols.subCategory)), bankCatRaw = get(cols.category);
+  const cat = mapCat(bankCatRaw, get(cols.subCategory));
+  return { date, raw: title, op, kind, amount: amt, cat, bankSub, bankVague: BANK_VAGUE.has(bankSub) || cat === "Autre", internal: bankSub === "virement interne" };
 }
 const loadXLSXLib = () => new Promise((resolve, reject) => {
   if (window.XLSX) return resolve(window.XLSX);
@@ -1402,7 +1530,9 @@ async function parseXLSXFile(file) {
       return;
     }
     const comment = cols.comment >= 0 && row[cols.comment] ? String(row[cols.comment]).trim() : "";
-    rows.push({ date, raw: String(title).trim() + (comment ? " — " + comment : ""), amount: amt, cat: mapCat(cols.category >= 0 ? row[cols.category] : "", cols.subCategory >= 0 ? row[cols.subCategory] : "") });
+    const br = bankRow(date, amt, row, cols);
+    if (comment) br.raw += " — " + comment;
+    rows.push(br);
   });
   return { rows, skipped, total: data.length - 1 };
 }
@@ -1418,6 +1548,28 @@ function matchKnown(model, raw, sign) {
     }
   }
   return best;
+}
+const validCat = (c) => !!c && !!CAT_REG[c] && !LEGACY_CATS[c] && !CAT_HIDDEN.has(c);
+const kwHit = (l, k) => k.length <= 4 ? new RegExp(`(^|[^a-z0-9])${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`).test(l) : l.includes(k);
+// Ordre de confiance : ton historique > mot-clé > catégorie banque précise > ton autre compte > catégorie banque vague
+function suggestImport(row, model, otherModel, accKind) {
+  const sign = row.amount < 0 ? -1 : 1;
+  const c = findCluster(model, row.raw, sign);
+  if (c && validCat(c.cat)) return { cat: c.cat, src: "hist", why: `comme ${c.count > 1 ? `tes ${c.count} « ${c.name} »` : `« ${c.name} »`}` };
+  const l = norm(row.raw + " " + (row.op || ""));
+  if (row.internal) {
+    const joint2joint = /(^|\s)ou(\s|$)/.test(norm(row.raw));
+    if (accKind === "joint" && sign > 0 && !joint2joint) return { cat: "Versements", src: "kw", why: "virement de l'un de vous deux" };
+    if (joint2joint && validCat("Épargne")) return { cat: "Épargne", src: "kw", why: "virement avec un compte joint (livret ?)" };
+  }
+  for (const r of AUTO_RULES) if (validCat(r.c) && !(sign < 0 && CAT_REG[r.c].k === "inc") && r.kw.some((k) => kwHit(l, k))) return { cat: r.c, src: "kw", why: "mot-clé reconnu" };
+  if (!row.bankVague && validCat(row.cat)) return { cat: row.cat, src: "bank", why: "catégorie de la banque" };
+  if (otherModel) {
+    const o = findCluster(otherModel, row.raw, sign);
+    if (o && validCat(o.cat)) return { cat: o.cat, src: "other", why: "comme sur ton autre compte" };
+  }
+  if (validCat(row.cat) && row.cat !== "Autre") return { cat: row.cat, src: "bank", why: "catégorie de la banque (vague)" };
+  return { cat: "Autre", src: "none", why: "rien de reconnu" };
 }
 const circ = (cx, cy, r) => `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
 const ICONS = {
@@ -1525,7 +1677,7 @@ function Sheet({ title, onClose, children, wide }) {
   return /* @__PURE__ */ React.createElement("div", { className: "overlay", ref, onClick: (e) => e.target === e.currentTarget && onClose() }, /* @__PURE__ */ React.createElement("div", { className: "sheet" + (wide ? " wide" : ""), role: "dialog", "aria-label": title }, /* @__PURE__ */ React.createElement("div", { className: "grab" }), /* @__PURE__ */ React.createElement("div", { className: "sheet-hdr" }, /* @__PURE__ */ React.createElement("h2", null, title), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", onClick: onClose, "aria-label": "Fermer" }, /* @__PURE__ */ React.createElement(Icon, { n: "x" }))), /* @__PURE__ */ React.createElement("div", { className: "sheet-body" }, children)));
 }
 const Amount = ({ v, cls = "", approx }) => /* @__PURE__ */ React.createElement("span", { className: "amt " + (v >= 0 ? "pos " : "neg ") + cls }, approx ? "≈ " : "", v > 0 ? "+" : "", eur(v));
-const Top = ({ title, eyebrow, onGear, back }) => /* @__PURE__ */ React.createElement("header", { className: "top" }, /* @__PURE__ */ React.createElement("div", null, back && /* @__PURE__ */ React.createElement("button", { className: "back", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { n: "left", s: 18 }), " Retour"), eyebrow && /* @__PURE__ */ React.createElement("div", { className: "eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement("h1", null, title)), onGear && /* @__PURE__ */ React.createElement("button", { className: "icon-btn big", onClick: onGear, "aria-label": "Réglages" }, /* @__PURE__ */ React.createElement(Icon, { n: "gear", s: 20 })));
+const Top = ({ title, eyebrow, onGear, back, onSwitch }) => /* @__PURE__ */ React.createElement("header", { className: "top" }, /* @__PURE__ */ React.createElement("div", null, onSwitch && h("button", { className: "acc-sw", onClick: onSwitch }, h(Icon, { n: "repeat", s: 12 }), " Changer de compte"), back && /* @__PURE__ */ React.createElement("button", { className: "back", onClick: back }, /* @__PURE__ */ React.createElement(Icon, { n: "left", s: 18 }), " Retour"), eyebrow && /* @__PURE__ */ React.createElement("div", { className: "eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement("h1", null, title)), onGear && /* @__PURE__ */ React.createElement("button", { className: "icon-btn big", onClick: onGear, "aria-label": "Réglages" }, /* @__PURE__ */ React.createElement(Icon, { n: "gear", s: 20 })));
 function MonthNav({ value, onChange, months, allowAll }) {
   const idx = months.indexOf(value);
   return /* @__PURE__ */ React.createElement("div", { className: "month-nav" }, /* @__PURE__ */ React.createElement("button", { className: "icon-btn", disabled: value === "all" || idx >= months.length - 1, onClick: () => onChange(months[idx + 1]), "aria-label": "Mois précédent" }, /* @__PURE__ */ React.createElement(Icon, { n: "left" })), /* @__PURE__ */ React.createElement("label", { className: "month-label" }, /* @__PURE__ */ React.createElement("span", null, value === "all" ? "Toutes les périodes" : monthLabel(value)), /* @__PURE__ */ React.createElement(Icon, { n: "down", s: 14 }), /* @__PURE__ */ React.createElement("select", { value, onChange: (e) => onChange(e.target.value) }, allowAll && /* @__PURE__ */ React.createElement("option", { value: "all" }, "Toutes les périodes"), months.map((k) => /* @__PURE__ */ React.createElement("option", { key: k, value: k }, monthLabel(k))))), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", disabled: value === "all" || idx <= 0, onClick: () => onChange(months[idx - 1]), "aria-label": "Mois suivant" }, /* @__PURE__ */ React.createElement(Icon, { n: "right" })));
@@ -1704,7 +1856,7 @@ function EventRow({ u, onOpen, onDone }) {
   const found = u.spent > 0;
   return /* @__PURE__ */ React.createElement("div", { className: "ev-row" }, /* @__PURE__ */ React.createElement("button", { className: "ev-main", onClick: () => onOpen(u.ev) }, /* @__PURE__ */ React.createElement("div", { className: "ev-date" + (u.d <= 14 ? " soon" : "") }, /* @__PURE__ */ React.createElement("strong", null, dateOf(u.occ).getDate()), /* @__PURE__ */ React.createElement("span", null, MONTHS_SHORT[dateOf(u.occ).getMonth()])), /* @__PURE__ */ React.createElement("div", { className: "tx-body" }, /* @__PURE__ */ React.createElement("div", { className: "tx-name" }, t === "anniv" ? `Anniversaire ${u.ev.name}` : u.ev.name), /* @__PURE__ */ React.createElement("div", { className: "tx-sub" + (u.d <= 14 && !found && !u.handled && t !== "rentree" ? " late" : "") }, inDays(u.d), t !== "rentree" && u.ev.budget ? ` · budget ${eur0(u.ev.budget)}` : "", t === "rentree" && u.ev.budget ? ` · +${eur0(u.ev.budget)}` : "", found && /* @__PURE__ */ React.createElement("span", { className: "tag ok" }, t === "anniv" || t === "fete" ? "cadeau" : "payé", " ", eur0(u.spent)), u.handled && /* @__PURE__ */ React.createElement("span", { className: "tag ok" }, "fait")))), !u.handled && u.d <= 31 && /* @__PURE__ */ React.createElement("button", { className: "quick sm", onClick: () => onDone(u), "aria-label": "Marquer comme fait" }, /* @__PURE__ */ React.createElement(Icon, { n: "check", s: 16, w: 2.5 })));
 }
-function HomeView({ txs, initBal, balance, fc, plan, nowKey, recur, detected, reimb, checks, insights, events, annual, reclass, limits, lastExport, onPreset, onSkip, onOpen, onSheet, onAddRecur, onAddAnnual, onDismiss, setTab, onEventDone }) {
+function HomeView({ acc, multi, onSwitch, J, txs, initBal, balance, fc, plan, nowKey, recur, detected, reimb, checks, insights, events, annual, reclass, limits, lastExport, onPreset, onSkip, onOpen, onSheet, onAddRecur, onAddAnnual, onDismiss, setTab, onEventDone }) {
   const [showFc, setShowFc] = useState(false);
   const mtx = txs.filter((t) => t.date.startsWith(nowKey));
   const inc = sum(mtx.filter((t) => t.amount > 0).map((t) => t.amount)), exp = -sum(mtx.filter((t) => t.amount < 0).map((t) => t.amount));
@@ -1722,12 +1874,12 @@ function HomeView({ txs, initBal, balance, fc, plan, nowKey, recur, detected, re
   });
   const reclassN = sum(reclass.map((g) => g.txs.length));
   const hasLook = insights.length || newRec.length || annual.length || reclassN || checks.length || backupDays === null || backupDays > 30 || lastDays !== null && lastDays > 20;
-  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Mes Finances", eyebrow: cap((/* @__PURE__ */ new Date()).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })), onGear: () => setTab("set") }), /* @__PURE__ */ React.createElement("section", { className: "hero" }, /* @__PURE__ */ React.createElement("div", { className: "hero-label" }, "Solde du compte"), /* @__PURE__ */ React.createElement("div", { className: "hero-amt" + (balance < 0 ? " neg" : "") }, eur(balance)), /* @__PURE__ */ React.createElement("button", { className: "hero-fc", onClick: () => setShowFc((s) => !s) }, /* @__PURE__ */ React.createElement("span", null, "Fin ", monthName.toLowerCase(), " estimée"), /* @__PURE__ */ React.createElement("strong", null, eur0(fc.end)), /* @__PURE__ */ React.createElement(Icon, { n: "down", s: 14, style: { transform: showFc ? "rotate(180deg)" : "", transition: "transform .2s" } })), showFc && /* @__PURE__ */ React.createElement("div", { className: "fc-detail" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Solde actuel"), /* @__PURE__ */ React.createElement("span", null, eur(balance))), fc.pendIn > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées attendues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur(fc.pendIn))), fc.pendOut > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Prélèvements et virements à venir"), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.pendOut))), fc.evOut > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Événements du mois", /* @__PURE__ */ React.createElement("small", null, fc.evThis.filter((u) => u.ev.type !== "rentree").map((u) => u.ev.name).join(", "))), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.evOut))), fc.evIn > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées prévues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur(fc.evIn))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Dépenses courantes restantes", /* @__PURE__ */ React.createElement("small", null, "habituel ≈ ", eur0(fc.typical), "/mois, déjà ", eur0(fc.varNow))), fc.varLeft > 0 ? /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.varLeft)) : /* @__PURE__ */ React.createElement("span", { className: "muted" }, "déjà atteint")), /* @__PURE__ */ React.createElement("div", { className: "fc-next" }, /* @__PURE__ */ React.createElement("span", null, "En ", nextName, ", si tout se passe comme d'habitude", /* @__PURE__ */ React.createElement("small", null, "+", eur0(fc.next.recIn), " attendus − ", eur0(fc.next.recOut), " récurrents − ", eur0(fc.next.typical), " courant", fc.next.evOut ? ` − ${eur0(fc.next.evOut)} événements` : "")), /* @__PURE__ */ React.createElement("span", { className: fc.next.net >= 0 ? "pos" : "neg" }, fc.next.net >= 0 ? "+" : "−", eur0(Math.abs(fc.next.net)))), /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Calculé sur tes ", fc.monthsUsed, " derniers mois. Les achats de plus de ", BIG, " € ne comptent pas dans le « courant ».")), /* @__PURE__ */ React.createElement("div", { className: "hero-row" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "dot pos" }), "Revenus ", monthName.toLowerCase(), /* @__PURE__ */ React.createElement("strong", { className: "pos" }, eur(inc))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "dot neg" }), "Dépenses", /* @__PURE__ */ React.createElement("strong", { className: "neg" }, eur(exp))))), /* @__PURE__ */ React.createElement("button", { className: "plan-teaser", onClick: () => setTab("plan") }, /* @__PURE__ */ React.createElement("span", { className: "pt-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "compass", s: 20 })), /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, /* @__PURE__ */ React.createElement("small", null, plan.free >= 0 ? "Tu peux mettre de côté" : "Pour compléter tes réserves"), /* @__PURE__ */ React.createElement("strong", null, plan.free >= 0 ? eur0(plan.free) + " aujourd'hui" : "il manque " + eur0(-plan.free)), /* @__PURE__ */ React.createElement("small", null, "et ≈ ", eur0(Math.max(0, plan.capacity)), " par mois en rythme normal")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 18 })), /* @__PURE__ */ React.createElement(MonthRecurring, { fc, nowKey, onPreset, onSkip, onOpen, onSheet }), up.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À venir"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => setTab("plan") }, "Agenda")), up.slice(0, 4).map((u) => /* @__PURE__ */ React.createElement(EventRow, { key: u.ev.id + u.occ, u, onOpen: (ev) => onSheet({ type: "event", ev }), onDone: onEventDone }))), hasLook ? /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À regarder")), insights.map((i) => /* @__PURE__ */ React.createElement("div", { key: i.k, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico " + i.tone }, i.cat ? /* @__PURE__ */ React.createElement(CatIcon, { c: i.cat, s: 15 }) : /* @__PURE__ */ React.createElement(Icon, { n: i.ico || "alert", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, i.title), /* @__PURE__ */ React.createElement("small", null, i.text)))), reclassN > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("cats") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "tag", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Catégories plus précises proposées"), /* @__PURE__ */ React.createElement("small", null, reclassN, " opérations : ", reclass.slice(0, 4).map((g) => g.to).join(", "), "…")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), newRec.slice(0, 3).map((d) => /* @__PURE__ */ React.createElement("div", { key: d.key, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "repeat", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, d.title), " revient chaque mois", /* @__PURE__ */ React.createElement("small", null, eur(d.amount), " vers le ", d.day, " · vu sur ", d.months, " mois")), /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onAddRecur(d) }, "Suivre"))), annual.slice(0, 2).map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "cal", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, c.name), " : abonnement annuel ?", /* @__PURE__ */ React.createElement("small", null, eur(-c.last.amount), " payé le ", shortDate(c.last.date), " · à prévoir pour l'an prochain ?"), /* @__PURE__ */ React.createElement("div", { className: "ins-acts" }, /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onAddAnnual(c) }, "Oui, prévoir"), /* @__PURE__ */ React.createElement("button", { className: "mini ghost", onClick: () => onDismiss("ann:" + c.id) }, "Non"))))), checks.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("checks") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico warn" }, /* @__PURE__ */ React.createElement(Icon, { n: "alert", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, checks.length, " point", checks.length > 1 ? "s" : "", " à vérifier"), /* @__PURE__ */ React.createElement("small", null, [...new Set(checks.map((c) => ({ cat: "catégories incohérentes", dup: "doublons possibles", date: "dates suspectes", unk: "à préciser" })[c.type]))].join(" · "))), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), (backupDays === null || backupDays > 30) && txs.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("data") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico warn" }, /* @__PURE__ */ React.createElement(Icon, { n: "shield", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, backupDays === null ? "Aucune sauvegarde" : `Dernière sauvegarde il y a ${backupDays} jours`), /* @__PURE__ */ React.createElement("small", null, "Tes données ne vivent que sur ce téléphone")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), lastDays !== null && lastDays > 20 && /* @__PURE__ */ React.createElement("div", { className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "list", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Dernière saisie il y a ", lastDays, " jours"), /* @__PURE__ */ React.createElement("small", null, "Pense à pointer ton relevé")))) : null, reimb.open.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À récupérer"), /* @__PURE__ */ React.createElement("strong", { className: "pos" }, eur(reimb.total))), reimb.open.map(({ t, left, got }) => /* @__PURE__ */ React.createElement("button", { key: t.id, className: "tx", onClick: () => onOpen(t) }, /* @__PURE__ */ React.createElement(CatDot, { c: t.category, size: 34 }), /* @__PURE__ */ React.createElement("div", { className: "tx-body" }, /* @__PURE__ */ React.createElement("div", { className: "tx-name" }, t.title), /* @__PURE__ */ React.createElement("div", { className: "tx-sub" }, shortDate(t.date), t.reimb.from ? " · " + t.reimb.from : "", got > 0 ? ` · déjà ${eur(got)}` : "")), /* @__PURE__ */ React.createElement("span", { className: "amt pos" }, eur(left))))), limCats.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Plafonds · ", monthName)), limCats.map((c) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: multi ? acc.name : "Mes Finances", eyebrow: cap((/* @__PURE__ */ new Date()).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })), onGear: () => setTab("set"), onSwitch: multi ? onSwitch : null }), /* @__PURE__ */ React.createElement("section", { className: "hero" }, /* @__PURE__ */ React.createElement("div", { className: "hero-label" }, "Solde du compte"), /* @__PURE__ */ React.createElement("div", { className: "hero-amt" + (balance < 0 ? " neg" : "") }, eur(balance)), /* @__PURE__ */ React.createElement("button", { className: "hero-fc", onClick: () => setShowFc((s) => !s) }, /* @__PURE__ */ React.createElement("span", null, "Fin ", monthName.toLowerCase(), " estimée"), /* @__PURE__ */ React.createElement("strong", null, eur0(fc.end)), /* @__PURE__ */ React.createElement(Icon, { n: "down", s: 14, style: { transform: showFc ? "rotate(180deg)" : "", transition: "transform .2s" } })), showFc && /* @__PURE__ */ React.createElement("div", { className: "fc-detail" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Solde actuel"), /* @__PURE__ */ React.createElement("span", null, eur(balance))), fc.pendIn > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées attendues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur(fc.pendIn))), fc.pendOut > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Prélèvements et virements à venir"), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.pendOut))), fc.evOut > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Événements du mois", /* @__PURE__ */ React.createElement("small", null, fc.evThis.filter((u) => u.ev.type !== "rentree").map((u) => u.ev.name).join(", "))), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.evOut))), fc.evIn > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées prévues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur(fc.evIn))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Dépenses courantes restantes", /* @__PURE__ */ React.createElement("small", null, "habituel ≈ ", eur0(fc.typical), "/mois, déjà ", eur0(fc.varNow))), fc.varLeft > 0 ? /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur(fc.varLeft)) : /* @__PURE__ */ React.createElement("span", { className: "muted" }, "déjà atteint")), /* @__PURE__ */ React.createElement("div", { className: "fc-next" }, /* @__PURE__ */ React.createElement("span", null, "En ", nextName, ", si tout se passe comme d'habitude", /* @__PURE__ */ React.createElement("small", null, "+", eur0(fc.next.recIn), " attendus − ", eur0(fc.next.recOut), " récurrents − ", eur0(fc.next.typical), " courant", fc.next.evOut ? ` − ${eur0(fc.next.evOut)} événements` : "")), /* @__PURE__ */ React.createElement("span", { className: fc.next.net >= 0 ? "pos" : "neg" }, fc.next.net >= 0 ? "+" : "−", eur0(Math.abs(fc.next.net)))), /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Calculé sur tes ", fc.monthsUsed, " derniers mois. Les achats de plus de ", BIG, " € ne comptent pas dans le « courant ».")), /* @__PURE__ */ React.createElement("div", { className: "hero-row" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "dot pos" }), "Revenus ", monthName.toLowerCase(), /* @__PURE__ */ React.createElement("strong", { className: "pos" }, eur(inc))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "dot neg" }), "Dépenses", /* @__PURE__ */ React.createElement("strong", { className: "neg" }, eur(exp))))), J ? h(JointTeaser, { J, nowKey, onClick: () => setTab("plan") }) : /* @__PURE__ */ React.createElement("button", { className: "plan-teaser", onClick: () => setTab("plan") }, /* @__PURE__ */ React.createElement("span", { className: "pt-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "compass", s: 20 })), /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, /* @__PURE__ */ React.createElement("small", null, plan.free >= 0 ? "Tu peux mettre de côté" : "Pour compléter tes réserves"), /* @__PURE__ */ React.createElement("strong", null, plan.free >= 0 ? eur0(plan.free) + " aujourd'hui" : "il manque " + eur0(-plan.free)), /* @__PURE__ */ React.createElement("small", null, "et ≈ ", eur0(Math.max(0, plan.capacity)), " par mois en rythme normal")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 18 })), /* @__PURE__ */ React.createElement(MonthRecurring, { fc, nowKey, onPreset, onSkip, onOpen, onSheet }), up.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À venir"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => setTab("plan") }, "Agenda")), up.slice(0, 4).map((u) => /* @__PURE__ */ React.createElement(EventRow, { key: u.ev.id + u.occ, u, onOpen: (ev) => onSheet({ type: "event", ev }), onDone: onEventDone }))), hasLook ? /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À regarder")), insights.map((i) => /* @__PURE__ */ React.createElement("div", { key: i.k, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico " + i.tone }, i.cat ? /* @__PURE__ */ React.createElement(CatIcon, { c: i.cat, s: 15 }) : /* @__PURE__ */ React.createElement(Icon, { n: i.ico || "alert", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, i.title), /* @__PURE__ */ React.createElement("small", null, i.text)))), reclassN > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("cats") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "tag", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Catégories plus précises proposées"), /* @__PURE__ */ React.createElement("small", null, reclassN, " opérations : ", reclass.slice(0, 4).map((g) => g.to).join(", "), "…")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), newRec.slice(0, 3).map((d) => /* @__PURE__ */ React.createElement("div", { key: d.key, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "repeat", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, d.title), " revient chaque mois", /* @__PURE__ */ React.createElement("small", null, eur(d.amount), " vers le ", d.day, " · vu sur ", d.months, " mois")), /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onAddRecur(d) }, "Suivre"))), annual.slice(0, 2).map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id, className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "cal", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, c.name), " : abonnement annuel ?", /* @__PURE__ */ React.createElement("small", null, eur(-c.last.amount), " payé le ", shortDate(c.last.date), " · à prévoir pour l'an prochain ?"), /* @__PURE__ */ React.createElement("div", { className: "ins-acts" }, /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onAddAnnual(c) }, "Oui, prévoir"), /* @__PURE__ */ React.createElement("button", { className: "mini ghost", onClick: () => onDismiss("ann:" + c.id) }, "Non"))))), checks.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("checks") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico warn" }, /* @__PURE__ */ React.createElement(Icon, { n: "alert", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, checks.length, " point", checks.length > 1 ? "s" : "", " à vérifier"), /* @__PURE__ */ React.createElement("small", null, [...new Set(checks.map((c) => ({ cat: "catégories incohérentes", dup: "doublons possibles", date: "dates suspectes", unk: "à préciser" })[c.type]))].join(" · "))), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), (backupDays === null || backupDays > 30) && txs.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "insight as-btn", onClick: () => onSheet("data") }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico warn" }, /* @__PURE__ */ React.createElement(Icon, { n: "shield", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, backupDays === null ? "Aucune sauvegarde" : `Dernière sauvegarde il y a ${backupDays} jours`), /* @__PURE__ */ React.createElement("small", null, "Tes données ne vivent que sur ce téléphone")), /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 })), lastDays !== null && lastDays > 20 && /* @__PURE__ */ React.createElement("div", { className: "insight" }, /* @__PURE__ */ React.createElement("span", { className: "ins-ico" }, /* @__PURE__ */ React.createElement(Icon, { n: "list", s: 14 })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Dernière saisie il y a ", lastDays, " jours"), /* @__PURE__ */ React.createElement("small", null, "Pense à pointer ton relevé")))) : null, reimb.open.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "À récupérer"), /* @__PURE__ */ React.createElement("strong", { className: "pos" }, eur(reimb.total))), reimb.open.map(({ t, left, got }) => /* @__PURE__ */ React.createElement("button", { key: t.id, className: "tx", onClick: () => onOpen(t) }, /* @__PURE__ */ React.createElement(CatDot, { c: t.category, size: 34 }), /* @__PURE__ */ React.createElement("div", { className: "tx-body" }, /* @__PURE__ */ React.createElement("div", { className: "tx-name" }, t.title), /* @__PURE__ */ React.createElement("div", { className: "tx-sub" }, shortDate(t.date), t.reimb.from ? " · " + t.reimb.from : "", got > 0 ? ` · déjà ${eur(got)}` : "")), /* @__PURE__ */ React.createElement("span", { className: "amt pos" }, eur(left))))), limCats.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Plafonds · ", monthName)), limCats.map((c) => {
     const v = expByCat[c] || 0, p = v / limits[c];
     return /* @__PURE__ */ React.createElement("div", { key: c, className: "lim" }, /* @__PURE__ */ React.createElement("div", { className: "lim-top" }, /* @__PURE__ */ React.createElement("span", { className: "row-c" }, /* @__PURE__ */ React.createElement(CatIcon, { c, s: 15 }), " ", c), /* @__PURE__ */ React.createElement("span", { className: p > 1 ? "neg" : "" }, eur0(v), " / ", eur0(limits[c]))), /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { style: { width: `${Math.min(p, 1) * 100}%`, background: p > 1 ? "var(--red)" : p > 0.8 ? "var(--warn)" : catColor(c) } })));
   })), /* @__PURE__ */ React.createElement(BalanceTrend, { txs, initBal }), txs.length > 0 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Dernières opérations"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => setTab("tx") }, "Tout voir")), [...txs].sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id)).slice(0, 5).map((t) => /* @__PURE__ */ React.createElement(TxRow, { key: t.id, t, onOpen }))));
 }
-function PlanView({ plan, fc, balance, events, txs, setTab, onSheet, onEventDone, onAddFete, onContribute }) {
+function PlanView({ J, setJointCfg, balanceKnown, plan, fc, balance, events, txs, setTab, onSheet, onEventDone, onAddFete, onContribute }) {
   const [hint, setHint] = useState(null);
   const [contrib, setContrib] = useState(null);
   const up = upcoming(events, txs, 366);
@@ -1736,7 +1888,7 @@ function PlanView({ plan, fc, balance, events, txs, setTab, onSheet, onEventDone
   const total = Math.max(balance, sum(plan.blocks.map((b) => b.v)) + Math.max(0, plan.free), 1);
   const C = plan.capacity;
   const provMonthly = sum(plan.prov.map((p) => p.monthly));
-  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Plan", eyebrow: "Combien garder, combien mettre de côté", onGear: () => setTab("set") }), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Ton mois type"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => onSheet("plan") }, "Réglages")), /* @__PURE__ */ React.createElement("div", { className: "wf" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées attendues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur0(fc.next.recIn))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Récurrents", /* @__PURE__ */ React.createElement("small", null, plan.recGroups.length ? plan.recGroups.map(([g, v]) => `dont ${g} ≈ ${eur0(v)}`).join(" · ") + " · reste en abonnements" : "compte commun, abonnements, prélèvements")), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(fc.next.recOut))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Dépenses courantes habituelles"), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(fc.typical))), plan.eventsMonthly > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Événements lissés", /* @__PURE__ */ React.createElement("small", null, "cadeaux et dépenses de l'agenda, répartis sur l'année")), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(plan.eventsMonthly))), /* @__PURE__ */ React.createElement("div", { className: "wf-total" }, /* @__PURE__ */ React.createElement("span", null, "Épargne possible"), /* @__PURE__ */ React.createElement("strong", { className: C >= 0 ? "pos" : "neg" }, C >= 0 ? "" : "−", eur0(Math.abs(C)), /* @__PURE__ */ React.createElement("small", null, " /mois"))), plan.goalsMonthly > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "dont objectifs"), /* @__PURE__ */ React.createElement("span", null, eur0(plan.goalsMonthly), " → reste ", eur0(plan.afterGoals)))), fc.next.recIn === 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Ajoute ton salaire dans les récurrents pour que le calcul soit juste.")), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Ton argent aujourd'hui"), /* @__PURE__ */ React.createElement("strong", null, eur0(balance))), /* @__PURE__ */ React.createElement("div", { className: "stack" }, plan.blocks.map((b) => b.covered > 0 && /* @__PURE__ */ React.createElement("span", { key: b.k, style: { width: `${b.covered / total * 100}%`, background: b.color } })), plan.free > 0 && /* @__PURE__ */ React.createElement("span", { style: { width: `${plan.free / total * 100}%`, background: "var(--green)" } })), plan.blocks.map((b) => /* @__PURE__ */ React.createElement("div", { key: b.k }, /* @__PURE__ */ React.createElement("button", { className: "alloc", onClick: () => setHint(hint === b.k ? null : b.k) }, /* @__PURE__ */ React.createElement("span", { className: "leg-dot", style: { background: b.color } }), /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, b.label), /* @__PURE__ */ React.createElement("span", { className: "alloc-v" + (b.covered < b.v - 1 ? " neg" : "") }, eur0(b.v)), /* @__PURE__ */ React.createElement(Icon, { n: "down", s: 14, style: { opacity: 0.5, transform: hint === b.k ? "rotate(180deg)" : "" } })), hint === b.k && /* @__PURE__ */ React.createElement("p", { className: "muted small alloc-hint" }, b.hint, b.covered < b.v - 1 ? ` Couvert à ${Math.round(b.covered / b.v * 100)} %.` : ""))), plan.incoming > 1 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "+", eur0(plan.incoming), " encore attendus ce mois (salaire…) sont comptés."), /* @__PURE__ */ React.createElement("div", { className: "free-box " + (plan.free >= 0 ? "ok" : "ko") }, plan.free >= 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("strong", null, eur0(plan.free), " disponibles"), /* @__PURE__ */ React.createElement("span", null, "Tu peux les virer sur un livret ou vers un objectif sans fragiliser ton mois.")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("strong", null, "Il manque ", eur0(-plan.free)), /* @__PURE__ */ React.createElement("span", null, "pour couvrir toutes tes réserves. À ton rythme (", eur0(Math.max(0, C)), "/mois), c'est rattrapé en ", C > 0 ? Math.ceil(-plan.free / C) + " mois" : "—", "."))), /* @__PURE__ */ React.createElement("p", { className: "muted tiny" }, "Repères classiques (coussin 1 mois, matelas 3 mois), réglables. Ce n'est pas un conseil financier personnalisé.")), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Objectifs"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => onSheet({ type: "goal" }) }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 14 }), " Nouveau")), plan.goals.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Voiture, vacances, travaux… Fixe un montant et une date : l'appli calcule combien mettre chaque mois."), plan.goals.map((x) => /* @__PURE__ */ React.createElement("div", { key: x.g.id, className: "goal" }, /* @__PURE__ */ React.createElement("button", { className: "goal-top", onClick: () => onSheet({ type: "goal", goal: x.g }) }, /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, /* @__PURE__ */ React.createElement("strong", null, x.g.name), /* @__PURE__ */ React.createElement("small", null, eur0(x.saved), " / ", eur0(x.g.target), x.g.deadline ? ` · pour ${monthLabel(x.g.deadline).toLowerCase()}` : "")), /* @__PURE__ */ React.createElement("span", { className: "goal-pm" }, x.perMonth !== null ? /* @__PURE__ */ React.createElement(React.Fragment, null, eur0(x.perMonth), /* @__PURE__ */ React.createElement("small", null, "/mois")) : /* @__PURE__ */ React.createElement("small", null, Math.round(x.pct * 100), " %"))), /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { style: { width: `${x.pct * 100}%`, background: "var(--green)" } })), contrib === x.g.id ? /* @__PURE__ */ React.createElement("form", { className: "contrib", onSubmit: (e) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Plan", eyebrow: J ? "Combien verser sur le compte commun" : "Combien garder, combien mettre de côté", onGear: () => setTab("set") }), J ? h(JointPlan, { J, setCfg: setJointCfg, onSheet, balance, balanceKnown }) : h(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Ton mois type"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => onSheet("plan") }, "Réglages")), /* @__PURE__ */ React.createElement("div", { className: "wf" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Rentrées attendues"), /* @__PURE__ */ React.createElement("span", { className: "pos" }, "+", eur0(fc.next.recIn))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Récurrents", /* @__PURE__ */ React.createElement("small", null, plan.recGroups.length ? plan.recGroups.map(([g, v]) => `dont ${g} ≈ ${eur0(v)}`).join(" · ") + " · reste en abonnements" : "compte commun, abonnements, prélèvements")), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(fc.next.recOut))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Dépenses courantes habituelles"), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(fc.typical))), plan.eventsMonthly > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "Événements lissés", /* @__PURE__ */ React.createElement("small", null, "cadeaux et dépenses de l'agenda, répartis sur l'année")), /* @__PURE__ */ React.createElement("span", { className: "neg" }, "−", eur0(plan.eventsMonthly))), /* @__PURE__ */ React.createElement("div", { className: "wf-total" }, /* @__PURE__ */ React.createElement("span", null, "Épargne possible"), /* @__PURE__ */ React.createElement("strong", { className: C >= 0 ? "pos" : "neg" }, C >= 0 ? "" : "−", eur0(Math.abs(C)), /* @__PURE__ */ React.createElement("small", null, " /mois"))), plan.goalsMonthly > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", null, "dont objectifs"), /* @__PURE__ */ React.createElement("span", null, eur0(plan.goalsMonthly), " → reste ", eur0(plan.afterGoals)))), fc.next.recIn === 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Ajoute ton salaire dans les récurrents pour que le calcul soit juste.")), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Ton argent aujourd'hui"), /* @__PURE__ */ React.createElement("strong", null, eur0(balance))), /* @__PURE__ */ React.createElement("div", { className: "stack" }, plan.blocks.map((b) => b.covered > 0 && /* @__PURE__ */ React.createElement("span", { key: b.k, style: { width: `${b.covered / total * 100}%`, background: b.color } })), plan.free > 0 && /* @__PURE__ */ React.createElement("span", { style: { width: `${plan.free / total * 100}%`, background: "var(--green)" } })), plan.blocks.map((b) => /* @__PURE__ */ React.createElement("div", { key: b.k }, /* @__PURE__ */ React.createElement("button", { className: "alloc", onClick: () => setHint(hint === b.k ? null : b.k) }, /* @__PURE__ */ React.createElement("span", { className: "leg-dot", style: { background: b.color } }), /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, b.label), /* @__PURE__ */ React.createElement("span", { className: "alloc-v" + (b.covered < b.v - 1 ? " neg" : "") }, eur0(b.v)), /* @__PURE__ */ React.createElement(Icon, { n: "down", s: 14, style: { opacity: 0.5, transform: hint === b.k ? "rotate(180deg)" : "" } })), hint === b.k && /* @__PURE__ */ React.createElement("p", { className: "muted small alloc-hint" }, b.hint, b.covered < b.v - 1 ? ` Couvert à ${Math.round(b.covered / b.v * 100)} %.` : ""))), plan.incoming > 1 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "+", eur0(plan.incoming), " encore attendus ce mois (salaire…) sont comptés."), /* @__PURE__ */ React.createElement("div", { className: "free-box " + (plan.free >= 0 ? "ok" : "ko") }, plan.free >= 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("strong", null, eur0(plan.free), " disponibles"), /* @__PURE__ */ React.createElement("span", null, "Tu peux les virer sur un livret ou vers un objectif sans fragiliser ton mois.")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("strong", null, "Il manque ", eur0(-plan.free)), /* @__PURE__ */ React.createElement("span", null, "pour couvrir toutes tes réserves. À ton rythme (", eur0(Math.max(0, C)), "/mois), c'est rattrapé en ", C > 0 ? Math.ceil(-plan.free / C) + " mois" : "—", "."))), /* @__PURE__ */ React.createElement("p", { className: "muted tiny" }, "Repères classiques (coussin 1 mois, matelas 3 mois), réglables. Ce n'est pas un conseil financier personnalisé."))), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Objectifs"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => onSheet({ type: "goal" }) }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 14 }), " Nouveau")), plan.goals.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Voiture, vacances, travaux… Fixe un montant et une date : l'appli calcule combien mettre chaque mois."), plan.goals.map((x) => /* @__PURE__ */ React.createElement("div", { key: x.g.id, className: "goal" }, /* @__PURE__ */ React.createElement("button", { className: "goal-top", onClick: () => onSheet({ type: "goal", goal: x.g }) }, /* @__PURE__ */ React.createElement("span", { className: "tx-body" }, /* @__PURE__ */ React.createElement("strong", null, x.g.name), /* @__PURE__ */ React.createElement("small", null, eur0(x.saved), " / ", eur0(x.g.target), x.g.deadline ? ` · pour ${monthLabel(x.g.deadline).toLowerCase()}` : "")), /* @__PURE__ */ React.createElement("span", { className: "goal-pm" }, x.perMonth !== null ? /* @__PURE__ */ React.createElement(React.Fragment, null, eur0(x.perMonth), /* @__PURE__ */ React.createElement("small", null, "/mois")) : /* @__PURE__ */ React.createElement("small", null, Math.round(x.pct * 100), " %"))), /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { style: { width: `${x.pct * 100}%`, background: "var(--green)" } })), contrib === x.g.id ? /* @__PURE__ */ React.createElement("form", { className: "contrib", onSubmit: (e) => {
     e.preventDefault();
     const v = parseNum(e.target.v.value);
     if (v) {
@@ -1744,6 +1896,394 @@ function PlanView({ plan, fc, balance, events, txs, setTab, onSheet, onEventDone
       setContrib(null);
     }
   } }, /* @__PURE__ */ React.createElement("input", { name: "v", className: "fi", inputMode: "decimal", placeholder: x.perMonth ? String(Math.round(x.perMonth)) : "Montant", autoFocus: true }), /* @__PURE__ */ React.createElement("button", { className: "mini", type: "submit" }, "Verser"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mini ghost", onClick: () => setContrib(null) }, "Annuler")) : /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => setContrib(x.g.id) }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 14 }), " Mettre de côté")))), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Agenda"), /* @__PURE__ */ React.createElement("button", { className: "link-btn", onClick: () => onSheet({ type: "event" }) }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 14 }), " Ajouter")), up.length === 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Anniversaires, fêtes, dépenses prévues (contrôle technique, assurance annuelle…) ou rentrées attendues (prime, remboursement). L'appli lisse leur coût dans ton mois type."), up.map((u) => /* @__PURE__ */ React.createElement(EventRow, { key: u.ev.id + u.occ, u, onOpen: (ev) => onSheet({ type: "event", ev }), onDone: onEventDone })), fetes.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "chips wrap", style: { marginTop: 10 } }, fetes.map((f) => /* @__PURE__ */ React.createElement("button", { key: f.rule, className: "chip ghost", onClick: () => onAddFete(f) }, "+ ", f.name))), provMonthly > 0 && /* @__PURE__ */ React.createElement("p", { className: "muted small", style: { marginTop: 10 } }, "Pour être prêt à temps, mets ≈ ", eur0(provMonthly), " de côté ce mois-ci pour l'agenda.")));
+}
+const JOINT_DEFAULT = { margin: 0.05, cushionMonths: 1, catchUpMonths: 6, extras: [], envelope: 0, over: {}, names: {}, share: 0.5, prorata: false, incomeA: 0, incomeB: 0, payers: {}, outside: [], birth: "", babyItems: null, garde: null, ab: "auto", abToJoint: false, tf: 0, tfGrowth: 0.02, foodInfl: 0.02, infl: 0.02 };
+// Ordres de grandeur (à ajuster) : montant mensuel, âge de début / fin en mois (0 = sans fin)
+const BABY_ITEMS = [
+  { k: "couches", label: "Couches & lingettes", amount: 55, from: 0, to: 30, on: true },
+  { k: "lait", label: "Lait infantile (1er/2e âge)", amount: 80, from: 0, to: 12, on: true },
+  { k: "lait2", label: "Lait de croissance", amount: 25, from: 12, to: 36, on: true },
+  { k: "repas", label: "Repas bébé (diversification)", amount: 45, from: 6, to: 0, on: true },
+  { k: "soins", label: "Soins, hygiène, pharmacie", amount: 20, from: 0, to: 0, on: true },
+  { k: "vet", label: "Vêtements & chaussures", amount: 35, from: 0, to: 0, on: true }
+];
+const GARDE_DEFAULT = { mode: "am", start: "", hoursWeek: 45, daysWeek: 5, weeksYear: 47, income: 0, rate: 4.8, upkeep: 4, meals: 0, fixed: 0, creditInJoint: false };
+// Barèmes 2026 : taux d'effort PSU / CMG 1 enfant, plancher-plafond de ressources, plafond horaire CMG assmat, crédit d'impôt
+const PSU = { rate: 619e-6, floor: 814.62, cap: 8500, amCap: 8, creditCap: 3500 };
+// Allocation de base PAJE (avril 2026), couple bi-actif, 1 enfant, plafonds sur revenus N-2
+const ABP = { full: 198.15, part: 99.08, capFull: 41055, capPart: 49054 };
+const monthsBetween = (a, b) => (+b.slice(0, 4) - +a.slice(0, 4)) * 12 + (+b.slice(5, 7) - +a.slice(5, 7));
+const ceil10 = (v) => Math.ceil(Math.max(0, v) / 10) * 10;
+function gardeCost(g0) {
+  const g = { ...GARDE_DEFAULT, ...g0 || {} };
+  if (g.mode === "none") return { mode: "none", net: 0, reste: 0, credit: 0, cost: 0, cmg: 0, known: true };
+  const hm = r2((+g.hoursWeek || 0) * (+g.weeksYear || 47) / 12);
+  const known = +g.income > 0;
+  const res = Math.min(PSU.cap, Math.max(PSU.floor, known ? +g.income / 12 : PSU.cap));
+  const part = res * PSU.rate;
+  let reste = 0, cost = 0, cmg = 0, depH = 0;
+  if (g.mode === "fixe") {
+    reste = cost = +g.fixed || 0;
+  } else if (g.mode === "creche") {
+    reste = cost = part * hm;
+  } else {
+    const days = (+g.daysWeek || 5) * (+g.weeksYear || 47) / 12;
+    depH = hm ? (+g.rate || 0) + ((+g.upkeep || 0) + (+g.meals || 0)) * days / hm : 0;
+    const cmgH = Math.max(0, Math.min(depH, PSU.amCap) - part);
+    cost = depH * hm;
+    cmg = cmgH * hm;
+    reste = cost - cmg;
+  }
+  const credit = Math.min(PSU.creditCap, reste * 12) * 0.5 / 12;
+  return { mode: g.mode, hm, res, part: r2(part), depH: r2(depH), cost: r2(cost), cmg: r2(cmg), reste: r2(reste), credit: r2(credit), net: r2(reste - (g.creditInJoint ? credit : 0)), known: known || g.mode === "fixe" };
+}
+const CIVIL = /* @__PURE__ */ new Set(["m", "mme", "mlle", "mr", "monsieur", "madame", "vir", "sepa", "de", "du", "ou"]);
+const isJointTitle = (n) => /(^|\s)ou(\s|$)/.test(n);
+function jointPayers(txs, C) {
+  const vers = txs.filter((t) => t.amount > 0 && t.category === "Versements").sort((a, b) => a.date.localeCompare(b.date));
+  const titles = [];
+  vers.forEach((t) => {
+    const n = norm(t.title);
+    if (!titles.includes(n)) titles.push(n);
+  });
+  const auto = {};
+  titles.filter((n) => !isJointTitle(n)).slice(0, 2).forEach((n, i) => {
+    auto[n] = i ? "b" : "a";
+  });
+  const who = (n) => C.payers[n] !== void 0 ? C.payers[n] : auto[n] || "none";
+  const words = (n) => n.split(/[^a-z]+/).filter((w) => w.length > 1 && !CIVIL.has(w));
+  const fa = titles.find((n) => who(n) === "a"), fb = titles.find((n) => who(n) === "b");
+  const wa = fa ? words(fa) : [], wb = fb ? words(fb) : [];
+  const guess = (w, o) => cap(w.find((x) => !o.includes(x)) || w[0] || "");
+  const names = { a: C.names.a || guess(wa, wb) || "Personne 1", b: C.names.b || guess(wb, wa) || "Personne 2" };
+  return { titles, who, names, vers };
+}
+const PERIODS = [30.44, 61, 91.3, 182.6, 365.25];
+const periodLabel = (p) => ({ 30.44: "chaque mois", 61: "tous les 2 mois", 91.3: "chaque trimestre", 182.6: "tous les 6 mois", 365.25: "chaque année" })[p] || "";
+function fullMonths(txs, nowKey) {
+  const ms = [...new Set(txs.map((t) => t.date.slice(0, 7)))].sort();
+  let full = ms.filter((k) => k < nowKey);
+  if (full.length > 1 && txs.filter((t) => t.date.startsWith(full[0])).every((t) => +t.date.slice(8) > 7)) full = full.slice(1);
+  return full;
+}
+// Factures et prélèvements réguliers : montants stables, espacés d'au moins 24 jours
+function detectBills(model, from, today, over, EXCL) {
+  const bills = [], billTx = /* @__PURE__ */ new Set();
+  model.clusters.filter((c) => c.sign < 0).forEach((c) => {
+    const occ = c.txs.filter((t) => t.date.slice(0, 7) >= from && !EXCL.has(t.category));
+    const dates = [...new Set(occ.map((t) => t.date))].sort();
+    if (occ.length < 2 || dates.length < 2) return;
+    const amts = occ.map((t) => -t.amount), med = median(amts);
+    const near = amts.filter((v) => Math.abs(v - med) <= med * 0.25).length / amts.length;
+    const gap = median(dates.slice(1).map((d, i) => daysBetween(dates[i], d)));
+    const prlv = occ.some((t) => t.kind === "prlv");
+    if (gap < 24 || near < 0.6) return;
+    if (occ.length === 2 ? !(prlv && gap >= 50) : !prlv && gap > 45) return;
+    const period = PERIODS.reduce((b, p) => Math.abs(p - gap) < Math.abs(b - gap) ? p : b);
+    const last = occ[occ.length - 1];
+    if (daysBetween(last.date, today) > period * 1.5 + 20) return;
+    const typical = r2(median(amts.slice(-3)));
+    const first = r2(median(amts.slice(0, 3)));
+    const auto = r2(typical * 30.44 / period);
+    const o = over[c.id];
+    bills.push({ id: c.id, name: c.name, cat: c.cat, typical, first, period, auto, monthly: o === -1 ? 0 : o != null ? o : auto, off: o === -1, edited: o != null && o !== -1, n: occ.length, last: last.date, next: addDays(last.date, Math.round(period)), occ });
+    c.txs.forEach((t) => billTx.add(t.id));
+  });
+  bills.sort((a, b) => b.auto - a.auto);
+  return { bills, billTx };
+}
+function computeJoint({ txs, model, cfg, nowKey, balance, balanceKnown }) {
+  const C = { ...JOINT_DEFAULT, ...cfg || {} };
+  C.over = C.over || {};
+  C.names = C.names || {};
+  C.payers = C.payers || {};
+  C.babyItems = C.babyItems && C.babyItems.length ? C.babyItems : BABY_ITEMS;
+  C.garde = { ...GARDE_DEFAULT, ...C.garde || {} };
+  const today = todayISO(), curY = nowKey.slice(0, 4);
+  const full = fullMonths(txs, nowKey);
+  const win6 = full.slice(-6), win12 = full.slice(-12), from12 = win12[0] || nowKey;
+  const EXCL = /* @__PURE__ */ new Set(["Versements", "Épargne", "Investissement"]);
+  const { bills, billTx } = detectBills(model, from12, today, C.over, EXCL);
+  const isBig = (t) => -t.amount > BIG;
+  const varTx = txs.filter((t) => t.amount < 0 && !billTx.has(t.id) && !EXCL.has(t.category) && t.category !== "Bébé" && !isBig(t) && win6.includes(t.date.slice(0, 7)));
+  const perMonth = win6.map((k) => sum(varTx.filter((t) => t.date.startsWith(k)).map((t) => -t.amount)));
+  const variable = perMonth.length ? r2(sum(perMonth) / perMonth.length) : 0;
+  const byCat = {};
+  varTx.forEach((t) => {
+    byCat[t.category || "Autre"] = (byCat[t.category || "Autre"] || 0) - t.amount;
+  });
+  const varCats = Object.entries(byCat).map(([c, v]) => [c, v / Math.max(1, win6.length)]).sort((a, b) => b[1] - a[1]);
+  const coursesAvg = r2((varCats.find((c) => c[0] === "Courses") || [0, 0])[1]);
+  const otherVar = r2(variable - coursesAvg);
+  const big = txs.filter((t) => t.amount < 0 && !billTx.has(t.id) && !EXCL.has(t.category) && isBig(t) && t.date.slice(0, 7) >= from12).sort((a, b) => a.amount - b.amount);
+  const bigHint = ceil10(sum(big.filter((t) => -t.amount < 2e3).map((t) => -t.amount)) / 12);
+  const last3 = full.slice(-3);
+  const babyReal = last3.length ? r2(sum(txs.filter((t) => t.amount < 0 && t.category === "Bébé" && !isBig(t) && last3.includes(t.date.slice(0, 7))).map((t) => -t.amount)) / last3.length) : 0;
+  const extras = (C.extras || []).filter((e) => e && +e.amount);
+  const extrasTotal = sum(extras.map((e) => +e.amount));
+  // Taxe foncière : montant annuel saisi, sinon ce qui a été prélevé sur 12 mois
+  const tfAuto = r2(sum(txs.filter((t) => t.amount < 0 && t.category === "Impôt" && t.date.slice(0, 7) >= from12).map((t) => -t.amount)));
+  const tfBill = bills.some((b) => b.cat === "Impôt");
+  const tf = +C.tf > 0 ? +C.tf : tfBill && tfAuto >= 300 ? tfAuto : 0;
+  const tfPaidY = r2(sum(txs.filter((t) => t.amount < 0 && t.category === "Impôt" && t.date.startsWith(curY)).map((t) => -t.amount)));
+  const billsUsed = tf ? bills.filter((b) => b.cat !== "Impôt") : bills;
+  const G = gardeCost(C.garde);
+  const gStart = C.garde.mode === "none" ? "" : C.garde.start || (C.birth ? addMonths(C.birth, 4) : "");
+  const income = +C.garde.income || 0;
+  const abAmt = C.ab === "none" ? 0 : C.ab === "plein" ? ABP.full : C.ab === "partiel" ? ABP.part : income > 0 ? income <= ABP.capFull ? ABP.full : income <= ABP.capPart ? ABP.part : 0 : 0;
+  const H = 24;
+  const months = Array.from({ length: H }, (_, i) => addMonths(nowKey, i + 1));
+  const proj = months.map((k, i) => {
+    const f = (r) => Math.pow(1 + (+r || 0), (i + 1) / 12);
+    let billsK = 0;
+    billsUsed.forEach((b) => {
+      if (b.off) return;
+      if (b.period < 40 || b.edited) billsK += b.monthly * f(C.infl);
+      else {
+        let d = b.next, guard = 0;
+        while (d.slice(0, 7) < k && guard++ < 60) d = addDays(d, Math.round(b.period));
+        if (d.slice(0, 7) === k) billsK += b.typical * f(C.infl);
+      }
+    });
+    let tfK = 0;
+    if (tf) {
+      const y = +k.slice(0, 4), m = +k.slice(5, 7);
+      if (k.slice(0, 4) === curY) {
+        const rem = 12 - +nowKey.slice(5, 7);
+        tfK = rem > 0 ? Math.max(0, tf - tfPaidY) / rem : 0;
+      } else {
+        const prev = tf * Math.pow(1 + C.tfGrowth, y - 1 - +curY), cur = prev * (1 + C.tfGrowth);
+        tfK = m <= 10 ? prev / 10 : (cur - prev) / 2;
+      }
+    }
+    const courses = coursesAvg * f(C.foodInfl), other = otherVar * f(C.infl);
+    let baby = 0;
+    const age = C.birth ? monthsBetween(C.birth, k) : -1;
+    if (C.birth && age >= 0) {
+      C.babyItems.forEach((it) => {
+        if (it.on !== false && age >= (+it.from || 0) && (!+it.to || age < +it.to)) baby += (+it.amount || 0) * f(C.infl);
+      });
+      baby = Math.max(baby, babyReal);
+    }
+    const garde = gStart && k >= gStart ? G.net : 0;
+    const extra = extrasTotal + (+C.envelope || 0);
+    const caf = C.abToJoint && C.birth && age >= 1 && age <= 36 ? abAmt : 0;
+    const raw = billsK + tfK + courses + other + baby + garde + extra;
+    return { k, bills: r2(billsK), tf: r2(tfK), courses: r2(courses), other: r2(other), baby: r2(baby), garde: r2(garde), extra: r2(extra), caf: r2(caf), margin: r2(raw * C.margin), out: r2(raw * (1 + C.margin) - caf) };
+  });
+  // Reste du mois en cours
+  const dayFrac = (/* @__PURE__ */ new Date()).getDate() / daysInMonth(nowKey);
+  const remBills = sum(billsUsed.filter((b) => !b.off).map((b) => b.period < 40 ? b.last.slice(0, 7) < nowKey ? b.monthly : 0 : b.next.slice(0, 7) === nowKey && b.next > today ? b.typical : 0));
+  const remCur = r2(remBills + variable * (1 - dayFrac));
+  const avg12 = sum(proj.slice(0, 12).map((p) => p.out)) / 12;
+  const floor = ceil10(C.cushionMonths * avg12);
+  const B0 = balanceKnown ? balance - remCur : floor;
+  let cum = 0, Tpath = 0;
+  proj.forEach((p, i) => {
+    cum += p.out;
+    const m = i + 1, need = m < C.catchUpMonths ? (cum - B0) / m : (cum + floor - B0) / m;
+    if (need > Tpath) Tpath = need;
+  });
+  const Tss = sum(proj.slice(12).map((p) => p.out)) / 12;
+  const monthly = ceil10(Math.max(Tpath, Tss));
+  let b = B0;
+  const bal = proj.map((p) => r2(b += monthly - p.out));
+  const minBal = Math.min(...bal), minK = proj[bal.indexOf(minBal)].k;
+  const avgOf = (l) => l.length ? r2(sum(l.map((p) => p.out)) / l.length) : null;
+  const phases = [];
+  if (C.birth) {
+    const pre = proj.filter((p) => p.k < C.birth), mid = proj.filter((p) => p.k >= C.birth && (!gStart || p.k < gStart)), post = gStart ? proj.filter((p) => p.k >= gStart && p.k < addMonths(gStart, 12)) : [];
+    if (pre.length) phases.push({ label: "Avant la naissance", sub: `jusqu'à ${monthLabel(addMonths(C.birth, -1)).toLowerCase()}`, v: avgOf(pre) });
+    if (mid.length) phases.push({ label: gStart ? "Bébé, sans garde" : "Avec bébé", sub: `${monthLabel(mid[0].k).toLowerCase()} → ${monthLabel(mid[mid.length - 1].k).toLowerCase()}`, v: avgOf(mid) });
+    if (post.length) phases.push({ label: "Avec la garde", sub: `1re année dès ${monthLabel(gStart).toLowerCase()}`, v: avgOf(post) });
+  } else phases.push({ label: "Mois moyen", sub: "sur les 12 prochains mois", v: avgOf(proj.slice(0, 12)) });
+  const steady = proj.slice(12), comp = {};
+  ["bills", "tf", "courses", "other", "baby", "garde", "extra", "margin", "caf", "out"].forEach((k) => {
+    comp[k] = r2(sum(steady.map((p) => p[k])) / steady.length);
+  });
+  const P = jointPayers(txs, C);
+  const outside = (C.outside || []).filter((o) => o && +o.amount > 0);
+  const OA = sum(outside.filter((o) => o.who !== "b").map((o) => +o.amount)), OB = sum(outside.filter((o) => o.who === "b").map((o) => +o.amount));
+  const share = C.prorata && +C.incomeA + +C.incomeB > 0 ? +C.incomeA / (+C.incomeA + +C.incomeB) : C.share;
+  const foyer = monthly + OA + OB;
+  const partA = Math.min(monthly, Math.max(0, Math.round((share * foyer - OA) / 5) * 5)), partB = monthly - partA;
+  const contrib = (k, w) => sum(P.vers.filter((t) => t.date.startsWith(k) && P.who(norm(t.title)) === w).map((t) => t.amount));
+  const avgC = (w) => win6.length ? r2(sum(win6.map((k) => contrib(k, w))) / win6.length) : 0;
+  return { C, win6, full, bills, billsUsed, variable, coursesAvg, otherVar, perMonth, varCats, big, bigHint, babyReal, extras, extrasTotal, tf, tfAuto, tfPaidY, G, gStart, abAmt, proj, bal, floor, B0, minBal, minK, Tpath, Tss, monthly, phases, comp, P, names: P.names, outside, OA, OB, share, foyer, partA, partB, avgA: avgC("a"), avgB: avgC("b"), nowA: contrib(nowKey, "a"), nowB: contrib(nowKey, "b"), hasData: txs.length > 0 };
+}
+const PJ_COLORS = { bills: "#D9A12B", courses: "#C2702F", other: "#B9A58E", baby: "#E07FAE", garde: "#7563E6", extra: "#959BA3" };
+function ProjChart({ J }) {
+  const [sel, setSel] = useState(null);
+  const W = 340, H = 150, top = 12, bot = 18, ch = H - top - bot, pl = 2;
+  const proj = J.proj, T = J.monthly;
+  const mx = Math.max(T, ...proj.map((p) => p.out + p.caf)) * 1.08;
+  const bw = (W - pl * 2) / proj.length, barW = Math.max(4, bw * 0.66);
+  const y = (v) => top + ch - v / mx * ch;
+  const s = sel !== null ? proj[sel] : null;
+  return h("div", null, h("div", { className: "cc-tip" }, s ? h(React.Fragment, null, h("strong", null, cap(monthLabel(s.k))), " · ", eur0(s.out), " de dépenses", s.garde ? ` dont garde ${eur0(s.garde)}` : "", s.baby ? ` · bébé ${eur0(s.baby)}` : "", " · solde ", eur0(J.bal[sel])) : h("span", { className: "muted" }, "Dépenses prévues par mois · trait = ce que vous versez · touche un mois")), h("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", style: { display: "block" } }, proj.map((p, i) => {
+    const x = pl + bw * i + (bw - barW) / 2;
+    let acc = 0;
+    const segs = [["bills", p.bills + p.tf], ["courses", p.courses], ["other", p.other + p.margin], ["baby", p.baby], ["garde", p.garde], ["extra", p.extra]];
+    return h("g", { key: p.k, onClick: () => setSel(sel === i ? null : i), style: { cursor: "pointer" } }, h("rect", { x: pl + bw * i, y: 0, width: bw, height: H, fill: sel === i ? "var(--sunk)" : "transparent" }), segs.map(([k, v]) => {
+      const hh = Math.max(0, v) / mx * ch, yy = top + ch - (acc + Math.max(0, v)) / mx * ch;
+      acc += Math.max(0, v);
+      return hh > 0 && h("rect", { key: k, x, y: yy, width: barW, height: hh, fill: PJ_COLORS[k] });
+    }), (i % 3 === 0 || p.k === J.C.birth || p.k === J.gStart) && h("text", { x: x + barW / 2, y: H - 4, textAnchor: "middle", className: "svg-lbl", style: { fontWeight: p.k === J.C.birth || p.k === J.gStart ? 800 : 600 } }, p.k === J.C.birth ? "👶" : p.k === J.gStart ? "G" : MONTHS_SHORT[+p.k.slice(5) - 1].replace(".", "")));
+  }), h("line", { x1: pl, x2: W - pl, y1: y(T), y2: y(T), stroke: "var(--green)", strokeWidth: 2, strokeDasharray: "5 3" }), h("text", { x: W - 4, y: y(T) - 4, textAnchor: "end", className: "svg-val", style: { fill: "var(--green)" } }, eur0(T))), h("div", { className: "chips wrap", style: { gap: 10, marginTop: 4, fontSize: 11.5, color: "var(--ink2)" } }, [["bills", "Factures"], ["courses", "Courses"], ["other", "Autre courant"], ["baby", "Bébé"], ["garde", "Garde"]].map(([k, l]) => h("span", { key: k, className: "row-c" }, h("span", { className: "leg-dot", style: { background: PJ_COLORS[k] } }), l))));
+}
+function BalChart({ J }) {
+  const W = 340, H = 90, top = 14, bot = 6, ch = H - top - bot;
+  const vals = J.bal, mn = Math.min(0, J.floor, ...vals), mx = Math.max(J.floor, ...vals) || 1, rg = mx - mn || 1;
+  const x = (i) => 4 + i / (vals.length - 1) * (W - 8), y = (v) => top + (1 - (v - mn) / rg) * ch;
+  const line = vals.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  return h("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", style: { display: "block", marginTop: 6 } }, h("line", { x1: 4, x2: W - 4, y1: y(J.floor), y2: y(J.floor), stroke: "var(--warn)", strokeDasharray: "3 3" }), h("text", { x: 6, y: y(J.floor) - 3, className: "svg-lbl" }, "réserve ", eur0(J.floor)), mn < 0 && h("line", { x1: 4, x2: W - 4, y1: y(0), y2: y(0), stroke: "var(--red)", strokeOpacity: ".5" }), h("path", { d: line, fill: "none", stroke: "var(--accent)", strokeWidth: 2.2, strokeLinejoin: "round" }), h("text", { x: W - 4, y: y(vals[vals.length - 1]) - 5, textAnchor: "end", className: "svg-val" }, eur0(vals[vals.length - 1])));
+}
+function JointTeaser({ J, nowKey, onClick }) {
+  const done = J.nowA + J.nowB, left = Math.max(0, J.monthly - done);
+  const who = [["a", J.nowA, J.partA], ["b", J.nowB, J.partB]];
+  return h("button", { className: "jb-teaser", onClick }, h("div", { className: "row" }, h("span", { className: "pt-ico" }, h(Icon, { n: "compass", s: 20 })), h("span", { className: "tx-body" }, h("small", null, "Versements de ", MONTHS[+nowKey.slice(5) - 1].toLowerCase()), h("strong", { className: "v" }, eur0(done), " / ", eur0(J.monthly)), h("small", null, !J.hasData ? "Importe un relevé pour calculer le montant" : left > 0 ? `Il reste ${eur0(left)} à verser ce mois-ci` : "C'est bon pour ce mois 👍")), h(Icon, { n: "right", s: 18 })), J.hasData && h("div", { className: "jb-who" }, who.map(([k, got, part]) => h("div", { key: k }, J.names[k], " · ", eur0(got), " / ", eur0(part), h("div", { className: "progress" }, h("div", { style: { width: `${Math.min(1, got / (part || 1)) * 100}%` } }))))));
+}
+function JointPlan({ J, setCfg, onSheet, balance, balanceKnown }) {
+  const [openK, setOpenK] = useState(null);
+  const C = J.C;
+  const setOver = (id, v) => setCfg((c) => {
+    const over = { ...(c || {}).over || {} };
+    if (v === null) delete over[id];
+    else over[id] = v;
+    return { ...c || {}, over };
+  });
+  if (!J.hasData) return h("section", { className: "card" }, h("h3", null, "Budget du compte commun"), h("p", { className: "muted small", style: { marginTop: 6 } }, "Importe le relevé du compte commun : l'appli repère les prélèvements, la moyenne des courses, et calcule ce qu'il faut verser chaque mois."), h("button", { className: "btn btn-p", style: { marginTop: 10 }, onClick: () => onSheet("import") }, h(Icon, { n: "upload", s: 16 }), " Importer un relevé"));
+  const avg = J.avgA + J.avgB, diff = r2(J.monthly - avg);
+  const last = J.proj[J.proj.length - 1].k;
+  const shareA = Math.round(J.share * 100);
+  const outsideOf = (w) => J.outside.filter((o) => (o.who === "b") === (w === "b"));
+  const line = (k, label, sub, v, cat, neg) => h("button", { className: "jb-line", onClick: () => setOpenK(openK === k ? null : k) }, h(CatDot, { c: cat || "Autre", size: 28 }), h("span", { className: "tx-body" }, label, sub && h("small", null, sub)), h("span", { className: "alloc-v" + (neg ? " pos" : "") }, neg ? "−" : "", eur0(v)), h(Icon, { n: "down", s: 14, style: { opacity: 0.5, transform: openK === k ? "rotate(180deg)" : "" } }));
+  const cp = J.comp, G = J.G;
+  return h(React.Fragment, null, h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "À verser chaque mois"), h("button", { className: "link-btn", onClick: () => onSheet("joint") }, "Réglages")), h("div", { className: "jb-big" }, eur0(J.monthly), h("small", null, " /mois")), h("p", { className: "muted small" }, C.birth ? `Montant fixe dès maintenant, calculé pour tenir jusqu'à ${monthLabel(last).toLowerCase()} avec bébé${J.gStart ? ", la garde" : ""}, la taxe foncière et l'inflation, sans passer sous la réserve.` : "Budget actuel. Ajoute la naissance et la garde dans les réglages pour les anticiper."), h("div", { className: "jb-split" }, [["a", J.partA, J.OA], ["b", J.partB, J.OB]].map(([k, part, o]) => h("div", { key: k }, h("small", null, J.names[k], " · ", k === "a" ? shareA : 100 - shareA, " %"), h("strong", null, eur0(part)), h("em", null, o ? `− ${eur0(o)} payés à côté` : `verse en moy. ${eur0(k === "a" ? J.avgA : J.avgB)}`)))), J.outside.length > 0 && h("p", { className: "muted tiny" }, "Charges du foyer ", eur0(J.foyer), "/mois = ", eur0(J.monthly), " sur le compte + ", eur0(J.OA + J.OB), " payés à côté (", J.outside.map((o) => `${o.label} ${eur0(+o.amount)}`).join(", "), "). Chacun en porte sa part, celui qui paie à côté verse d'autant moins."), J.win6.length > 0 && h("div", { className: "free-box " + (diff <= 0 ? "ok" : "ko") }, diff <= 0 ? h(React.Fragment, null, h("strong", null, "Ça suffit"), h("span", null, "Vous versez en moyenne ", eur0(avg), "/mois sur les ", J.win6.length, " derniers mois, soit ", eur0(-diff), " de plus.")) : h(React.Fragment, null, h("strong", null, "Il faut ", eur0(diff), "/mois de plus"), h("span", null, "Vous versez en moyenne ", eur0(avg), "/mois sur les ", J.win6.length, " derniers mois.")))), !C.birth && h("button", { className: "plan-teaser", onClick: () => onSheet("joint") }, h("span", { className: "pt-ico", style: { background: catColor("Bébé") } }, h(CatIcon, { c: "Bébé", s: 20, color: "#fff" })), h("span", { className: "tx-body" }, h("small", null, "À anticiper"), h("strong", { style: { color: catColor("Bébé") } }, "Arrivée de bébé"), h("small", null, "date de naissance, couches, lait, garde, aides CAF")), h(Icon, { n: "right", s: 18 })), h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Comment ça évolue")), J.phases.map((p, i) => h("div", { key: i, className: "jb-line" }, h("span", { className: "tx-body" }, p.label, h("small", null, p.sub)), h("span", { className: "alloc-v" }, "≈ ", eur0(p.v), h("small", { className: "muted" }, "/mois")))), h(ProjChart, { J }), h("div", { className: "fl", style: { marginTop: 12 } }, "Solde du compte si vous versez ", eur0(J.monthly), "/mois"), h(BalChart, { J }), h("p", { className: "muted small", style: { marginTop: 4 } }, balanceKnown ? `Point bas : ${eur0(J.minBal)} en ${monthLabel(J.minK).toLowerCase()}. Les premiers mois, le surplus constitue la réserve qui absorbera la garde et les grosses factures.` : "Solde actuel non renseigné : on suppose la réserve déjà en place.", !balanceKnown && h("button", { className: "link-btn", onClick: () => onSheet("balance") }, "Indiquer le solde"))), h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, C.birth ? "Un mois type avec bébé" : "Un mois type"), h("span", { className: "muted small" }, monthLabel(J.proj[12].k, true), " → ", monthLabel(last, true), " ", last.slice(0, 4))), line("bills", `Factures & prélèvements (${J.billsUsed.filter((b) => !b.off).length})`, "EDF, eau, assurance, box… + inflation", cp.bills, "Énergie & internet"), openK === "bills" && h("div", { className: "jb-sub" }, J.billsUsed.map((b) => h("div", { key: b.id }, h("span", { className: b.off ? "off" : "" }, b.name, h("small", null, " · ", periodLabel(b.period), b.period > 40 ? ` · ${eur(b.typical)}` : "")), b.off ? h("button", { className: "mini ghost", onClick: () => setOver(b.id, null) }, "Compter") : h(React.Fragment, null, h("input", { className: "jb-in", inputMode: "decimal", defaultValue: String(b.monthly).replace(".", ","), key: b.monthly, onBlur: (e) => {
+    const v = parseNum(e.target.value);
+    setOver(b.id, isNaN(v) || Math.abs(v - b.auto) < 0.01 ? null : r2(v));
+  } }), h("button", { className: "icon-btn", style: { width: 30, height: 30 }, onClick: () => setOver(b.id, -1), "aria-label": "Ne pas compter" }, h(Icon, { n: "x", s: 14 }))))), h("p", { className: "muted tiny" }, "Montants par mois. Corrige un montant ou retire ce qui ne doit plus compter.")), J.tf > 0 && line("tf", "Taxe foncière", `${eur0(J.tf)}/an${+C.tf ? "" : " (estimée sur 12 mois)"} · mensualisée sur 10 mois`, cp.tf, "Impôt"), openK === "tf" && h("div", { className: "jb-sub" }, h("p", { className: "muted tiny" }, "Prélevée de janvier à octobre (1/10 de l'an passé), solde en novembre-décembre. Déjà payé en ", todayISO().slice(0, 4), " : ", eur0(J.tfPaidY), ". Hausse annuelle prévue : ", Math.round(C.tfGrowth * 100), " %."), h("button", { className: "link-btn", onClick: () => onSheet("joint") }, "Saisir le montant de l'avis")), line("courses", "Courses", `${eur0(J.coursesAvg)} aujourd'hui · +${String(Math.round(C.foodInfl * 1e3) / 10).replace(".", ",")} %/an`, cp.courses, "Courses"), line("other", "Autres dépenses courantes", "maison, animaux, sorties… moyenne 6 mois", cp.other, "Shopping"), openK === "other" && h("div", { className: "jb-sub" }, J.varCats.filter((c) => c[0] !== "Courses").slice(0, 7).map(([c, v]) => h("div", { key: c }, h("span", null, c), h("span", null, eur0(v))))), C.birth && line("baby", "Bébé", "couches, lait, repas, soins, vêtements", cp.baby, "Bébé"), openK === "baby" && h("div", { className: "jb-sub" }, C.babyItems.filter((it) => it.on !== false).map((it) => h("div", { key: it.k || it.label }, h("span", null, it.label, h("small", null, " · ", +it.from ? `dès ${it.from} mois` : "dès la naissance", +it.to ? ` jusqu'à ${it.to} mois` : "")), h("span", null, eur0(+it.amount)))), J.babyReal > 0 && h("p", { className: "muted tiny" }, "Dépenses Bébé réelles récentes : ", eur0(J.babyReal), "/mois. On garde le plus haut des deux.")), J.gStart && line("garde", "Garde", G.mode === "creche" ? "crèche, tarif CAF" : G.mode === "am" ? "assistante maternelle, après CMG" : "montant saisi", cp.garde, "Bébé"), openK === "garde" && h("div", { className: "jb-sub" }, G.mode !== "fixe" && h("div", null, h("span", null, "Heures par mois"), h("span", null, Math.round(G.hm), " h")), G.mode === "am" && h(React.Fragment, null, h("div", null, h("span", null, "Coût (salaire + indemnités)"), h("span", null, eur0(G.cost))), h("div", null, h("span", null, "CMG de la CAF"), h("span", { className: "pos" }, "−", eur0(G.cmg)))), h("div", null, h("span", null, "Reste à charge"), h("span", null, eur0(G.reste))), h("div", null, h("span", null, "Crédit d'impôt (50 %, max 1 750 €/an)"), h("span", { className: "pos" }, "≈ ", eur0(G.credit), "/mois")), h("p", { className: "muted tiny" }, !G.known ? "⚠ Revenus non renseignés : calcul au plafond (estimation haute). " : "", "Participation = ressources × 0,0619 % par heure (barème CAF 2026). Le crédit d'impôt arrive l'année suivante ", C.garde.creditInJoint ? "et il est déduit ici." : ": il n'est pas déduit (prudent).", " Chiffre exact : simulateur Pajemploi.")), J.extras.map((e, i) => h("div", { key: i, className: "jb-line" }, h(CatDot, { c: "Autre", size: 28 }), h("span", { className: "tx-body" }, e.label || "Ligne perso"), h("span", { className: "alloc-v" }, eur0(+e.amount)))), (+C.envelope > 0 || J.bigHint > 0) && line("big", "Enveloppe gros achats", +C.envelope ? "meubles, jardin, équipement…" : `non comptée · ≈ ${eur0(J.bigHint)}/mois sur 12 mois`, +C.envelope || 0, "Travaux & équipement"), openK === "big" && h("div", { className: "jb-sub" }, J.big.slice(0, 8).map((t) => h("div", { key: t.id }, h("span", null, t.title, h("small", null, " · ", shortDate(t.date))), h("span", null, eur0(-t.amount)))), h("button", { className: "link-btn", onClick: () => setCfg((c) => ({ ...c || {}, envelope: +C.envelope ? 0 : J.bigHint })) }, +C.envelope ? "Ne plus prévoir d'enveloppe" : `Prévoir ${eur0(J.bigHint)}/mois`)), cp.margin > 0 && h("div", { className: "jb-line" }, h("span", { className: "ins-ico" }, "+"), h("span", { className: "tx-body" }, "Marge de sécurité ", Math.round(C.margin * 100), " %"), h("span", { className: "alloc-v" }, eur0(cp.margin))), cp.caf > 0 && h("div", { className: "jb-line" }, h("span", { className: "ins-ico pos" }, "−"), h("span", { className: "tx-body" }, "Allocation de base CAF"), h("span", { className: "alloc-v pos" }, "−", eur0(cp.caf))), h("div", { className: "wf" }, h("div", { className: "wf-total" }, h("span", null, "Mois type"), h("strong", null, eur0(cp.out), h("small", null, " /mois"))))), h("p", { className: "muted tiny", style: { margin: "-4px 4px 14px" } }, "Projection à partir de votre historique et des barèmes CAF 2026. Ordres de grandeur bébé à ajuster ; ce n'est pas un conseil financier."));
+}
+const OUTSIDE_PRESETS = [["Titres-restaurant (courses)", /^$/], ["Verisure", /verisure/], ["Mutuelle familiale", /mutuelle|harmonie|mgen|malakoff|swiss ?life|ag2r|apicil|alan |mutualite/]];
+function outsideHints(otherTxs) {
+  const cut = addDays(todayISO(), -120);
+  return OUTSIDE_PRESETS.map(([label, re]) => {
+    const hit = String(re) === "/^$/" ? null : otherTxs.filter((t) => t.amount < 0 && t.date >= cut && re.test(norm(t.title))).sort((a, b) => b.date.localeCompare(a.date))[0];
+    return { label, amount: hit ? r2(-hit.amount) : "" };
+  });
+}
+function JointSettingsSheet({ J, setCfg, hints, onClose }) {
+  const C = J.C;
+  const [v, setV] = useState(() => ({ nameA: C.names.a || "", nameB: C.names.b || "", share: C.share, prorata: !!C.prorata, incomeA: C.incomeA ? String(C.incomeA) : "", incomeB: C.incomeB ? String(C.incomeB) : "", outside: (C.outside || []).map((o) => ({ ...o, amount: String(o.amount) })), payers: { ...C.payers }, birth: C.birth || "", babyItems: C.babyItems.map((it) => ({ ...it, amount: String(it.amount) })), garde: { ...C.garde, income: C.garde.income ? String(C.garde.income) : "" }, ab: C.ab, abToJoint: !!C.abToJoint, tf: C.tf ? String(C.tf) : "", tfGrowth: C.tfGrowth, foodInfl: C.foodInfl, infl: C.infl, extras: (C.extras || []).map((e) => ({ label: e.label, amount: String(e.amount) })), envelope: C.envelope ? String(C.envelope) : "", margin: C.margin, cushionMonths: C.cushionMonths, catchUpMonths: C.catchUpMonths }));
+  const nA = v.nameA.trim() || J.names.a, nB = v.nameB.trim() || J.names.b;
+  const set = (k, val) => setV((x) => ({ ...x, [k]: val }));
+  const setG = (k, val) => setV((x) => ({ ...x, garde: { ...x.garde, [k]: val } }));
+  const chips = (k, opts, fmt, obj) => h("div", { className: "chips wrap" }, opts.map((o) => h("button", { key: o, className: "chip" + ((obj ? v.garde[k] : v[k]) === o ? " on solid" : ""), onClick: () => obj ? setG(k, o) : set(k, o) }, fmt(o))));
+  const pct = (o) => String(Math.round(o * 1e3) / 10).replace(".", ",") + " %";
+  const gPrev = gardeCost({ ...v.garde, income: parseNum(v.garde.income) || 0 });
+  const incN = parseNum(v.garde.income) || 0;
+  const abAuto = incN > 0 ? incN <= ABP.capFull ? ABP.full : incN <= ABP.capPart ? ABP.part : 0 : null;
+  const num = (s) => parseNum(s) || 0;
+  const save = () => {
+    setCfg((c) => ({ ...c || {}, names: { a: v.nameA.trim(), b: v.nameB.trim() }, share: v.share, prorata: v.prorata, incomeA: num(v.incomeA), incomeB: num(v.incomeB), outside: v.outside.filter((o) => o.label.trim() || num(o.amount)).map((o) => ({ label: o.label.trim() || "Charge", amount: num(o.amount), who: o.who || "a" })), payers: v.payers, birth: v.birth, babyItems: v.babyItems.map((it) => ({ ...it, amount: num(it.amount) })), garde: { ...v.garde, income: num(v.garde.income), hoursWeek: num(v.garde.hoursWeek), weeksYear: num(v.garde.weeksYear) || 47, daysWeek: num(v.garde.daysWeek) || 5, rate: num(v.garde.rate), upkeep: num(v.garde.upkeep), meals: num(v.garde.meals), fixed: num(v.garde.fixed) }, ab: v.ab, abToJoint: v.abToJoint, tf: num(v.tf), tfGrowth: v.tfGrowth, foodInfl: v.foodInfl, infl: v.infl, extras: v.extras.filter((e) => e.label.trim() || num(e.amount)).map((e) => ({ label: e.label.trim(), amount: num(e.amount) })), envelope: num(v.envelope), margin: v.margin, cushionMonths: v.cushionMonths, catchUpMonths: v.catchUpMonths }));
+    onClose();
+  };
+  const field = (label, val, onCh, ph, suffix) => h("label", { className: "fg", style: { flex: 1 } }, h("span", { className: "fl" }, label), h("div", { className: "row-c", style: { gap: 6 } }, h("input", { className: "fi", inputMode: "decimal", value: val, placeholder: ph, onChange: (e) => onCh(e.target.value) }), suffix && h("span", { className: "muted small" }, suffix)));
+  const sec = (t) => h("h4", { className: "sub-h" }, t);
+  return h(Sheet, { title: "Budget du compte commun", onClose }, h("div", { className: "form" }, sec("Qui verse"), h("div", { className: "fr" }, h("input", { className: "fi", value: v.nameA, placeholder: J.names.a, onChange: (e) => set("nameA", e.target.value) }), h("input", { className: "fi", value: v.nameB, placeholder: J.names.b, onChange: (e) => set("nameB", e.target.value) })), h("div", { className: "seg small-seg" }, h("button", { className: !v.prorata ? "on" : "", onClick: () => set("prorata", false) }, "Pourcentage fixe"), h("button", { className: v.prorata ? "on" : "", onClick: () => set("prorata", true) }, "Au prorata des revenus")), v.prorata ? h("div", { className: "fr" }, field(`Net mensuel ${nA}`, v.incomeA, (x) => set("incomeA", x), "2 800"), field(`Net mensuel ${nB}`, v.incomeB, (x) => set("incomeB", x), "2 400")) : h("div", { className: "share-row" }, h("span", { className: "small" }, nA, " ", Math.round(v.share * 100), " %"), h("input", { type: "range", min: 0, max: 100, step: 5, value: Math.round(v.share * 100), onChange: (e) => set("share", +e.target.value / 100) }), h("span", { className: "small" }, Math.round((1 - v.share) * 100), " % ", nB)), sec("Payé à côté pour le foyer"), h("p", { className: "muted small" }, "Ce que l'un de vous paie pour le foyer hors du compte commun. C'est compté dans les charges du foyer et déduit de son versement."), v.outside.map((o, i) => h("div", { key: i, className: "extra-row" }, h("input", { className: "fi", value: o.label, placeholder: "Libellé", onChange: (e) => set("outside", v.outside.map((x, j) => j === i ? { ...x, label: e.target.value } : x)) }), h("input", { className: "fi n", inputMode: "decimal", value: o.amount, placeholder: "€/mois", onChange: (e) => set("outside", v.outside.map((x, j) => j === i ? { ...x, amount: e.target.value } : x)) }), h("select", { className: "fi", style: { width: 92, padding: "9px 6px" }, value: o.who || "a", onChange: (e) => set("outside", v.outside.map((x, j) => j === i ? { ...x, who: e.target.value } : x)) }, h("option", { value: "a" }, nA), h("option", { value: "b" }, nB)), h("button", { className: "icon-btn", onClick: () => set("outside", v.outside.filter((_, j) => j !== i)), "aria-label": "Retirer" }, h(Icon, { n: "x", s: 15 })))), h("div", { className: "chips wrap" }, (hints || []).filter((p) => !v.outside.some((o) => norm(o.label) === norm(p.label))).map((p) => h("button", { key: p.label, className: "chip ghost", onClick: () => set("outside", [...v.outside, { label: p.label, amount: p.amount ? String(p.amount) : "", who: "a" }]) }, "+ ", p.label, p.amount ? ` (${eur(p.amount)} vu sur ton compte)` : "")), h("button", { className: "chip ghost", onClick: () => set("outside", [...v.outside, { label: "", amount: "", who: "a" }]) }, "+ Autre")), J.P.titles.length > 0 && h(React.Fragment, null, sec("Virements reçus"), J.P.titles.map((n) => h("div", { key: n, className: "payer" }, h("span", null, n.toUpperCase()), h("select", { value: v.payers[n] !== void 0 ? v.payers[n] : J.P.who(n), onChange: (e) => set("payers", { ...v.payers, [n]: e.target.value }) }, h("option", { value: "a" }, nA), h("option", { value: "b" }, nB), h("option", { value: "none" }, "Ne pas compter"))))), sec("Bébé"), h("label", { className: "fg" }, h("span", { className: "fl" }, "Naissance prévue (mois)"), h("input", { className: "fi", type: "month", value: v.birth, onChange: (e) => set("birth", e.target.value) })), v.babyItems.map((it, i) => h("div", { key: it.k || i, className: "extra-row" }, h("input", { type: "checkbox", className: "cb", checked: it.on !== false, onChange: (e) => set("babyItems", v.babyItems.map((x, j) => j === i ? { ...x, on: e.target.checked } : x)) }), h("span", { style: { flex: 1, fontSize: 13.5, opacity: it.on === false ? 0.45 : 1 } }, it.label, h("small", { className: "muted", style: { display: "block", fontSize: 11 } }, +it.from ? `dès ${it.from} mois` : "dès la naissance", +it.to ? `, jusqu'à ${it.to} mois` : "")), h("input", { className: "fi n", inputMode: "decimal", value: it.amount, onChange: (e) => set("babyItems", v.babyItems.map((x, j) => j === i ? { ...x, amount: e.target.value } : x)) }))), h("p", { className: "muted small" }, "Ordres de grandeur à ajuster (marques, allaitement : décoche le lait). Une fois bébé là, si les achats Bébé réels sont plus élevés, c'est le réel qui compte."), sec("Garde"), h("div", { className: "seg", style: { gridTemplateColumns: "repeat(4,1fr)" } }, [["am", "Assmat"], ["creche", "Crèche"], ["fixe", "Montant"], ["none", "Aucune"]].map(([k, l]) => h("button", { key: k, className: v.garde.mode === k ? "on" : "", onClick: () => setG("mode", k) }, l))), v.garde.mode !== "none" && h(React.Fragment, null, h("label", { className: "fg" }, h("span", { className: "fl" }, "Début de la garde"), h("input", { className: "fi", type: "month", value: v.garde.start || (v.birth ? addMonths(v.birth, 4) : ""), onChange: (e) => setG("start", e.target.value) }), h("span", { className: "muted small" }, "Par défaut 4 mois après la naissance (congé maternité de 16 semaines, + congé de naissance de 1-2 mois si vous le prenez).")), v.garde.mode === "fixe" ? field("Reste à charge mensuel", v.garde.fixed ? String(v.garde.fixed) : "", (x) => setG("fixed", x), "500", "€/mois") : h(React.Fragment, null, field("Revenus du foyer (revenus nets imposables, N-2)", v.garde.income, (x) => setG("income", x), "ex. 62 000", "€/an"), h("div", { className: "fr" }, field("Heures / semaine", String(v.garde.hoursWeek), (x) => setG("hoursWeek", x), "45"), field("Semaines / an", String(v.garde.weeksYear), (x) => setG("weeksYear", x), "47")), v.garde.mode === "am" && h("div", { className: "fr" }, field("Salaire net / h", String(v.garde.rate), (x) => setG("rate", x), "4,8", "€"), field("Entretien / jour", String(v.garde.upkeep), (x) => setG("upkeep", x), "4", "€"))), h("div", { className: "free-box ok", style: { marginTop: 2 } }, h("strong", null, "≈ ", eur0(gPrev.reste), " /mois de reste à charge"), h("span", null, gPrev.mode === "am" ? `${Math.round(gPrev.hm)} h · coût ${eur0(gPrev.cost)} − CMG ${eur0(gPrev.cmg)}. ` : gPrev.mode === "creche" ? `${Math.round(gPrev.hm)} h × ${String(gPrev.part).replace(".", ",")} €/h. ` : "", "Crédit d'impôt ≈ ", eur0(gPrev.credit), "/mois récupéré l'année suivante.", !gPrev.known ? " ⚠ Sans revenus, calcul au plafond." : "")), h("label", { className: "switch-row" }, h("span", null, "Déduire le crédit d'impôt"), h("input", { type: "checkbox", checked: !!v.garde.creditInJoint, onChange: (e) => setG("creditInJoint", e.target.checked) }))), sec("Aides CAF"), h("p", { className: "muted small" }, "Allocation de base : ", eur(ABP.full), " (plein) ou ", eur(ABP.part), " (partiel) par mois. Couple bi-actif, 1 enfant : plein si revenus N-2 ≤ ", eur0(ABP.capFull), ", partiel ≤ ", eur0(ABP.capPart), ".", abAuto !== null ? ` Pour vous : ${abAuto ? eur(abAuto) + "/mois" : "a priori rien"}.` : ""), chips("ab", ["auto", "plein", "partiel", "none"], (o) => ({ auto: "Auto", plein: "Plein", partiel: "Partiel", none: "Aucune" })[o]), h("label", { className: "switch-row" }, h("span", null, "Versée sur le compte commun"), h("input", { type: "checkbox", checked: v.abToJoint, onChange: (e) => set("abToJoint", e.target.checked) })), sec("Taxe foncière"), field("Montant annuel (avis de taxe foncière)", v.tf, (x) => set("tf", x), J.tfAuto ? `≈ ${Math.round(J.tfAuto)} prélevés sur 12 mois` : "", "€/an"), h("label", { className: "fl" }, "Hausse prévue par an"), chips("tfGrowth", [0, 0.02, 0.04, 0.06], pct), sec("Inflation"), h("label", { className: "fl" }, "Courses"), chips("foodInfl", [0, 0.015, 0.02, 0.03], pct), h("label", { className: "fl" }, "Le reste (factures, dépenses courantes)"), chips("infl", [0, 0.015, 0.02, 0.03], pct), h("p", { className: "muted small" }, "Repère : la Banque de France prévoit 1,6 % d'inflation alimentaire et 1,9 % d'inflation en 2027."), sec("Autres lignes"), v.extras.map((e, i) => h("div", { key: i, className: "extra-row" }, h("input", { className: "fi", value: e.label, placeholder: "Libellé", onChange: (ev) => set("extras", v.extras.map((x, j) => j === i ? { ...x, label: ev.target.value } : x)) }), h("input", { className: "fi n", inputMode: "decimal", value: e.amount, placeholder: "€/mois", onChange: (ev) => set("extras", v.extras.map((x, j) => j === i ? { ...x, amount: ev.target.value } : x)) }), h("button", { className: "icon-btn", onClick: () => set("extras", v.extras.filter((_, j) => j !== i)), "aria-label": "Retirer" }, h(Icon, { n: "x", s: 15 })))), h("button", { className: "link-btn", onClick: () => set("extras", [...v.extras, { label: "", amount: "" }]) }, h(Icon, { n: "plus", s: 14 }), " Ajouter une ligne"), field("Enveloppe gros achats", v.envelope, (x) => set("envelope", x), J.bigHint ? `≈ ${J.bigHint} d'après 12 mois` : "0", "€/mois"), sec("Sécurité"), h("label", { className: "fl" }, "Marge sur les dépenses"), chips("margin", [0, 0.05, 0.1], pct), h("label", { className: "fl" }, "Réserve minimum sur le compte"), chips("cushionMonths", [0, 0.5, 1, 2], (o) => String(o).replace(".", ",") + " mois"), h("label", { className: "fl" }, "Si elle manque, la constituer en"), chips("catchUpMonths", [3, 6, 12], (o) => o + " mois"), h("button", { className: "btn btn-p sticky-btn", onClick: save }, "Enregistrer")));
+}
+function computeDiag(txs, model, nowKey) {
+  const win = fullMonths(txs, nowKey).slice(-12), n = win.length;
+  if (!n) return null;
+  const inW = (t) => win.includes(t.date.slice(0, 7));
+  const EXCL = /* @__PURE__ */ new Set(["Versements", "Épargne", "Investissement"]);
+  const isInc = (c) => (CAT_REG[c] || {}).k === "inc";
+  const spend = txs.filter((t) => inW(t) && !EXCL.has(t.category) && !isInc(t.category || "Autre"));
+  const neg = spend.filter((t) => t.amount < 0), refunds = spend.filter((t) => t.amount > 0);
+  const gross = -sum(neg.map((t) => t.amount)), refundTot = sum(refunds.map((t) => t.amount));
+  const { bills, billTx } = detectBills(model, win[0], todayISO(), {}, EXCL);
+  const big = neg.filter((t) => !billTx.has(t.id) && -t.amount > BIG).sort((a, b) => a.amount - b.amount);
+  const billsTot = -sum(neg.filter((t) => billTx.has(t.id)).map((t) => t.amount)), bigTot = -sum(big.map((t) => t.amount));
+  const curTot = gross - billsTot - bigTot;
+  const incTx = txs.filter((t) => inW(t) && t.amount > 0 && (isInc(t.category) || t.category === "Versements"));
+  const incTot = sum(incTx.map((t) => t.amount));
+  const perM = win.map((k) => -sum(neg.filter((t) => t.date.startsWith(k)).map((t) => t.amount)));
+  const avgM = gross / n;
+  const nameOf = (t) => {
+    const c = model.byTx.get(t.id);
+    return c ? c.name : t.title;
+  };
+  const bigIds = new Set(big.map((t) => t.id));
+  const reg = spend.filter((t) => !bigIds.has(t.id));
+  const cats = {};
+  reg.forEach((t) => {
+    const c = t.category || "Autre";
+    const o = cats[c] = cats[c] || { c, net: 0, n: 0, series: win.map(() => 0), vs: win.map(() => 0), merch: {} };
+    o.net -= t.amount;
+    o.series[win.indexOf(t.date.slice(0, 7))] -= t.amount;
+    if (!billTx.has(t.id)) o.vs[win.indexOf(t.date.slice(0, 7))] -= t.amount;
+    if (t.amount < 0) {
+      o.n++;
+      o.merch[nameOf(t)] = (o.merch[nameOf(t)] || 0) - t.amount;
+    }
+  });
+  const netTot = -sum(reg.map((t) => t.amount)) || 1;
+  const i3 = Math.max(0, n - 3), i6 = Math.max(0, n - 6);
+  const catRows = Object.values(cats).filter((o) => o.net / n >= 2).map((o) => {
+    const a3 = n >= 3 ? sum(o.vs.slice(i3)) / 3 : null, p3 = n >= 6 ? sum(o.vs.slice(i6, i3)) / 3 : null;
+    return { ...o, avg: o.net / n, share: o.net / netTot, a3, p3, trend: p3 !== null && p3 >= 20 && a3 >= 15 ? (a3 - p3) / p3 : null, top: Object.entries(o.merch).sort((a, b) => b[1] - a[1]).slice(0, 4) };
+  }).sort((a, b) => b.net - a.net);
+  const cTx = neg.filter((t) => t.category === "Courses");
+  let courses = null;
+  if (cTx.length >= 4) {
+    const st = {};
+    cTx.forEach((t) => {
+      const nm = nameOf(t), o = st[nm] = st[nm] || { name: nm, tot: 0, n: 0 };
+      o.tot -= t.amount;
+      o.n++;
+    });
+    const tot = -sum(cTx.map((t) => t.amount)), small = cTx.filter((t) => -t.amount < 15);
+    const series = win.map((k) => -sum(cTx.filter((t) => t.date.startsWith(k)).map((t) => t.amount)));
+    courses = { tot, avg: tot / n, visits: cTx.length / n, basket: tot / cTx.length, stores: Object.values(st).sort((a, b) => b.tot - a.tot).slice(0, 6), small: { n: small.length, tot: -sum(small.map((t) => t.amount)) }, series, a3: n >= 3 ? sum(series.slice(i3)) / 3 : null, p3: n >= 6 ? sum(series.slice(i6, i3)) / 3 : null };
+  }
+  const changes = bills.filter((b) => b.n >= 3 && Math.abs(b.typical - b.first) >= 0.5 && Math.abs(b.typical - b.first) / b.first >= 0.02).map((b) => ({ name: b.name, cat: b.cat, from: b.first, to: b.typical, pct: (b.typical - b.first) / b.first, year: (b.typical - b.first) * 365.25 / b.period })).sort((a, b) => Math.abs(b.year) - Math.abs(a.year));
+  const SUBC = ["Abonnement", "Loisirs", "Jeux vidéo", "Shopping", "Assurances & Banques", "Sécurité"];
+  const subs = bills.filter((b) => SUBC.includes(b.cat) && b.auto <= 120).map((b) => ({ name: b.name, cat: b.cat, year: b.auto * 12, monthly: b.auto }));
+  neg.filter((t) => t.category === "Abonnement" && !billTx.has(t.id)).forEach((t) => subs.push({ name: nameOf(t), cat: "Abonnement", year: -t.amount, once: true }));
+  subs.sort((a, b) => b.year - a.year);
+  const feeTx = neg.filter((t) => /frais|cotis|commission|agios|abon securi/.test(norm(t.title)) && ["Assurances & Banques", "Autre"].includes(t.category));
+  const feesYear = -sum(feeTx.map((t) => t.amount)) * 12 / n;
+  const atyp = win.map((k, i) => ({ k, v: perM[i] })).filter((x) => x.v > avgM * 1.35 && x.v - avgM > 200).map((x) => ({ ...x, why: neg.filter((t) => t.date.startsWith(x.k)).sort((a, b) => a.amount - b.amount).slice(0, 2) }));
+  const ins = [];
+  const pc = (x) => Math.round(x * 100) + " %";
+  if (catRows[0]) ins.push({ tone: "", ico: "chart", t: `${catRows[0].c} : ${pc(catRows[0].share)} des dépenses régulières`, s: `≈ ${eur0(catRows[0].avg)}/mois${catRows[1] ? `, devant ${catRows[1].c} (${eur0(catRows[1].avg)}) et ${catRows[2] ? catRows[2].c + ` (${eur0(catRows[2].avg)})` : ""}` : ""}`, v: 1e6 });
+  if (courses) ins.push({ tone: "", ico: "cart", t: `Courses : ${String(Math.round(courses.visits * 10) / 10).replace(".", ",")} passages par mois, panier moyen ${eur(courses.basket)}`, s: `${courses.stores[0].name} = ${pc(courses.stores[0].tot / courses.tot)} des courses${courses.a3 !== null && courses.p3 ? ` · 3 derniers mois ${eur0(courses.a3)}/mois contre ${eur0(courses.p3)} avant` : ""}`, v: courses.tot });
+  catRows.filter((c) => c.trend !== null && c.trend > 0.25 && c.a3 - c.p3 > 40 && !["Courses", "Impôt"].includes(c.c)).slice(0, 2).forEach((c) => ins.push({ tone: "warn", ico: "up", t: `${c.c} en hausse de ${pc(c.trend)}`, s: `${eur0(c.a3)}/mois ces 3 derniers mois contre ${eur0(c.p3)} les 3 d'avant`, v: (c.a3 - c.p3) * 12 }));
+  changes.slice(0, 3).forEach((c) => ins.push({ tone: c.year > 0 ? "neg" : "pos", ico: c.year > 0 ? "up" : "trend", t: `${c.name} : ${eur(c.from)} → ${eur(c.to)} (${c.pct > 0 ? "+" : ""}${pc(c.pct)})`, s: `${c.year > 0 ? "+" : "−"}${eur0(Math.abs(c.year))} par an`, v: Math.abs(c.year) }));
+  if (feesYear > 60) ins.push({ tone: "warn", ico: "alert", t: `Frais bancaires ≈ ${eur0(feesYear)} par an`, s: [...new Set(feeTx.map(nameOf))].slice(0, 3).join(", ") + " · à comparer avec d'autres offres", v: feesYear });
+  const subsY = sum(subs.map((x) => x.year));
+  if (subsY > 100) ins.push({ tone: "", ico: "repeat", t: `Abonnements & prélèvements récurrents ≈ ${eur0(subsY)} par an`, s: subs.slice(0, 3).map((x) => `${x.name} ${eur0(x.year)}`).join(" · "), v: subsY });
+  if (courses && courses.small.n >= 10) ins.push({ tone: "", ico: "coffee", t: `${courses.small.n} petits achats de moins de 15 €`, s: `${eur0(courses.small.tot)} en ${n} mois, soit ≈ ${eur0(courses.small.tot / n)}/mois`, v: courses.small.tot });
+  if (bigTot > 0) ins.push({ tone: "", ico: "tag", t: `Achats ponctuels de plus de ${BIG} € : ${eur0(bigTot)}`, s: big.slice(0, 3).map((t) => `${nameOf(t)} ${eur0(-t.amount)}`).join(" · "), v: bigTot });
+  if (incTot > 0) {
+    const d = incTot - gross + refundTot;
+    ins.push({ tone: d >= 0 ? "pos" : "neg", ico: "wallet", t: `En ${n} mois : ${eur0(incTot)} entrés, ${eur0(gross - refundTot)} dépensés`, s: d >= 0 ? `le compte a gardé ${eur0(d)}` : `le compte a puisé ${eur0(-d)} dans ses réserves (ou dans l'épargne)`, v: Math.abs(d) });
+  }
+  return { n, win, gross, refundTot, avgM, billsTot, curTot, bigTot, big, incTot, perM, cats: catRows, courses, changes, subs, subsY, feesYear, atyp, ins };
+}
+function Spark({ vals, color }) {
+  const W = 90, H = 24, mx = Math.max(1, ...vals);
+  const d = vals.map((v, i) => (i ? "L" : "M") + (1 + i / Math.max(1, vals.length - 1) * (W - 2)).toFixed(1) + " " + (H - 2 - Math.max(0, v) / mx * (H - 4)).toFixed(1)).join(" ");
+  return h("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, style: { display: "block", flexShrink: 0 } }, h("path", { d, fill: "none", stroke: color, strokeWidth: 1.8, strokeLinejoin: "round", strokeLinecap: "round" }));
+}
+function DiagView({ txs, model, nowKey, onCat }) {
+  const D = useMemo(() => computeDiag(txs, model, nowKey), [txs, model, nowKey]);
+  const [open, setOpen] = useState(null);
+  if (!D) return h("div", { className: "empty" }, "Il faut au moins un mois complet d'opérations.");
+  const tot = D.gross || 1;
+  const parts = [["Factures & prélèvements", D.billsTot, "#D9A12B"], ["Dépenses courantes", D.curTot, "#C2702F"], [`Achats > ${BIG} €`, D.bigTot, "#7563E6"]];
+  const mxC = Math.max(1, ...D.cats.map((c) => c.avg));
+  return h(React.Fragment, null, h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "À retenir"), h("span", { className: "muted small" }, D.n, " mois analysés")), D.ins.map((i, k) => h("div", { key: k, className: "insight" }, h("span", { className: "ins-ico " + i.tone }, h(Icon, { n: ICONS[i.ico] ? i.ico : "sparkle", s: 14 })), h("div", null, h("strong", null, i.t), h("small", null, i.s))))), h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Sur ", D.n, " mois"), h("strong", null, eur0(D.avgM), h("small", { className: "muted" }, " /mois"))), h("div", { className: "stack" }, parts.map(([l, v, c]) => v > 0 && h("span", { key: l, style: { width: `${v / tot * 100}%`, background: c } }))), parts.map(([l, v, c]) => h("div", { key: l, className: "lim-top", style: { fontWeight: 600 } }, h("span", { className: "row-c" }, h("span", { className: "leg-dot", style: { background: c } }), l), h("span", null, eur0(v / D.n), "/mois · ", Math.round(v / tot * 100), " %"))), D.refundTot > 0 && h("p", { className: "muted small" }, "Remboursements reçus : ", eur0(D.refundTot), " (déduits par catégorie ci-dessous).")), h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Où part l'argent"), h("span", { className: "muted small" }, "hors achats > ", BIG, " € · par mois")), D.cats.map((c) => h("div", { key: c.c }, h("button", { className: "cc-split-row", onClick: () => setOpen(open === c.c ? null : c.c) }, h(CatDot, { c: c.c, size: 30 }), h("span", { className: "tx-body" }, h("span", { className: "cc-sn" }, c.c, c.trend !== null && Math.abs(c.trend) >= 0.15 && h("small", { className: c.trend > 0 ? "neg" : "pos", style: { fontWeight: 700, marginLeft: 6 } }, c.trend > 0 ? "↗ +" : "↘ ", Math.round(c.trend * 100), " %")), h("span", { className: "cc-bar" }, h("span", { style: { width: `${Math.max(2, c.avg / mxC * 100)}%`, background: catColor(c.c) } }))), h("span", { className: "cc-sv" }, h("strong", null, eur0(c.avg)), h("small", null, Math.round(c.share * 100), " %"))), open === c.c && h("div", { className: "jb-sub", style: { paddingLeft: 40 } }, h("div", null, h("span", { className: "muted" }, "12 mois"), h(Spark, { vals: c.series, color: catColor(c.c) })), c.top.map(([nm, v]) => h("div", { key: nm }, h("span", null, nm), h("span", null, eur0(v / D.n), "/mois"))), h("button", { className: "link-btn", onClick: () => onCat(c.c) }, "Voir les opérations"))))), D.courses && h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", { className: "row-c" }, h(CatDot, { c: "Courses", size: 26 }), " Courses à la loupe")), h("div", { className: "cc-stats" }, h("div", null, h("small", null, "Par mois"), h("strong", null, eur0(D.courses.avg))), h("div", null, h("small", null, "Passages / mois"), h("strong", null, String(Math.round(D.courses.visits * 10) / 10).replace(".", ","))), h("div", null, h("small", null, "Panier moyen"), h("strong", null, eur(D.courses.basket)))), h(Spark, { vals: D.courses.series, color: catColor("Courses") }), D.courses.stores.map((st) => h("div", { key: st.name, className: "top-row" }, h("span", { className: "top-fill", style: { width: `${st.tot / D.courses.stores[0].tot * 100}%`, background: catColor("Courses") + "24" } }), h("span", { className: "top-name" }, st.name), h("span", { className: "muted small" }, st.n, "× · ", eur0(st.tot / st.n)), h("span", { className: "top-v" }, eur0(st.tot / D.n)))), h("p", { className: "muted tiny" }, "Montants par mois · « 74× · 52 € » = nombre de passages et panier moyen.")), D.changes.length > 0 && h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Ce qui a changé de prix")), D.changes.map((c) => h("div", { key: c.name, className: "cmp", style: { gridTemplateColumns: "minmax(0,1fr) 110px 80px" } }, h("span", { className: "row-c" }, h(CatIcon, { c: c.cat, s: 15 }), " ", c.name), h("span", { className: "cmp-a" }, eur(c.from), " → ", eur(c.to)), h("span", { className: "cmp-d " + (c.year > 0 ? "neg" : "pos") }, c.year > 0 ? "+" : "−", eur0(Math.abs(c.year)), "/an")))), D.subs.length > 0 && h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Abonnements & frais"), h("strong", null, eur0(D.subsY), h("small", { className: "muted" }, " /an"))), D.subs.map((x, i) => h("div", { key: i, className: "heat-list" }, h("div", null, h("span", { className: "row-c" }, h(CatIcon, { c: x.cat, s: 14 }), " ", x.name, x.once ? h("small", { className: "muted" }, " · annuel ?") : null), h("span", null, eur0(x.year), "/an"))))), D.big.length > 0 && h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Achats ponctuels > ", BIG, " €"), h("strong", null, eur0(D.bigTot))), D.big.slice(0, 8).map((t) => h("div", { key: t.id, className: "jb-line" }, h(CatDot, { c: t.category || "Autre", size: 28 }), h("span", { className: "tx-body" }, t.title, h("small", null, shortDate(t.date), " · ", t.category || "Autre")), h("span", { className: "alloc-v" }, eur0(-t.amount)))), h("p", { className: "muted tiny" }, "Mis à part pour ne pas fausser la moyenne. Un virement entre vos comptes classé ici ? Recatégorise-le.")), D.atyp.length > 0 && h("section", { className: "card" }, h("div", { className: "card-hdr" }, h("h3", null, "Mois inhabituels"), h("span", { className: "muted small" }, "moyenne ", eur0(D.avgM))), D.atyp.map((a) => h("div", { key: a.k, className: "jb-line" }, h("span", { className: "tx-body" }, cap(monthLabel(a.k)), h("small", null, a.why.map((t) => `${t.title} ${eur0(-t.amount)}`).join(" · "))), h("span", { className: "alloc-v neg" }, eur0(a.v))))));
 }
 function CatChart({ cat, txs, model, range, pmode, m, setM, setCat }) {
   const isG = isGroupKey(cat);
@@ -1837,13 +2377,13 @@ const RANGE_PRESETS = [
   ["Cette année", () => [`${todayISO().slice(0, 4)}-01-01`, todayISO()]],
   ["12 mois", () => [`${addMonths(monthKey(/* @__PURE__ */ new Date()), -11)}-01`, todayISO()]]
 ];
-function TxView({ txs, months, nowKey, recur, reimb, model, onOpen, setTab }) {
+function TxView({ txs, months, nowKey, recur, reimb, model, onOpen, setTab, initCat }) {
   const [pmode, setPmode] = useState("month");
   const [m, setM] = useState(months.includes(nowKey) ? nowKey : months[0] || nowKey);
   const [from, setFrom] = useState(`${addMonths(nowKey, -2)}-01`);
   const [to, setTo] = useState(todayISO());
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState("all");
+  const [cat, setCat] = useState(initCat || "all");
   const [limit, setLimit] = useState(80);
   const reimbById = useMemo(() => Object.fromEntries(reimb.items.map((i) => [i.t.id, i])), [reimb]);
   const act = recur.filter((r) => r.on !== false);
@@ -1924,7 +2464,7 @@ function Donut({ items, total, sel, setSel }) {
     return /* @__PURE__ */ React.createElement("path", { key: d.c, d: arc(s, Math.max(s + 1e-3, cum - 5e-3)), fill: "none", stroke: catColor(d.c), strokeWidth: sel === i ? sw + 6 : sw, opacity: sel !== null && sel !== i ? 0.3 : 1, onClick: () => setSel(sel === i ? null : i), style: { cursor: "pointer", transition: "all .15s" } });
   }), /* @__PURE__ */ React.createElement("text", { x: cx, y: cy - 8, textAnchor: "middle", className: "svg-lbl", style: { fontSize: 10 } }, h ? catLabel(h.c) : "Dépenses"), /* @__PURE__ */ React.createElement("text", { x: cx, y: cy + 14, textAnchor: "middle", className: "svg-big" }, eur0(h ? h.v : total)), h && /* @__PURE__ */ React.createElement("text", { x: cx, y: cy + 30, textAnchor: "middle", className: "svg-lbl" }, Math.round(h.v / total * 100), " %"));
 }
-function AnalyseView({ txs, months, nowKey, limits, model, setTab }) {
+function AnalyseView({ txs, months, nowKey, limits, model, setTab, onCat }) {
   const [mode, setMode] = useState("month");
   const [m, setM] = useState(months.includes(nowKey) ? nowKey : months[0] || nowKey);
   const [sel, setSel] = useState(null);
@@ -1994,7 +2534,7 @@ function AnalyseView({ txs, months, nowKey, limits, model, setTab }) {
   const sy = (r) => 10 + (srMax - r) / (srMax - srMin) * 80, sx = (i) => 4 + gw * i + gw / 2;
   const selF = bar !== null ? T.flow[bar] : null, DOW = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"], wdMax = Math.max(1, ...T.wd);
   const hasCC = mtx.some((t) => t.category === "Compte commun");
-  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Analyse", onGear: () => setTab("set") }), /* @__PURE__ */ React.createElement("div", { className: "seg big" }, /* @__PURE__ */ React.createElement("button", { className: mode === "month" ? "on" : "", onClick: () => setMode("month") }, "Un mois"), /* @__PURE__ */ React.createElement("button", { className: mode === "trend" ? "on" : "", onClick: () => setMode("trend") }, "Tendances")), mode === "month" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MonthNav, { value: m, onChange: (v) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Analyse", onGear: () => setTab("set") }), /* @__PURE__ */ React.createElement("div", { className: "seg big three" }, /* @__PURE__ */ React.createElement("button", { className: mode === "month" ? "on" : "", onClick: () => setMode("month") }, "Un mois"), h("button", { className: mode === "diag" ? "on" : "", onClick: () => setMode("diag") }, "Diagnostic"), /* @__PURE__ */ React.createElement("button", { className: mode === "trend" ? "on" : "", onClick: () => setMode("trend") }, "Tendances")), mode === "diag" ? h(DiagView, { txs, model, nowKey, onCat }) : mode === "month" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MonthNav, { value: m, onChange: (v) => {
     setM(v);
     setSel(null);
     setHeatDay(null);
@@ -2015,9 +2555,9 @@ function AnalyseView({ txs, months, nowKey, limits, model, setTab }) {
     return /* @__PURE__ */ React.createElement("g", { key: f.k, onClick: () => setBar(on ? null : i), style: { cursor: "pointer" } }, /* @__PURE__ */ React.createElement("rect", { x, y: 0, width: gw, height: H, rx: 5, fill: on ? "var(--sunk)" : "transparent" }), /* @__PURE__ */ React.createElement("rect", { x: x + gw / 2 - 8, y: 8 + ch - hi, width: 7, height: Math.max(hi, f.inc ? 2 : 0), rx: 2, fill: "var(--green)" }), /* @__PURE__ */ React.createElement("rect", { x: x + gw / 2 + 1, y: 8 + ch - he, width: 7, height: Math.max(he, f.exp ? 2 : 0), rx: 2, fill: "var(--red)" }), /* @__PURE__ */ React.createElement("text", { x: x + gw / 2, y: H - 4, textAnchor: "middle", className: "svg-lbl", style: { fontWeight: on ? 800 : 600 } }, MONTHS[+f.k.slice(5) - 1][0]));
   }))), srPts.length > 1 && /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Taux d'épargne"), /* @__PURE__ */ React.createElement("span", { className: "muted small" }, "dernier : ", /* @__PURE__ */ React.createElement("strong", { className: srPts[srPts.length - 1].r >= 0 ? "pos" : "neg" }, Math.round(srPts[srPts.length - 1].r * 100), " %"))), /* @__PURE__ */ React.createElement("svg", { viewBox: `0 0 ${W} 110`, width: "100%", style: { display: "block" } }, /* @__PURE__ */ React.createElement("line", { x1: "4", x2: W - 4, y1: sy(0), y2: sy(0), stroke: "var(--line)", strokeDasharray: "3 3" }), /* @__PURE__ */ React.createElement("line", { x1: "4", x2: W - 4, y1: sy(0.2), y2: sy(0.2), stroke: "var(--green)", strokeOpacity: ".35", strokeDasharray: "3 3" }), /* @__PURE__ */ React.createElement("text", { x: W - 6, y: sy(0.2) - 3, textAnchor: "end", className: "svg-lbl" }, "20 %"), /* @__PURE__ */ React.createElement("path", { d: srPts.map((p, j) => (j ? "L" : "M") + sx(p.i).toFixed(1) + " " + sy(p.r).toFixed(1)).join(" "), fill: "none", stroke: "var(--accent)", strokeWidth: "2.2", strokeLinejoin: "round" }), srPts.map((p) => /* @__PURE__ */ React.createElement("circle", { key: p.i, cx: sx(p.i), cy: sy(p.r), r: "3", fill: p.r >= 0 ? "var(--green)" : "var(--red)" })), T.flow.map((f, i) => /* @__PURE__ */ React.createElement("text", { key: f.k, x: sx(i), y: 106, textAnchor: "middle", className: "svg-lbl" }, MONTHS[+f.k.slice(5) - 1][0])))), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Où part l'argent · 3 mois")), T.top.map((t, i) => /* @__PURE__ */ React.createElement("div", { key: t.name, className: "top-row" }, /* @__PURE__ */ React.createElement("span", { className: "top-fill", style: { width: `${t.v / T.top[0].v * 100}%`, background: catColor(t.cat) + "24" } }), /* @__PURE__ */ React.createElement("span", { className: "top-rank" }, i + 1), /* @__PURE__ */ React.createElement(CatIcon, { c: t.cat, s: 15 }), /* @__PURE__ */ React.createElement("span", { className: "top-name" }, t.name), /* @__PURE__ */ React.createElement("span", { className: "muted small" }, t.n, "×"), /* @__PURE__ */ React.createElement("span", { className: "top-v" }, eur0(t.v))))), /* @__PURE__ */ React.createElement("section", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "card-hdr" }, /* @__PURE__ */ React.createElement("h3", null, "Jours de dépense"), /* @__PURE__ */ React.createElement("span", { className: "muted small" }, "hors achats > ", BIG, " €")), /* @__PURE__ */ React.createElement("div", { className: "wd" }, T.wd.map((v, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "wd-col" }, /* @__PURE__ */ React.createElement("span", { className: "wd-v" }, eur0(v)), /* @__PURE__ */ React.createElement("span", { className: "wd-bar", style: { height: `${Math.max(v / wdMax * 100, 3)}%`, background: v === wdMax ? "var(--accent)" : "var(--line-strong)" } }), /* @__PURE__ */ React.createElement("span", { className: "wd-l" }, DOW[i])))))));
 }
-function SettingsView({ onSheet, counts, setTab }) {
+function SettingsView({ onSheet, counts, setTab, acc, isJoint }) {
   const Row = ({ ic, t, sub, k, badge }) => /* @__PURE__ */ React.createElement("button", { className: "set-row", onClick: () => onSheet(k) }, /* @__PURE__ */ React.createElement("span", { className: "set-ic" }, /* @__PURE__ */ React.createElement(Icon, { n: ic, s: 18 })), /* @__PURE__ */ React.createElement("span", { className: "set-t" }, t, sub && /* @__PURE__ */ React.createElement("small", null, sub)), badge ? /* @__PURE__ */ React.createElement("span", { className: "badge" }, badge) : null, /* @__PURE__ */ React.createElement(Icon, { n: "right", s: 16 }));
-  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Réglages", back: () => setTab("home") }), /* @__PURE__ */ React.createElement("div", { className: "set-group" }, /* @__PURE__ */ React.createElement(Row, { ic: "repeat", t: "Récurrents", sub: `${counts.auto} automatiques · ${counts.att} attendus`, k: "recur" }), /* @__PURE__ */ React.createElement(Row, { ic: "tag", t: "Catégories", sub: counts.reclass ? `${counts.reclass} opérations à reclasser` : "Icônes, catégories perso", k: "cats", badge: counts.reclass || null }), /* @__PURE__ */ React.createElement(Row, { ic: "target", t: "Plafonds mensuels", sub: counts.limits ? `${counts.limits} catégorie(s)` : "Aucun plafond", k: "limits" }), /* @__PURE__ */ React.createElement(Row, { ic: "compass", t: "Plan d'épargne", sub: "Coussin, matelas, livrets", k: "plan" }), /* @__PURE__ */ React.createElement(Row, { ic: "alert", t: "Vérifier mes données", sub: "Doublons, catégories, dates", k: "checks", badge: counts.checks || null })), /* @__PURE__ */ React.createElement("div", { className: "set-group" }, /* @__PURE__ */ React.createElement(Row, { ic: "wallet", t: "Solde de départ", sub: "Solde avant la première opération", k: "balance" }), /* @__PURE__ */ React.createElement(Row, { ic: "upload", t: "Importer un relevé bancaire", sub: "CSV ou Excel de ta banque", k: "import" }), /* @__PURE__ */ React.createElement(Row, { ic: "shield", t: "Sauvegarde & données", sub: "Export JSON / CSV, restauration", k: "data", badge: counts.backupLate ? "!" : null })), /* @__PURE__ */ React.createElement("p", { className: "muted small center" }, "Mes Finances v3.1 · données stockées uniquement sur cet appareil"));
+  return /* @__PURE__ */ React.createElement("div", { className: "view" }, /* @__PURE__ */ React.createElement(Top, { title: "Réglages", eyebrow: acc.name, back: () => setTab("home") }), /* @__PURE__ */ React.createElement("div", { className: "set-group" }, h(Row, { ic: "wallet", t: "Comptes", sub: "Changer de compte ou en ajouter un", k: "switch" }), isJoint && h(Row, { ic: "compass", t: "Budget du compte commun", sub: "Qui verse quoi, bébé, marge, réserve", k: "joint" })), /* @__PURE__ */ React.createElement("div", { className: "set-group" }, /* @__PURE__ */ React.createElement(Row, { ic: "repeat", t: "Récurrents", sub: `${counts.auto} automatiques · ${counts.att} attendus`, k: "recur" }), /* @__PURE__ */ React.createElement(Row, { ic: "tag", t: "Catégories", sub: counts.reclass ? `${counts.reclass} opérations à reclasser` : "Icônes, catégories perso", k: "cats", badge: counts.reclass || null }), /* @__PURE__ */ React.createElement(Row, { ic: "target", t: "Plafonds mensuels", sub: counts.limits ? `${counts.limits} catégorie(s)` : "Aucun plafond", k: "limits" }), /* @__PURE__ */ !isJoint && React.createElement(Row, { ic: "compass", t: "Plan d'épargne", sub: "Coussin, matelas, livrets", k: "plan" }), /* @__PURE__ */ React.createElement(Row, { ic: "alert", t: "Vérifier mes données", sub: "Doublons, catégories, dates", k: "checks", badge: counts.checks || null })), /* @__PURE__ */ React.createElement("div", { className: "set-group" }, /* @__PURE__ */ React.createElement(Row, { ic: "wallet", t: "Solde du compte", sub: "Recaler sur le solde de la banque", k: "balance" }), /* @__PURE__ */ React.createElement(Row, { ic: "upload", t: "Importer un relevé bancaire", sub: "CSV ou Excel de ta banque", k: "import" }), /* @__PURE__ */ React.createElement(Row, { ic: "shield", t: "Sauvegarde & données", sub: "Export JSON / CSV, restauration", k: "data", badge: counts.backupLate ? "!" : null })), /* @__PURE__ */ React.createElement("p", { className: "muted small center" }, "Mes Finances v3.4 · données stockées uniquement sur cet appareil"));
 }
 function ModePick({ v, set }) {
   return /* @__PURE__ */ React.createElement("div", { className: "mode-pick" }, /* @__PURE__ */ React.createElement("button", { className: v.mode === "fixe" ? "on" : "", onClick: () => set({ ...v, mode: "fixe" }) }, /* @__PURE__ */ React.createElement(Icon, { n: "zap", s: 16 }), /* @__PURE__ */ React.createElement("strong", null, "Automatique"), /* @__PURE__ */ React.createElement("small", null, "Même montant chaque mois, saisi tout seul le jour J")), /* @__PURE__ */ React.createElement("button", { className: v.mode !== "fixe" ? "on" : "", onClick: () => set({ ...v, mode: "attendu" }) }, /* @__PURE__ */ React.createElement(Icon, { n: "repeat", s: 16 }), /* @__PURE__ */ React.createElement("strong", null, "Attendu"), /* @__PURE__ */ React.createElement("small", null, "Ça arrive, mais ni la date ni le montant ne sont fixes")));
@@ -2161,37 +2701,119 @@ function LimitsSheet({ limits, setLimits, txs, onClose }) {
 function ChecksSheet({ checks, onClose, onDismiss, onFixCats, onDelete, onOpen, onRecat }) {
   return /* @__PURE__ */ React.createElement(Sheet, { title: "Vérifier mes données", onClose }, checks.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "empty" }, "Rien à signaler 👌") : /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Corrige en un tap, ou ignore si c'est voulu."), checks.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id, className: "check" }, /* @__PURE__ */ React.createElement("div", { className: "check-t" }, c.title), /* @__PURE__ */ React.createElement("div", { className: "check-x" }, c.text), /* @__PURE__ */ React.createElement("div", { className: "check-actions" }, c.type === "cat" && /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onFixCats(c.odd, c.c.cat) }, "Tout passer en ", c.c.cat), c.type === "dup" && /* @__PURE__ */ React.createElement("button", { className: "mini danger", onClick: () => onDelete((idTime(c.a.id) || 0) > (idTime(c.b.id) || 0) ? c.a.id : c.b.id) }, "Supprimer le doublon"), c.type === "unk" && c.guess !== "Autre" && c.guess !== c.t.category && /* @__PURE__ */ React.createElement("button", { className: "mini", onClick: () => onRecat(c.t, c.guess) }, "Classer en ", c.guess), (c.type === "date" || c.type === "unk") && /* @__PURE__ */ React.createElement("button", { className: "mini ghost", onClick: () => onOpen(c.t) }, "Ouvrir"), c.type === "cat" && /* @__PURE__ */ React.createElement("button", { className: "mini ghost", onClick: () => onOpen(c.odd[0]) }, "Voir"), /* @__PURE__ */ React.createElement("button", { className: "mini ghost", onClick: () => onDismiss(c.id) }, c.type === "dup" ? "Pas un doublon" : "Ignorer")))));
 }
-function ImportSheet({ model, txs, recur, onImport, onClose }) {
+const SRC_LABEL = { hist: "habitude", kw: "suggéré", other: "autre compte", bank: "banque", none: "à classer" };
+function ImportSheet({ model, otherModel, txs, recur, accKind, onImport, onClose }) {
   const [res, setRes] = useState(null);
   const [err, setErr] = useState(null);
+  const [busy, setBusy] = useState(false);
   const [skipDup, setSkipDup] = useState(true);
   const [rename, setRename] = useState(true);
+  const [gCat, setGCat] = useState({});
+  const [rCat, setRCat] = useState({});
+  const [ok, setOk] = useState({});
+  const [pick, setPick] = useState(null);
+  const [allCats, setAllCats] = useState(false);
+  const [open, setOpen] = useState(null);
+  const [view, setView] = useState("todo");
   const inp = useRef();
   const handle = async (file) => {
     setErr(null);
+    setBusy(true);
     try {
       const ext = file.name.split(".").pop().toLowerCase();
-      const r = ["xlsx", "xls", "xlsm"].includes(ext) ? await parseXLSXFile(file) : parseCSVText(await file.text());
-      r.rows.forEach((row) => {
+      const r = ["xlsx", "xls", "xlsm"].includes(ext) ? await parseXLSXFile(file) : parseCSVText(await readFileText(file));
+      if (!r.rows.length) throw new Error("aucune opération trouvée (il faut des colonnes Date, Libellé et Montant ou Débit/Crédit)");
+      r.rows.forEach((row, i) => {
+        row.i = i;
         const sign = row.amount < 0 ? -1 : 1, k = matchKnown(model, row.raw, sign);
         row.known = k;
-        row.cat2 = row.cat !== "Autre" ? row.cat : k ? predictCategory(model, k.name, sign) : predictCategory(model, row.raw, sign);
+        row.sug = suggestImport(row, model, otherModel, accKind);
         const autoRec = recur.find((rc) => rc.mode === "fixe" && recMatches(rc, { title: k ? k.name : row.raw, amount: row.amount }));
         row.dup = txs.some((t) => Math.abs(t.amount - row.amount) < 5e-3 && Math.abs(daysBetween(t.date, row.date)) <= 2) || !!(autoRec && txs.some((t) => t.auto === autoRec.id && t.date.slice(0, 7) === row.date.slice(0, 7)));
       });
       setRes(r);
+      setGCat({});
+      setRCat({});
+      setOk({});
+      setPick(null);
+      setOpen(null);
+      setView("todo");
     } catch (e) {
       setErr("Lecture impossible : " + (e.message || e));
     }
+    setBusy(false);
   };
-  const final = res ? res.rows.filter((r) => !(skipDup && r.dup)) : [];
-  return /* @__PURE__ */ React.createElement(Sheet, { title: "Importer un relevé", onClose, wide: true }, !res ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { className: "drop", onClick: () => {
-    var _a;
-    return (_a = inp.current) == null ? void 0 : _a.click();
-  } }, /* @__PURE__ */ React.createElement(Icon, { n: "upload", s: 28 }), /* @__PURE__ */ React.createElement("strong", null, "Choisir un fichier"), /* @__PURE__ */ React.createElement("span", null, "CSV, XLSX, XLS · colonnes détectées automatiquement")), /* @__PURE__ */ React.createElement("input", { ref: inp, type: "file", accept: ".csv,.txt,.xlsx,.xls,.xlsm", hidden: true, onChange: (e) => e.target.files[0] && handle(e.target.files[0]) }), /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Les libellés bancaires sont reconnus grâce à ton historique (« PRLV SEPA SPOTIFY » → Spotify). Les opérations déjà saisies, y compris les saisies automatiques, sont repérées comme doublons."), err && /* @__PURE__ */ React.createElement("p", { className: "neg small" }, err)) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "sum-row" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("small", null, "Lues"), /* @__PURE__ */ React.createElement("strong", null, res.rows.length)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("small", null, "Déjà saisies"), /* @__PURE__ */ React.createElement("strong", { className: "warn-t" }, res.rows.filter((r) => r.dup).length)), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("small", null, "Reconnues"), /* @__PURE__ */ React.createElement("strong", { className: "pos" }, res.rows.filter((r) => r.known).length))), /* @__PURE__ */ React.createElement("label", { className: "switch-row" }, /* @__PURE__ */ React.createElement("span", null, "Ignorer les doublons"), /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: skipDup, onChange: (e) => setSkipDup(e.target.checked) })), /* @__PURE__ */ React.createElement("label", { className: "switch-row" }, /* @__PURE__ */ React.createElement("span", null, "Utiliser mes libellés habituels"), /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: rename, onChange: (e) => setRename(e.target.checked) })), /* @__PURE__ */ React.createElement("div", { className: "imp-list" }, res.rows.slice(0, 150).map((r, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "imp-row" + (r.dup && skipDup ? " dim" : "") }, /* @__PURE__ */ React.createElement("span", { className: "imp-d" }, shortDate(r.date)), /* @__PURE__ */ React.createElement(CatIcon, { c: r.cat2, s: 15 }), /* @__PURE__ */ React.createElement("span", { className: "imp-t" }, rename && r.known ? r.known.name : r.raw, rename && r.known && /* @__PURE__ */ React.createElement("small", null, r.raw)), /* @__PURE__ */ React.createElement(Amount, { v: r.amount })))), /* @__PURE__ */ React.createElement("div", { className: "btn-row" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-s", onClick: () => setRes(null) }, "Retour"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-p", disabled: !final.length, onClick: () => {
-    onImport(final.map((r) => ({ id: uid(), date: r.date, title: rename && r.known ? r.known.name : r.raw, amount: r2(r.amount), category: r.cat2 })));
+  const titleOf = (r) => rename && r.known ? r.known.name : r.raw;
+  const { groups, byRow } = useMemo(() => {
+    if (!res) return { groups: [], byRow: {} };
+    const m = /* @__PURE__ */ new Map(), byRow2 = {};
+    res.rows.forEach((r) => {
+      if (skipDup && r.dup) return;
+      const sign = r.amount < 0 ? -1 : 1, t = titleOf(r);
+      const k = sign + "|" + (tokens(t).join(" ") || norm(t));
+      if (!m.has(k)) m.set(k, { k, sign, rows: [], names: {}, sugs: {} });
+      const g = m.get(k);
+      g.rows.push(r);
+      g.names[t] = (g.names[t] || 0) + 1;
+      g.sugs[r.sug.cat] = (g.sugs[r.sug.cat] || 0) + 1;
+      byRow2[r.i] = k;
+    });
+    const out = [...m.values()].map((g) => {
+      const cat = topOf(g.sugs), first = g.rows.find((r) => r.sug.cat === cat);
+      const dates = g.rows.map((r) => r.date).sort();
+      return { ...g, name: topOf(g.names), sug: cat, src: first.sug.src, why: first.sug.why, mixed: Object.keys(g.sugs).length > 1, total: r2(sum(g.rows.map((r) => r.amount))), from: dates[0], to: dates[dates.length - 1] };
+    });
+    const rank = { none: 0, bank: 1, other: 2, kw: 3, hist: 4 };
+    out.sort((a, b) => rank[a.src] - rank[b.src] || Math.abs(b.total) - Math.abs(a.total));
+    return { groups: out, byRow: byRow2 };
+  }, [res, skipDup, rename]);
+  const isOk = (g) => ok[g.k] !== void 0 ? ok[g.k] : (g.src === "hist" || g.src === "kw") && !g.mixed;
+  const gc = (g) => gCat[g.k] || g.sug;
+  const rc = (r, g) => rCat[r.i] || (gCat[g.k] ? gCat[g.k] : g.mixed ? r.sug.cat : g.sug);
+  const todo = groups.filter((g) => !isOk(g));
+  const shown = view === "todo" ? todo : groups;
+  const nOps = sum(groups.map((g) => g.rows.length));
+  const freq = useMemo(() => {
+    const c = {};
+    model.clusters.forEach((x) => {
+      if (validCat(x.cat)) c[x.sign + x.cat] = (c[x.sign + x.cat] || 0) + x.count;
+    });
+    return c;
+  }, [model]);
+  const pickList = (sign, cur, extra) => {
+    if (allCats) return catList(0, [cur]);
+    const base = catList(sign).sort((a, b) => (freq[sign + b] || 0) - (freq[sign + a] || 0));
+    return [.../* @__PURE__ */ new Set([cur, ...extra, ...base])].filter(validCat).slice(0, 10);
+  };
+  const choose = (g, c) => {
+    setGCat((s) => ({ ...s, [g.k]: c }));
+    setOk((s) => ({ ...s, [g.k]: true }));
+    setPick(null);
+    setAllCats(false);
+  };
+  const doImport = () => {
+    const list = [];
+    groups.forEach((g) => g.rows.forEach((r) => {
+      const tx = { id: uid() + list.length, date: r.date, title: titleOf(r), amount: r2(r.amount), category: rc(r, g) };
+      if (r.kind) tx.kind = r.kind;
+      list.push(tx);
+    }));
+    onImport(list);
     onClose();
-  } }, "Importer ", final.length))));
+  };
+  const Pick = ({ sign, cur, extra, onPick }) => h("div", { className: "ig-pick" }, pickList(sign, cur, extra).map((c) => h(CatChip, { key: c, c, on: c === cur, onClick: () => onPick(c) })), h("button", { className: "chip ghost", onClick: () => setAllCats((a) => !a) }, allCats ? "Moins" : "Toutes…"));
+  if (!res) return h(Sheet, { title: "Importer un relevé", onClose, wide: true }, h("button", { className: "drop", onClick: () => inp.current && inp.current.click(), disabled: busy }, h(Icon, { n: "upload", s: 28 }), h("strong", null, busy ? "Lecture…" : "Choisir un fichier"), h("span", null, "CSV ou Excel de ta banque · colonnes détectées automatiquement")), h("input", { ref: inp, type: "file", accept: ".csv,.txt,.xlsx,.xls,.xlsm", hidden: true, onChange: (e) => e.target.files[0] && handle(e.target.files[0]) }), h("p", { className: "muted small" }, "Chaque marchand reçoit une catégorie proposée : tu valides d'un tap ou tu changes. Ce que tu choisis est retenu pour les imports suivants. Les opérations déjà présentes sont repérées comme doublons."), err && h("p", { className: "neg small" }, err));
+  return h(Sheet, { title: "Vérifier l'import", onClose, wide: true }, h("div", { className: "sum-row" }, h("div", null, h("small", null, "Opérations"), h("strong", null, nOps)), h("div", null, h("small", null, "Déjà présentes"), h("strong", { className: "warn-t" }, res.rows.filter((r) => r.dup).length)), h("div", null, h("small", null, "À vérifier"), h("strong", { className: todo.length ? "warn-t" : "pos" }, todo.length))), h("label", { className: "switch-row" }, h("span", null, "Ignorer les doublons"), h("input", { type: "checkbox", checked: skipDup, onChange: (e) => setSkipDup(e.target.checked) })), h("label", { className: "switch-row" }, h("span", null, "Utiliser mes libellés habituels"), h("input", { type: "checkbox", checked: rename, onChange: (e) => setRename(e.target.checked) })), h("div", { className: "seg small-seg", style: { marginTop: 8 } }, h("button", { className: view === "todo" ? "on" : "", onClick: () => setView("todo") }, "À vérifier (", todo.length, ")"), h("button", { className: view === "all" ? "on" : "", onClick: () => setView("all") }, "Tout (", groups.length, ")")), shown.length === 0 && h("div", { className: "empty", style: { padding: "22px 0" } }, "Tout est validé 👌"), shown.map((g) => {
+    const okd = isOk(g), cur = gc(g);
+    return h("div", { key: g.k, className: "ig" + (okd ? " ok" : g.src === "none" ? " todo" : "") }, h("div", { className: "ig-top" }, h(CatDot, { c: cur, size: 32 }), h("button", { className: "ig-n", onClick: () => setOpen(open === g.k ? null : g.k) }, h("strong", null, g.name), h("small", null, g.rows.length > 1 ? `${g.rows.length}× · ${eur(g.total)} · ${shortDate(g.from)} → ${shortDate(g.to)}` : `${eur(g.total)} · ${shortDate(g.from)}`)), h("button", { className: "ig-cat", onClick: () => setPick(pick === g.k ? null : g.k), style: { color: catColor(cur) } }, catLabel(cur), " ▾")), h("div", { style: { display: "flex", alignItems: "center", gap: 8, justifyContent: "space-between", marginTop: 5 } }, h("span", { className: "muted small" }, h("span", { className: "ig-src " + (gCat[g.k] ? "hist" : g.src) }, gCat[g.k] ? "ton choix" : SRC_LABEL[g.src]), " ", gCat[g.k] ? "" : g.why, g.mixed && !gCat[g.k] ? " · catégories variées" : ""), h("button", { className: "ig-ok" + (okd ? " on" : ""), onClick: () => setOk((s) => ({ ...s, [g.k]: !okd })), "aria-label": "Valider" }, h(Icon, { n: "check", s: 17, w: 2.6 }))), pick === g.k && h(Pick, { sign: g.sign, cur, extra: Object.keys(g.sugs), onPick: (c) => choose(g, c) }), open === g.k && h("div", { className: "ig-rows" }, g.rows.slice(0, 40).map((r) => {
+      const c = rc(r, g), pk = "r:" + r.i;
+      return h(React.Fragment, { key: r.i }, h("div", { className: "ig-row" }, h("span", { className: "imp-d" }, shortDate(r.date)), h("span", null, r.op && norm(r.op) !== norm(r.raw) ? r.op : r.raw), h(Amount, { v: r.amount }), h("button", { className: "ig-cat", style: { color: catColor(c) }, onClick: () => setPick(pick === pk ? null : pk) }, catLabel(c))), pick === pk && h(Pick, { sign: g.sign, cur: c, extra: [g.sug], onPick: (c2) => {
+        setRCat((s) => ({ ...s, [r.i]: c2 }));
+        setPick(null);
+        setAllCats(false);
+      } }));
+    })));
+  }), h("div", { className: "imp-bar" }, todo.length > 0 && h("p", { className: "muted small", style: { marginBottom: 6 } }, todo.length, " marchand", todo.length > 1 ? "s" : "", " non validé", todo.length > 1 ? "s" : "", " : la catégorie proposée sera gardée (modifiable ensuite)."), h("div", { className: "btn-row" }, h("button", { className: "btn btn-s", onClick: () => setRes(null) }, "Retour"), h("button", { className: "btn btn-p", disabled: !nOps, onClick: doImport }, "Importer ", nOps))));
 }
 function DataSheet({ txs, lastExport, onExport, onExportCSV, onRestore, onReset, onClose }) {
   const [restore, setRestore] = useState(null);
@@ -2222,27 +2844,40 @@ function DataSheet({ txs, lastExport, onExport, onExportCSV, onRestore, onReset,
     onClose();
   } }, "Effacer définitivement"))));
 }
-function BalanceSheet({ initBal, setInitBal, onClose }) {
-  const [v, setV] = useState(String(initBal || "").replace(".", ","));
-  return /* @__PURE__ */ React.createElement(Sheet, { title: "Solde de départ", onClose }, /* @__PURE__ */ React.createElement("p", { className: "muted small" }, "Le solde du compte juste avant la toute première opération enregistrée."), /* @__PURE__ */ React.createElement("div", { className: "amount-field" }, /* @__PURE__ */ React.createElement("input", { inputMode: "decimal", value: v, onChange: (e) => setV(e.target.value) }), /* @__PURE__ */ React.createElement("span", null, "€")), /* @__PURE__ */ React.createElement("button", { className: "btn btn-p", onClick: () => {
-    setInitBal(parseNum(v) || 0);
+function BalanceSheet({ initBal, setInitBal, txSum, onSaved, onClose }) {
+  const [mode, setMode] = useState("now");
+  const cur = r2(initBal + txSum);
+  const [v, setV] = useState(String(cur || "").replace(".", ","));
+  const [v0, setV0] = useState(String(initBal || "").replace(".", ","));
+  return h(Sheet, { title: "Solde du compte", onClose }, h("div", { className: "seg small-seg" }, h("button", { className: mode === "now" ? "on" : "", onClick: () => setMode("now") }, "Solde d'aujourd'hui"), h("button", { className: mode === "start" ? "on" : "", onClick: () => setMode("start") }, "Solde de départ")), h("p", { className: "muted small" }, mode === "now" ? "Recopie le solde affiché par l'appli de ta banque : le solde de départ est recalculé pour tomber juste." : "Le solde du compte juste avant la toute première opération enregistrée."), h("div", { className: "amount-field" }, mode === "now" ? h("input", { inputMode: "decimal", value: v, onChange: (e) => setV(e.target.value), autoFocus: true }) : h("input", { inputMode: "decimal", value: v0, onChange: (e) => setV0(e.target.value) }), h("span", null, "€")), h("button", { className: "btn btn-p", onClick: () => {
+    if (mode === "now") {
+      const n = parseNum(v);
+      if (isNaN(n)) return;
+      setInitBal(r2(n - txSum));
+    } else setInitBal(parseNum(v0) || 0);
+    onSaved && onSaved();
     onClose();
   } }, "Enregistrer"));
 }
-function App() {
-  const [txs, setTxs] = useStored(STORE, []);
-  const [limits, setLimits] = useStored(LIMITS_STORE, {});
-  const [initBal, setInitBal] = useStored(INIT_BAL_STORE, 0);
-  const [favorites, setFavorites] = useStored(FAV_STORE, []);
-  const [lastExport, setLastExport] = useStored(LAST_EXPORT_STORE, null);
-  const [recurRaw, setRecur] = useStored(RECUR_STORE, null);
-  const [dismiss, setDismiss] = useStored(DISMISS_STORE, []);
-  const [events, setEvents] = useStored(EVENTS_STORE, []);
-  const [goals, setGoals] = useStored(GOALS_STORE, []);
+function App({ acc, accounts, onSwitch, startSheet }) {
+  const K = (k) => accKey(acc.id, k);
+  const isJoint = acc.kind === "joint";
+  const [txs, setTxs] = useStored(K(STORE), []);
+  const [limits, setLimits] = useStored(K(LIMITS_STORE), {});
+  const [initBal, setInitBal] = useStored(K(INIT_BAL_STORE), 0);
+  const [balSet, setBalSet] = useStored(K("mf_initbal_set_v1"), false);
+  const [favorites, setFavorites] = useStored(K(FAV_STORE), []);
+  const [lastExport, setLastExport] = useStored(K(LAST_EXPORT_STORE), null);
+  const [recurRaw, setRecur] = useStored(K(RECUR_STORE), null);
+  const [dismiss, setDismiss] = useStored(K(DISMISS_STORE), []);
+  const [events, setEvents] = useStored(K(EVENTS_STORE), []);
+  const [goals, setGoals] = useStored(K(GOALS_STORE), []);
   const [custom, setCustom] = useStored(CATS_STORE, []);
-  const [planCfg, setPlanCfg] = useStored(PLAN_STORE, PLAN_DEFAULT);
+  const [planCfg, setPlanCfg] = useStored(K(PLAN_STORE), PLAN_DEFAULT);
+  const [jointCfg, setJointCfg] = useStored(K(JOINT_STORE), {});
   const [tab, setTab] = useState("home");
-  const [sheet, setSheet] = useState(null);
+  const [txCat, setTxCat] = useState(null);
+  const [sheet, setSheet] = useState(startSheet ? { type: startSheet } : null);
   const [toast, setToast] = useState(null);
   const [tick, setTick] = useState(0);
   const toastT = useRef();
@@ -2296,6 +2931,10 @@ function App() {
   const annual = useMemo(() => annualSuggestions(model, events, dismiss), [model, events, dismiss]);
   const reclass = useMemo(() => proposeReclass(txs).filter((g) => !dismiss.includes("rc:" + g.k) && !CAT_HIDDEN.has(g.to)), [txs, dismiss, custom]);
   const months = useMemo(() => [.../* @__PURE__ */ new Set([nowKey, ...txs.map((t) => t.date.slice(0, 7))])].sort().reverse(), [txs, nowKey]);
+  const balanceKnown = balSet || initBal !== 0;
+  const hints = useMemo(() => isJoint ? outsideHints((accounts || []).filter((a) => a.id !== acc.id).flatMap((a) => load(accKey(a.id, STORE)) || [])) : [], [isJoint, (sheet == null ? void 0 : sheet.type) === "joint"]);
+  const J = useMemo(() => isJoint ? computeJoint({ txs, model, cfg: jointCfg, nowKey, balance, balanceKnown }) : null, [isJoint, txs, model, jointCfg, nowKey, balance, balanceKnown, custom]);
+  const otherModel = useMemo(() => (sheet == null ? void 0 : sheet.type) === "import" ? buildModel((accounts || []).filter((a) => a.id !== acc.id).flatMap((a) => load(accKey(a.id, STORE)) || [])) : null, [(sheet == null ? void 0 : sheet.type) === "import"]);
   const addTx = useCallback((tx, quiet) => {
     setTxs((p) => [tx, ...p]);
     if (!quiet) notify("Opération ajoutée", { label: "Modifier", fn: () => setSheet({ type: "edit", tx }) });
@@ -2315,8 +2954,8 @@ function App() {
     notify("Supprimée", old ? { label: "Annuler", fn: () => setTxs((p) => [old, ...p]) } : null);
   }, [txs, notify]);
   const exportJSON = () => {
-    const json = JSON.stringify({ transactions: txs, limits, initialBalance: initBal, favorites, recurring: recur, dismissed: dismiss, events, goals, customCategories: custom, plan: planCfg, version: 3.1, exportDate: (/* @__PURE__ */ new Date()).toISOString() }, null, 2);
-    const name = `mes-finances-backup-${todayISO()}.json`;
+    const json = JSON.stringify({ account: acc.name, accountKind: acc.kind, joint: jointCfg, transactions: txs, limits, initialBalance: initBal, favorites, recurring: recur, dismissed: dismiss, events, goals, customCategories: custom, plan: planCfg, version: 3.1, exportDate: (/* @__PURE__ */ new Date()).toISOString() }, null, 2);
+    const name = `mes-finances-${acc.id === "main" ? "backup" : norm(acc.name).replace(/[^a-z0-9]+/g, "-")}-${todayISO()}.json`;
     const file = new File([json], name, { type: "application/json" });
     const done = () => {
       setLastExport(Date.now());
@@ -2362,6 +3001,7 @@ function App() {
     setGoals(Array.isArray(d.goals) ? d.goals : []);
     setCustom(Array.isArray(d.customCategories) ? d.customCategories : []);
     if (d.plan) setPlanCfg(d.plan);
+    if (d.joint && typeof d.joint === "object") setJointCfg(d.joint);
     notify(`Restauré : ${d.transactions.length} opérations`);
   };
   const reset = () => {
@@ -2375,7 +3015,9 @@ function App() {
     setGoals([]);
     setCustom([]);
     setPlanCfg(PLAN_DEFAULT);
-    notify("Application réinitialisée");
+    setJointCfg({});
+    setBalSet(false);
+    notify(`${acc.name} : données effacées`);
   };
   const addRecurFrom = (d) => {
     setRecur((rs) => normalizeRecur([...rs || [], { id: uid(), ...d, on: true }], txs, nowKey));
@@ -2459,17 +3101,18 @@ function App() {
     notify(`${eur(v)} mis de côté pour ${g.name}`);
   };
   const openTx = useCallback((t) => setSheet({ type: "edit", tx: t }), []);
-  const open = (k) => setSheet(typeof k === "string" ? { type: k } : k);
+  const open = (k) => k === "switch" ? onSwitch() : setSheet(typeof k === "string" ? { type: k } : k);
   const close = useCallback(() => setSheet(null), []);
   const backupLate = txs.length > 0 && (!lastExport || Date.now() - lastExport > 30 * 864e5);
   const goTab = (k) => {
+    if (k !== "tx") setTxCat(null);
     setTab(k);
     window.scrollTo(0, 0);
   };
   return /* @__PURE__ */ React.createElement("div", { className: "app" }, /* @__PURE__ */ React.createElement("main", null, tab === "home" && /* @__PURE__ */ React.createElement(
     HomeView,
     {
-      ...{ txs, initBal, balance, fc, plan, nowKey, recur, detected, reimb, checks, insights, events, annual, reclass, limits, lastExport },
+      ...{ acc, multi: (accounts || []).length > 1, onSwitch, J, txs, initBal, balance, fc, plan, nowKey, recur, detected, reimb, checks, insights, events, annual, reclass, limits, lastExport },
       setTab: goTab,
       onPreset: (p) => setSheet({ type: "add", preset: p }),
       onSkip: skipMonth,
@@ -2480,7 +3123,10 @@ function App() {
       onDismiss: (id) => setDismiss((d) => [...d, id]),
       onEventDone: eventDone
     }
-  ), tab === "tx" && /* @__PURE__ */ React.createElement(TxView, { txs, months, nowKey, recur, reimb, model, onOpen: openTx, setTab: goTab }), tab === "plan" && /* @__PURE__ */ React.createElement(PlanView, { plan, fc, balance, events, txs, setTab: goTab, onSheet: open, onEventDone: eventDone, onAddFete: addFete, onContribute: contribute }), tab === "ana" && /* @__PURE__ */ React.createElement(AnalyseView, { txs, months, nowKey, limits, model, setTab: goTab }), tab === "set" && /* @__PURE__ */ React.createElement(SettingsView, { onSheet: open, setTab: goTab, counts: { auto: recur.filter((r) => r.on !== false && r.mode === "fixe").length, att: recur.filter((r) => r.on !== false && r.mode !== "fixe").length, limits: Object.keys(limits).length, checks: checks.length, backupLate, reclass: sum(reclass.map((g) => g.txs.length)) } })), /* @__PURE__ */ React.createElement("nav", { className: "tabbar" }, [["home", "home", "Accueil"], ["tx", "list", "Opérations"]].map(([k, ic, l]) => /* @__PURE__ */ React.createElement("button", { key: k, className: tab === k ? "on" : "", onClick: () => goTab(k) }, /* @__PURE__ */ React.createElement(Icon, { n: ic, s: 22 }), /* @__PURE__ */ React.createElement("span", null, l))), /* @__PURE__ */ React.createElement("button", { className: "fab", onClick: () => setSheet({ type: "add" }), "aria-label": "Ajouter une opération" }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 26, w: 2.6 })), [["plan", "compass", "Plan"], ["ana", "chart", "Analyse"]].map(([k, ic, l]) => /* @__PURE__ */ React.createElement("button", { key: k, className: tab === k ? "on" : "", onClick: () => goTab(k) }, /* @__PURE__ */ React.createElement(Icon, { n: ic, s: 22 }), /* @__PURE__ */ React.createElement("span", null, l)))), (sheet == null ? void 0 : sheet.type) === "add" && /* @__PURE__ */ React.createElement(Sheet, { title: "Nouvelle opération", onClose: close }, /* @__PURE__ */ React.createElement(TxForm, { mode: "add", initial: sheet.preset, model, txs, recur, onSubmit: (tx, keep) => {
+  ), tab === "tx" && /* @__PURE__ */ React.createElement(TxView, { key: txCat || "all", initCat: txCat, txs, months, nowKey, recur, reimb, model, onOpen: openTx, setTab: goTab }), tab === "plan" && /* @__PURE__ */ React.createElement(PlanView, { J, setJointCfg, balanceKnown, plan, fc, balance, events, txs, setTab: goTab, onSheet: open, onEventDone: eventDone, onAddFete: addFete, onContribute: contribute }), tab === "ana" && /* @__PURE__ */ React.createElement(AnalyseView, { txs, months, nowKey, limits, model, setTab: goTab, onCat: (c) => {
+    setTxCat(c);
+    goTab("tx");
+  } }), tab === "set" && /* @__PURE__ */ React.createElement(SettingsView, { acc, isJoint, onSheet: open, setTab: goTab, counts: { auto: recur.filter((r) => r.on !== false && r.mode === "fixe").length, att: recur.filter((r) => r.on !== false && r.mode !== "fixe").length, limits: Object.keys(limits).length, checks: checks.length, backupLate, reclass: sum(reclass.map((g) => g.txs.length)) } })), /* @__PURE__ */ React.createElement("nav", { className: "tabbar" }, [["home", "home", "Accueil"], ["tx", "list", "Opérations"]].map(([k, ic, l]) => /* @__PURE__ */ React.createElement("button", { key: k, className: tab === k ? "on" : "", onClick: () => goTab(k) }, /* @__PURE__ */ React.createElement(Icon, { n: ic, s: 22 }), /* @__PURE__ */ React.createElement("span", null, l))), /* @__PURE__ */ React.createElement("button", { className: "fab", onClick: () => setSheet({ type: "add" }), "aria-label": "Ajouter une opération" }, /* @__PURE__ */ React.createElement(Icon, { n: "plus", s: 26, w: 2.6 })), [["plan", "compass", "Plan"], ["ana", "chart", "Analyse"]].map(([k, ic, l]) => /* @__PURE__ */ React.createElement("button", { key: k, className: tab === k ? "on" : "", onClick: () => goTab(k) }, /* @__PURE__ */ React.createElement(Icon, { n: ic, s: 22 }), /* @__PURE__ */ React.createElement("span", null, l)))), (sheet == null ? void 0 : sheet.type) === "add" && /* @__PURE__ */ React.createElement(Sheet, { title: "Nouvelle opération", onClose: close }, /* @__PURE__ */ React.createElement(TxForm, { mode: "add", initial: sheet.preset, model, txs, recur, onSubmit: (tx, keep) => {
     addTx(tx, keep);
     if (!keep) close();
   }, onClose: close, onOpenTx: openTx })), (sheet == null ? void 0 : sheet.type) === "edit" && /* @__PURE__ */ React.createElement(Sheet, { title: "Modifier", onClose: close }, /* @__PURE__ */ React.createElement(TxForm, { key: sheet.tx.id, mode: "edit", initial: sheet.tx, model, txs, recur, onSubmit: (tx) => {
@@ -2516,15 +3162,71 @@ function App() {
         notify(`Classée en ${c}`);
       }
     }
-  ), (sheet == null ? void 0 : sheet.type) === "import" && /* @__PURE__ */ React.createElement(ImportSheet, { model, txs, recur, onClose: close, onImport: (list) => {
+  ), (sheet == null ? void 0 : sheet.type) === "import" && /* @__PURE__ */ React.createElement(ImportSheet, { model, otherModel, accKind: acc.kind, txs, recur, onClose: close, onImport: (list) => {
     setTxs((p) => [...list, ...p]);
     notify(`${list.length} opérations importées`);
-  } }), (sheet == null ? void 0 : sheet.type) === "data" && /* @__PURE__ */ React.createElement(DataSheet, { txs, lastExport, onExport: exportJSON, onExportCSV: exportCSV, onRestore: restore, onReset: reset, onClose: close }), (sheet == null ? void 0 : sheet.type) === "balance" && /* @__PURE__ */ React.createElement(BalanceSheet, { initBal, setInitBal, onClose: close }), toast && /* @__PURE__ */ React.createElement("div", { className: "toast", key: toast.k }, /* @__PURE__ */ React.createElement("span", null, toast.msg), toast.action && /* @__PURE__ */ React.createElement("button", { onClick: () => {
+    if (!balanceKnown) setTimeout(() => setSheet({ type: "balance" }), 350);
+  } }), (sheet == null ? void 0 : sheet.type) === "data" && /* @__PURE__ */ React.createElement(DataSheet, { txs, lastExport, onExport: exportJSON, onExportCSV: exportCSV, onRestore: restore, onReset: reset, onClose: close }), (sheet == null ? void 0 : sheet.type) === "balance" && /* @__PURE__ */ React.createElement(BalanceSheet, { initBal, setInitBal, txSum: r2(sum(txs.map((t) => t.amount))), onSaved: () => setBalSet(true), onClose: close }), (sheet == null ? void 0 : sheet.type) === "joint" && J && h(JointSettingsSheet, { J, setCfg: setJointCfg, hints, onClose: close }), toast && /* @__PURE__ */ React.createElement("div", { className: "toast", key: toast.k }, /* @__PURE__ */ React.createElement("span", null, toast.msg), toast.action && /* @__PURE__ */ React.createElement("button", { onClick: () => {
     toast.action.fn();
     setToast(null);
   } }, toast.action.label)));
 }
-ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
+const kindLabel = (k) => k === "joint" ? "Compte commun" : "Compte perso";
+function AccountPicker({ accounts, setAccounts, onPick }) {
+  const [form, setForm] = useState(null);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const info = useMemo(() => Object.fromEntries(accounts.map((a) => {
+    const t = load(accKey(a.id, STORE)) || [], ib = load(accKey(a.id, INIT_BAL_STORE)) || 0;
+    return [a.id, { bal: r2(ib + sum(t.map((x) => x.amount))), n: t.length, last: t.reduce((m, x) => x.date > m ? x.date : m, "") }];
+  })), [accounts]);
+  const save = () => {
+    const name = form.name.trim();
+    if (!name) return;
+    if (form.id) {
+      setAccounts((l) => l.map((a) => a.id === form.id ? { ...a, name, kind: form.kind } : a));
+      setForm(null);
+      return;
+    }
+    const id = "a" + uid();
+    setAccounts((l) => [...l, { id, name, kind: form.kind }]);
+    setForm(null);
+    onPick(id, "import");
+  };
+  const del = (id) => {
+    try {
+      Object.keys(localStorage).filter((k) => k.endsWith("@" + id)).forEach((k) => localStorage.removeItem(k));
+    } catch (e) {
+    }
+    setAccounts((l) => l.filter((a) => a.id !== id));
+    setForm(null);
+    setConfirmDel(false);
+  };
+  return h("div", { className: "acc-screen view" }, h("div", { className: "acc-head" }, h("div", { className: "sp-ico" }, "€"), h("h1", null, "Quel compte ?")), accounts.map((a) => {
+    const i = info[a.id] || {};
+    return h("div", { key: a.id, className: "acc-card", style: { padding: 0 } }, h("button", { className: "row-c", style: { flex: 1, minWidth: 0, gap: 14, padding: 16, textAlign: "left" }, onClick: () => onPick(a.id) }, h("span", { className: "acc-ic " + (a.kind === "joint" ? "joint" : "perso") }, h(Icon, { n: a.kind === "joint" ? "home" : "wallet", s: 22 })), h("span", { className: "acc-b" }, h("strong", null, a.name), h("small", null, kindLabel(a.kind), " · ", i.n ? `${i.n} opérations · dernière le ${shortDate(i.last)}` : "vide")), h("span", { className: "acc-bal" + (i.bal < 0 ? " neg" : "") }, i.n ? eur0(i.bal) : "")), h("button", { className: "acc-edit", onClick: () => {
+      setForm({ id: a.id, name: a.name, kind: a.kind || "perso" });
+      setConfirmDel(false);
+    }, "aria-label": "Modifier" }, h(Icon, { n: "gear", s: 18 })));
+  }), form ? h("div", { className: "card form", style: { marginTop: 6 } }, h("h3", null, form.id ? "Modifier le compte" : "Nouveau compte"), h("input", { className: "fi", value: form.name, placeholder: "Compte commun", onChange: (e) => setForm({ ...form, name: e.target.value }), autoFocus: !form.id }), h("div", { className: "mode-pick" }, h("button", { className: form.kind !== "joint" ? "on" : "", onClick: () => setForm({ ...form, kind: "perso" }) }, h(Icon, { n: "wallet", s: 16 }), h("strong", null, "Perso"), h("small", null, "Salaire, dépenses perso, épargne")), h("button", { className: form.kind === "joint" ? "on" : "", onClick: () => setForm({ ...form, kind: "joint" }) }, h(Icon, { n: "home", s: 16 }), h("strong", null, "Commun"), h("small", null, "Alimenté par vous deux · calcule combien verser"))), h("div", { className: "btn-row" }, h("button", { className: "btn btn-s", onClick: () => setForm(null) }, "Annuler"), h("button", { className: "btn btn-p", onClick: save }, form.id ? "Enregistrer" : "Créer et importer un relevé")), form.id && form.id !== "main" && (!confirmDel ? h("button", { className: "btn btn-danger-ghost", onClick: () => setConfirmDel(true) }, h(Icon, { n: "trash", s: 16 }), " Supprimer ce compte") : h("div", { className: "confirm-box" }, h("p", null, "Supprimer « ", form.name, " » et ses ", (info[form.id] || {}).n || 0, " opérations de ce téléphone ? C'est définitif (pense à exporter une sauvegarde avant)."), h("div", { className: "btn-row" }, h("button", { className: "btn btn-s", onClick: () => setConfirmDel(false) }, "Annuler"), h("button", { className: "btn btn-danger", onClick: () => del(form.id) }, "Supprimer"))))) : h("button", { className: "btn btn-s", style: { marginTop: 6 }, onClick: () => setForm({ name: accounts.some((a) => a.kind === "joint") ? "" : "Compte commun", kind: accounts.some((a) => a.kind === "joint") ? "perso" : "joint" }) }, h(Icon, { n: "plus", s: 16 }), " Ajouter un compte"), h("p", { className: "muted small center" }, "Chaque compte a ses opérations, récurrents et réglages. Les catégories sont communes."));
+}
+function Root() {
+  const [accounts, setAccounts] = useStored(ACCOUNTS_STORE, [MAIN_ACC]);
+  const list = accounts && accounts.length ? accounts : [MAIN_ACC];
+  const [cur, setCur] = useState(() => list.length > 1 ? null : list[0].id);
+  const [start, setStart] = useState(null);
+  const acc = list.find((a) => a.id === cur);
+  if (!acc) return h(AccountPicker, { accounts: list, setAccounts, onPick: (id, sheet) => {
+    setStart(sheet || null);
+    setCur(id);
+    window.scrollTo(0, 0);
+  } });
+  return h(App, { key: acc.id, acc, accounts: list, startSheet: start, onSwitch: () => {
+    setStart(null);
+    setCur(null);
+    window.scrollTo(0, 0);
+  } });
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(Root));
 setTimeout(() => {
   const s = document.getElementById("splash");
   if (s) {
